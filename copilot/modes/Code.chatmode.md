@@ -1,7 +1,21 @@
 ---
 description: 'Code Mode'
 tools: [
-	'codebase', 'usages', 'problems', 'changes', 'testFailure', 'terminalSelection', 'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'editFiles', 'search', 'runCommands', 'runTasks', 'add_comment_to_pending_review', 'create_branch', 'create_or_update_file', 'create_pending_pull_request_review', 'create_pull_request', 'create_pull_request_with_copilot', 'create_repository', 'get_commit', 'get_file_contents', 'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'get_tag', 'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage', 'list_branches', 'list_code_scanning_alerts', 'list_commits', 'list_gists', 'list_notifications', 'list_pull_requests', 'list_sub_issues', 'list_tags', 'list_workflow_jobs', 'list_workflow_run_artifacts', 'list_workflow_runs', 'list_workflows', 'merge_pull_request', 'push_files', 'reprioritize_sub_issue', 'request_copilot_review', 'rerun_failed_jobs', 'rerun_workflow_run', 'search_code', 'search_orgs', 'search_pull_requests', 'search_repositories', 'search_users', 'submit_pending_pull_request_review', 'update_gist', 'update_pull_request', 'update_pull_request_branch', 'atlassian', 'Context7', 'activePullRequest'
+	'codebase', 'usages', 'problems', 'changes', 'testFailure', 'terminalSelection', 'terminalLastCommand',
+	'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
+	'editFiles', 'runCommands', 'runTasks', 'create_or_update_file',
+	'add_comment_to_pending_review', 'create_pending_pull_request_review', 'submit_pending_pull_request_review', 'request_copilot_review',
+	'create_pull_request', 'update_pull_request', 'merge_pull_request', 'update_pull_request_branch', 'create_pull_request_with_copilot',
+	'create_branch', 'push_files', 'create_repository', 'reprioritize_sub_issue',
+	'get_commit', 'get_file_contents', 'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
+	'get_tag', 'list_branches', 'list_commits', 'list_tags', 'list_pull_requests', 'list_code_scanning_alerts', 'list_notifications', 'list_gists', 'list_sub_issues',
+	'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage', 'list_workflow_jobs', 'list_workflow_run_artifacts', 'list_workflow_runs', 'list_workflows', 'rerun_failed_jobs', 'rerun_workflow_run',
+	'search_code', 'search_orgs', 'search_pull_requests', 'search_repositories', 'search_users',
+	'resolve-library-id', 'get-library-docs',
+	'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'getTransitionsForJiraIssue', 'searchJiraIssuesUsingJql', 'transitionJiraIssue',
+	'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects', 'createConfluencePage', 'getConfluencePage', 'getConfluencePageAncestors', 'getConfluencePageDescendants', 'getPagesInConfluenceSpace', 'updateConfluencePage',
+	'createConfluenceFooterComment', 'createConfluenceInlineComment', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments', 'getConfluenceSpaces', 'searchConfluenceUsingCql',
+	'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
 ---
 
@@ -15,7 +29,7 @@ Use the default Agent mode behavior as baseline, but with these modifications:
 ## Enhanced Planning
 - If no explicit plan is provided: create a concise implementation plan (scope, ordered steps, risks, validation strategy) before edits.
 - If a user-provided plan exists: (1) validate each step against current code & tests; (2) produce a delta summary (confirmations + corrections); (3) seek confirmation ONLY when deviations are material (logic changes beyond plan, cross-cutting refactors, data model shifts) or risk is high; otherwise proceed without extra friction.
- Prioritize incremental, test-backed changes over large refactors.
+- Prioritize incremental, test-backed changes over large refactors.
 
 ## Tool Usage Preferences  
 - Prefer reading existing code patterns before implementing new features

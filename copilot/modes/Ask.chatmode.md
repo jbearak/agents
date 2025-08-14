@@ -2,16 +2,22 @@
 description: 'Ask Mode'
 tools: [
     'codebase', 'usages', 'problems', 'changes', 'testFailure',
-    'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo',
-    'search', 'atlassian', 'Context7', 'get_commit', 'get_file_contents',
-    'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
-    'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status',
-    'get_tag', 'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage',
-    'list_branches', 'list_code_scanning_alerts', 'list_commits', 'list_gists',
-    'list_notifications', 'list_pull_requests', 'list_sub_issues', 'list_tags',
-    'list_workflow_jobs', 'list_workflow_run_artifacts', 'list_workflow_runs',
-    'list_workflows', 'search_code', 'search_orgs', 'search_pull_requests',
-    'search_repositories', 'search_users', 'activePullRequest'
+    'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
+    'resolve-library-id', 'get-library-docs',
+    'get_commit', 'get_file_contents', 'get_me',
+    'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
+    'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
+    'get_tag', 'list_branches', 'list_commits', 'list_tags', 'list_pull_requests',
+    'list_code_scanning_alerts', 'list_notifications', 'list_gists', 'list_sub_issues',
+    'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage', 'list_workflow_jobs',
+    'list_workflow_run_artifacts', 'list_workflow_runs', 'list_workflows', 'search_code',
+    'search_orgs', 'search_pull_requests', 'search_repositories', 'search_users',
+    'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql',
+    'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects',
+    'getConfluencePage', 'getConfluencePageAncestors', 'getConfluencePageDescendants',
+    'getPagesInConfluenceSpace', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments',
+    'getConfluenceSpaces', 'searchConfluenceUsingCql', 'atlassianUserInfo', 'lookupJiraAccountId',
+    'getAccessibleAtlassianResources'
 ]
 ---
 

@@ -72,7 +72,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Jira Issues & Operations* |||
 | [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
 | [createJiraIssue](#createjiraissue) | ❌ | ✅ | ❌ | ✅ |
-| [editJiraIssue](#editJiraIssue) | ❌ | ✅ | ❌ | ✅ |
+| [editJiraIssue](#editjiraissue) | ❌ | ✅ | ❌ | ✅ |
 | [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
 | [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
 | [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ✅ | ❌ | ✅ |
@@ -89,8 +89,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
 | [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ |
 | *Confluence Comments* |||
-| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ✅ | ✅ |
-| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ✅ | ✅ |
+| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ❌ | ✅ |
+| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ❌ | ✅ |
 | [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
 | [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Spaces & Discovery* |||
