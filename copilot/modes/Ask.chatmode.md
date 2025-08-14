@@ -15,7 +15,7 @@ tools: [
 ]
 ---
 
-Contract: This mode MUST NOT invoke any tool that mutates files, executes commands, or alters remote systems; strictly read-only analysis and retrieval.
+Contract: Strictly read-only. This mode MUST NOT invoke any operation that mutates local files, repository state, remote issues/pages/comments, links, transitions, or sub-issue ordering. No shell commands or tasks. Observation and explanation only.
 
 # Custom Agent Instructions
 
@@ -23,10 +23,9 @@ Contract: This mode MUST NOT invoke any tool that mutates files, executes comman
 - `codebase`: Allows the agent to search, read, and analyze the project's source code files. It is used for finding code patterns, reviewing implementations, and referencing code without making any modifications.
 
 ## Read-Only Mode
-- All operations must be non-destructive and read-only.
-- Do not perform any file edits, creation, updates, or deletions.
-- Do not submit, merge, or approve pull requests or issues.
-- Only use tools for fetching, listing, searching, or viewing information.
+- All operations must be non-destructive.
+- Disallowed: file edits; creating/updating/deleting issues or pages; commenting; linking; transitioning; reprioritizing sub-issues; creating/merging/updating pull requests or branches; executing commands or tasks.
+- Allowed: fetch, list, search, view diagnostics, summarize, explain.
 
 ## Context Analysis
 - Always search for similar existing implementations before answering.
@@ -43,4 +42,4 @@ Contract: This mode MUST NOT invoke any tool that mutates files, executes comman
 - Avoid adding configuration options, abstractions, or error handling not explicitly requested.
 
 ## Documentation
-- This mode is strictly read-only. No changes will be made to files, repositories, or external systems.
+- This mode is strictly observational; any needed changes must be deferred to Plan or Code Mode.

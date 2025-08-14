@@ -10,91 +10,149 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ├── README.md               # This documentation (modes, matrix, tool definitions)
 └── copilot/
 	└── modes/
-		├── Plan.chatmode.md  # Read-only "Plan" / Ask mode definition (no mutations)
-		└── Code.chatmode.md  # Full coding mode with editing & execution tools
+		├── Ask.chatmode.md   # Strict read-only Q&A / analysis (no mutations)
+		├── Plan.chatmode.md  # Remote planning & artifact curation (no code/PR/branch edits)
+		└── Code.chatmode.md  # Full coding & execution mode
 ```
 
 ## Modes Overview
 
-| Mode | Purpose | Mutation | File | Contract Summary |
-|------|---------|----------|------|------------------|
-| Plan | Exploration, analysis, planning, answering questions | No | `copilot/modes/Plan.chatmode.md` | Read-only: must not change files or remote state |
-| Code | Implementing, editing, running tests/commands | Yes (scoped & minimal) | `copilot/modes/Code.chatmode.md` | May edit & run; keep changes minimal & validated |
+| Mode | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Sub-Issue Reprioritize | PR / Branch Ops | File | Contract Summary |
+|------|---------|-----------------------------|--------------------------------------------------|------------------------|-----------------|------|------------------|
+| Ask  | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | `copilot/modes/Ask.chatmode.md` | Strict read-only (no mutations anywhere) |
+| Plan | Plan work, refine scope, shape tickets/pages | No | Yes (Jira, Confluence, GitHub issues) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts only; no code/PR/branch edits |
+| Code | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation & execution capabilities |
 
-Plan mode tool list is limited to read-only retrieval and inspection. Code mode extends that list with mutation and execution capabilities.
+Ask mode is least-privilege. Plan mode can curate remote planning artifacts but cannot touch code, branches, or PR creation/merging. Code mode adds full local + repo mutation and execution.
 
 ## Tool Availability Matrix
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | Plan Mode | Code Mode |
-|------|-----------|-----------|
+| Tool | Ask Mode | Plan Mode | Code Mode |
+|------|----------|-----------|-----------|
 | **Built-In (VS Code / Core)** |||
-| [codebase](#codebase) | ✅ | ✅ |
-| [usages](#usages) | ✅ | ✅ |
-| [search](#search) | ✅ | ✅ |
-| [searchResults](#searchresults) | ✅ | ✅ |
-| [findTestFiles](#findtestfiles) | ✅ | ✅ |
-| [problems](#problems) | ✅ | ✅ |
-| [changes](#changes) | ✅ | ✅ |
-| [testFailure](#testfailure) | ✅ | ✅ |
-| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ |
-| [terminalSelection](#terminalselection) | ❌ | ✅ |
-| [fetch](#fetch) | ✅ | ✅ |
-| [githubRepo](#githubrepo) | ✅ | ✅ |
-| [extensions](#extensions) | ✅ | ✅ |
-| [vscodeAPI](#vscodeapi) | ❌ | ✅ |
-| [editFiles](#editfiles) | ❌ | ✅ |
-| [runCommands](#runcommands) | ❌ | ✅ |
-| [runTasks](#runtasks) | ❌ | ✅ |
+| *Code & Project Navigation* |||
+| [codebase](#codebase) | ✅ | ✅ | ✅ |
+| [findTestFiles](#findtestfiles) | ✅ | ✅ | ✅ |
+| [search](#search) | ✅ | ✅ | ✅ |
+| [searchResults](#searchresults) | ✅ | ✅ | ✅ |
+| [usages](#usages) | ✅ | ✅ | ✅ |
+| *Quality & Diagnostics* |||
+| [problems](#problems) | ✅ | ✅ | ✅ |
+| [testFailure](#testfailure) | ✅ | ✅ | ✅ |
+| *Version Control & Changes* |||
+| [changes](#changes) | ✅ | ✅ | ✅ |
+| *Environment & Execution* |||
+| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ | ✅ |
+| [terminalSelection](#terminalselection) | ❌ | ❌ | ✅ |
+| *Web & External Content* |||
+| [fetch](#fetch) | ✅ | ✅ | ✅ |
+| [githubRepo](#githubrepo) | ✅ | ✅ | ✅ |
+| *Editor & Extensions* |||
+| [extensions](#extensions) | ✅ | ✅ | ✅ |
+| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ✅ |
+| *Editing & Automation* |||
+| [editFiles](#editfiles) | ❌ | ❌ | ✅ |
+| [runCommands](#runcommands) | ❌ | ❌ | ✅ |
+| [runTasks](#runtasks) | ❌ | ❌ | ✅ |
+| *Pull Request Context* |||
+| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ |
 | **Context7** |||
-| [resolve-library-id](#resolve-library-id) | ✅ | ✅ |
-| [get-library-docs](#get-library-docs) | ✅ | ✅ |
+| [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ |
+| [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ |
 | **Atlassian** |||
-| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ |
-| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ |
-| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ |
-| [createJiraIssue](#createjiraissue) | ✅ | ✅ |
-| [editJiraIssue](#editjiraissue) | ✅ | ✅ |
-| [getJiraIssue](#getjiraissue) | ✅ | ✅ |
-| [transitionJiraIssue](#transitionjiraissue) | ✅ | ✅ |
-| [addCommentToJiraIssue](#addcommenttojiraissue) | ✅ | ✅ |
-| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ✅ | ✅ |
-| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ |
-| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ |
-| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ |
-| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesmetadata) | ✅ | ✅ |
-| [createConfluencePage](#createconfluencepage) | ✅ | ✅ |
-| [updateConfluencePage](#updateconfluencepage) | ✅ | ✅ |
-| [getConfluencePage](#getconfluencepage) | ✅ | ✅ |
-| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ |
-| [getConfluencePageAncestors](#getconfluencepageancestors) | ✅ | ✅ |
-| [getConfluencePageDescendants](#getconfluencepagedescendants) | ✅ | ✅ |
-| [createConfluenceFooterComment](#createconfluencefootercomment) | ✅ | ✅ |
-| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ✅ | ✅ |
-| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ |
-| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ |
-| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ |
-| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ |
+| *Jira Issues & Operations* |||
+| [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ (view only) | ✅ | ✅ |
+| [createJiraIssue](#createjiraissue) | ❌ | ✅ | ✅ |
+| [editJiraIssue](#editjiraissue) | ❌ | ✅ | ✅ |
+| [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ |
+| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ (view) | ✅ | ✅ |
+| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ✅ | ✅ |
+| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ |
+| [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ✅ |
+| *Jira Project Metadata* |||
+| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesetadata) | ✅ | ✅ | ✅ |
+| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ |
+| *Confluence Pages & Content* |||
+| [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ✅ |
+| [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](#getconfluencepageancestors) | ✅ | ✅ | ✅ |
+| [getConfluencePageDescendants](#getconfluencepagedescendants) | ✅ | ✅ | ✅ |
+| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ |
+| [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ✅ |
+| *Confluence Comments* |||
+| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ✅ |
+| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ✅ |
+| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ |
+| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ |
+| *Confluence Spaces & Discovery* |||
+| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ | ✅ |
+| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ | ✅ |
+| *User & Identity* |||
+| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ |
+| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ |
+| *Other* |||
+| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ | ✅ |
 | **GitHub** |||
-| [activePullRequest](#activepullrequest) | ✅ | ✅ |
-| [get_commit](#get_commit) | ✅ | ✅ |
-| [get_file_contents](#get_file_contents) | ✅ | ✅ |
-| [list_branches](#list_branches) | ✅ | ✅ |
-| [list_commits](#list_commits) | ✅ | ✅ |
-| [get_tag](#get_tag) | ✅ | ✅ |
-| [list_tags](#list_tags) | ✅ | ✅ |
-| [create_repository](#create_repository) | ❌ | ✅ |
-| [create_branch](#create_branch) | ❌ | ✅ |
-| [push_files](#push_files) | ❌ | ✅ |
-| [get_pull_request](#get_pull_request) | ✅ | ✅ |
-| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ |
-| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ |
-| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ |
-| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ |
-| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ |
-| [create_pull_request](#create_pull_request) | ❌ | ✅ |
-| [update_pull_request](#update_pull_request) | ❌ | ✅ |
+| *Commits & Repository* |||
+| [create_branch](#create_branch) | ❌ | ❌ | ✅ |
+| [create_repository](#create_repository) | ❌ | ❌ | ✅ |
+| [get_commit](#get_commit) | ✅ | ✅ | ✅ |
+| [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ |
+| [get_tag](#get_tag) | ✅ | ✅ | ✅ |
+| [list_branches](#list_branches) | ✅ | ✅ | ✅ |
+| [list_commits](#list_commits) | ✅ | ✅ | ✅ |
+| [list_tags](#list_tags) | ✅ | ✅ | ✅ |
+| [push_files](#push_files) | ❌ | ❌ | ✅ |
+| *Pull Requests – Retrieval* |||
+| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ |
+| [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ |
+| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ |
+| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ |
+| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ | ✅ |
+| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ | ✅ |
+| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ | ✅ |
+| [list_pull_requests](#list_pull_requests) | ✅ | ✅ | ✅ |
+| *Pull Requests – Actions* |||
+| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ❌ | ✅ |
+| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ❌ | ✅ |
+| [create_pull_request](#create_pull_request) | ❌ | ❌ | ✅ |
+| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ✅ |
+| [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ✅ |
+| [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ✅ |
+| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ❌ | ✅ |
+| [update_pull_request](#update_pull_request) | ❌ | ❌ | ✅ |
+| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ✅ |
+| *Sub-Issues* |||
+| [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ |
+| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ✅ |
+| *Gists* |||
+| [list_gists](#list_gists) | ✅ | ✅ | ✅ |
+| [update_gist](#update_gist) | ❌ | ❌ | ✅ |
+| *Notifications* |||
+| [list_notifications](#list_notifications) | ✅ | ✅ | ✅ |
+| *Code Scanning & Security* |||
+| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ | ✅ |
+| *Workflows (GitHub Actions)* |||
+| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ✅ |
+| [get_workflow_run_logs](#get_workflow_run_logs) | ✅ | ✅ | ✅ |
+| [get_workflow_run_usage](#get_workflow_run_usage) | ✅ | ✅ | ✅ |
+| [list_workflow_jobs](#list_workflow_jobs) | ✅ | ✅ | ✅ |
+| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ✅ |
+| [list_workflow_runs](#list_workflow_runs) | ✅ | ✅ | ✅ |
+| [list_workflows](#list_workflows) | ✅ | ✅ | ✅ |
+| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ✅ |
+| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ✅ |
+| *Search & Discovery* |||
+| [search_code](#search_code) | ✅ | ✅ | ✅ |
+| [search_orgs](#search_orgs) | ✅ | ✅ | ✅ |
+| [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ |
+| [search_repositories](#search_repositories) | ✅ | ✅ | ✅ |
+| [search_users](#search_users) | ✅ | ✅ | ✅ |
+| *User & Account* |||
+| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ | ✅ |
+
 | [update_pull_request_branch](#update_pull_request_branch) | ❌ | ✅ |
 | [merge_pull_request](#merge_pull_request) | ❌ | ✅ |
 | [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ |
@@ -153,56 +211,51 @@ Some AI assistants named "Q" load per-repo instruction files. Assumed pattern (a
 
 ### Built-In (VS Code / Core)
 
-#### codebase
+#### Code & Project Navigation
+
+##### codebase
 Search, read, and analyze project source code.
-
-#### usages
-Find references, definitions, implementations, and other symbol usages.
-
-#### search
-Search and read files in the workspace.
-
-#### searchResults
-Access the current search view results programmatically.
-
-#### findTestFiles
+##### findTestFiles
 Given a source (or test) file, locate its corresponding test (or source) counterpart.
-
-#### problems
+##### search
+Search and read files in the workspace.
+##### searchResults
+Access the current search view results programmatically.
+##### usages
+Find references, definitions, implementations, and other symbol usages.
+#### Quality & Diagnostics
+##### problems
 Retrieve diagnostics (errors/warnings) for a file.
-
-#### changes
-Get diffs of locally changed files.
-
-#### testFailure
+##### testFailure
 Surface details about the most recent unit test failure.
-
-#### terminalLastCommand
+#### Version Control & Changes
+##### changes
+Get diffs of locally changed files.
+#### Environment & Execution
+##### terminalLastCommand
 Return the last executed command in the active terminal.
-
-#### terminalSelection
+##### terminalSelection
 Return the currently selected text in the terminal (Code mode only).
-
-#### fetch
+#### Web & External Content
+##### fetch
 Fetch main textual content from a web page (provide URL and optional query focus).
-
-#### githubRepo
+##### githubRepo
 Search a public GitHub repository for relevant code snippets.
-
-#### extensions
+#### Editor & Extensions
+##### extensions
 Discover or inspect installed/available editor extensions.
-
-#### vscodeAPI
+##### vscodeAPI
 Query VS Code API references and docs (Code mode only).
-
-#### editFiles
+#### Editing & Automation
+##### editFiles
 Edit existing workspace files (Code mode only; mutating).
-
-#### runCommands
+##### runCommands
 Execute arbitrary shell/CLI commands in a persistent terminal (Code mode only).
-
-#### runTasks
+##### runTasks
 Create/run tasks (build/test/etc.) via tasks configuration (Code mode only).
+#### Pull Request Context
+##### activePullRequest
+Retrieve context for the currently focused pull request.
 
 ### Context7
 
@@ -214,225 +267,170 @@ Retrieve up-to-date documentation snippets for a resolved library ID.
 
 ### Atlassian
 
-#### createJiraIssue
-Create a new Jira issue in a project.
-
-#### editJiraIssue
-Update fields of an existing Jira issue.
-
-#### getJiraIssue
-Fetch details for a Jira issue by key or ID.
-
-#### transitionJiraIssue
-Move an issue through a workflow transition.
-
-#### addCommentToJiraIssue
+#### Jira Issues & Operations
+##### addCommentToJiraIssue
 Add a comment to a Jira issue.
-
-#### getTransitionsForJiraIssue
-List available transitions for a Jira issue.
-
-#### getJiraIssueRemoteIssueLinks
+##### createJiraIssue
+Create a new Jira issue in a project.
+##### editJiraIssue
+Update fields of an existing Jira issue.
+##### getJiraIssue
+Fetch details for a Jira issue by key or ID.
+##### getJiraIssueRemoteIssueLinks
 Retrieve remote issue links (e.g., Confluence pages) tied to a Jira issue.
-
-#### searchJiraIssuesUsingJql
+##### getTransitionsForJiraIssue
+List available transitions for a Jira issue.
+##### searchJiraIssuesUsingJql
 Search Jira issues with JQL.
-
-#### getVisibleJiraProjects
-List Jira projects visible to the user (permission-filtered).
-
-#### getJiraProjectIssueTypesMetadata
+##### transitionJiraIssue
+Move an issue through a workflow transition.
+#### Jira Project Metadata
+##### getJiraProjectIssueTypesMetadata
 Metadata/details for issue types in a Jira project.
-
-#### createConfluencePage
+##### getVisibleJiraProjects
+List Jira projects visible to the user (permission-filtered).
+#### Confluence Pages & Content
+##### createConfluencePage
 Create a Confluence page (regular or live doc).
-
-#### updateConfluencePage
-Update an existing Confluence page or live doc.
-
-#### getConfluencePage
+##### getConfluencePage
 Fetch a Confluence page (body converted to Markdown).
-
-#### getPagesInConfluenceSpace
-List pages within a Confluence space.
-
-#### getConfluencePageAncestors
+##### getConfluencePageAncestors
 List ancestor hierarchy for a page.
-
-#### getConfluencePageDescendants
+##### getConfluencePageDescendants
 List descendant pages (optionally depth-limited).
-
-#### createConfluenceFooterComment
+##### getPagesInConfluenceSpace
+List pages within a Confluence space.
+##### updateConfluencePage
+Update an existing Confluence page or live doc.
+#### Confluence Comments
+##### createConfluenceFooterComment
 Add a footer comment to a page/blog post.
-
-#### createConfluenceInlineComment
+##### createConfluenceInlineComment
 Add an inline (text-anchored) comment to a page.
-
-#### getConfluencePageFooterComments
+##### getConfluencePageFooterComments
 List footer comments for a page.
-
-#### getConfluencePageInlineComments
+##### getConfluencePageInlineComments
 List inline comments for a page.
-
-#### getConfluenceSpaces
+#### Confluence Spaces & Discovery
+##### getConfluenceSpaces
 List spaces and related metadata.
-
-#### searchConfluenceUsingCql
+##### searchConfluenceUsingCql
 Query Confluence content using CQL.
-
-#### atlassianUserInfo
+#### User & Identity
+##### atlassianUserInfo
 Get current Atlassian user identity info.
-
-#### lookupJiraAccountId
+##### lookupJiraAccountId
 Lookup account IDs by user name/email.
-
-#### getAccessibleAtlassianResources
+#### Other
+##### getAccessibleAtlassianResources
 Discover accessible Atlassian cloud resources and obtain cloud IDs.
 
 ### GitHub
 
-#### activePullRequest
-Retrieve context for the currently focused pull request.
-
-#### get_commit
-Get details for a specific commit.
-
-#### get_file_contents
-Retrieve file or directory listing content from a repo.
-
-#### list_branches
-List branches in a repository.
-
-#### list_commits
-List commits on a branch or up to a commit SHA.
-
-#### get_tag
-Get details for a tag.
-
-#### list_tags
-List tags in a repository.
-
-#### create_repository
-Create a new repository (mutation; Code mode only).
-
-#### create_branch
+#### Commits & Repository
+##### create_branch
 Create a branch from a base ref (Code mode only).
-
-#### push_files
+##### create_repository
+Create a new repository (mutation; Code mode only).
+##### get_commit
+Get details for a specific commit.
+##### get_file_contents
+Retrieve file or directory listing content from a repo.
+##### get_tag
+Get details for a tag.
+##### list_branches
+List branches in a repository.
+##### list_commits
+List commits on a branch or up to a commit SHA.
+##### list_tags
+List tags in a repository.
+##### push_files
 Push multiple files in a single commit (Code mode only).
-
-#### get_pull_request
+#### Pull Requests – Retrieval
+##### activePullRequest
+Retrieve context for the currently focused pull request.
+##### get_pull_request
 Retrieve pull request details.
-
-#### get_pull_request_comments
+##### get_pull_request_comments
 List comments on a pull request.
-
-#### get_pull_request_diff
+##### get_pull_request_diff
 Retrieve a diff for a pull request.
-
-#### get_pull_request_files
+##### get_pull_request_files
 List changed files in a pull request.
-
-#### get_pull_request_reviews
+##### get_pull_request_reviews
 List reviews on a pull request.
-
-#### get_pull_request_status
+##### get_pull_request_status
 Fetch status checks for a pull request.
-
-#### create_pull_request
+##### list_pull_requests
+List pull requests with filters.
+#### Pull Requests – Actions
+##### add_comment_to_pending_review
+Add a comment to an in-progress pending review (Code mode only).
+##### create_pending_pull_request_review
+Start a pending review (Code mode only).
+##### create_pull_request
 Open a new pull request (Code mode only).
-
-#### update_pull_request
+##### create_pull_request_with_copilot
+Delegate implementation task leading to a new PR (Code mode only).
+##### merge_pull_request
+Merge a pull request (Code mode only).
+##### request_copilot_review
+Request automated Copilot code review for a PR (Code mode only).
+##### submit_pending_pull_request_review
+Submit a pending review (Code mode only).
+##### update_pull_request
 Modify title/body/draft state of a pull request (Code mode only).
-
-#### update_pull_request_branch
+##### update_pull_request_branch
 Update PR branch with base (Code mode only).
 
-#### merge_pull_request
-Merge a pull request (Code mode only).
-
-#### create_pending_pull_request_review
-Start a pending review (Code mode only).
-
-#### add_comment_to_pending_review
-Add a comment to an in-progress pending review (Code mode only).
-
-#### submit_pending_pull_request_review
-Submit a pending review (Code mode only).
-
-#### request_copilot_review
-Request automated Copilot code review for a PR (Code mode only).
-
-#### create_pull_request_with_copilot
-Delegate implementation task leading to a new PR (Code mode only).
-
-#### list_pull_requests
-List pull requests with filters.
-
-#### list_sub_issues
+#### Sub-Issues
+##### list_sub_issues
 List sub-issues for a GitHub issue (Beta feature).
-
-#### reprioritize_sub_issue
+##### reprioritize_sub_issue
 Reorder sub-issue priority (Code mode only).
-
-#### list_gists
+#### Gists
+##### list_gists
 List gists for a user.
-
-#### update_gist
+##### update_gist
 Update an existing gist (Code mode only).
-
-#### list_notifications
+#### Notifications
+##### list_notifications
 List all notifications (filters optional).
-
-#### list_code_scanning_alerts
+#### Code Scanning & Security
+##### list_code_scanning_alerts
 List code scanning alerts.
-
-#### search_code
-Global code search across GitHub.
-
-#### search_pull_requests
-Search pull requests across repositories.
-
-#### search_repositories
-Search for repositories by criteria.
-
-#### search_users
-Search for GitHub users.
-
-#### search_orgs
-Search for GitHub organizations.
-
-#### get_workflow_run
+#### Workflows (GitHub Actions)
+##### get_workflow_run
 Get details for a workflow run.
-
-#### get_workflow_run_logs
+##### get_workflow_run_logs
 Download logs (ZIP) for a workflow run.
-
-#### get_workflow_run_usage
+##### get_workflow_run_usage
 Get billable time/usage metrics for a run.
-
-#### list_workflow_runs
-List workflow runs with filtering options.
-
-#### list_workflows
-List workflows configured in a repository.
-
-#### list_workflow_jobs
+##### list_workflow_jobs
 List jobs for a workflow run.
-
-#### list_workflow_run_artifacts
+##### list_workflow_run_artifacts
 List artifacts produced by a workflow run.
-
-#### rerun_failed_jobs
+##### list_workflow_runs
+List workflow runs with filtering options.
+##### list_workflows
+List workflows configured in a repository.
+##### rerun_failed_jobs
 Re-run only failed jobs in a run (Code mode only).
-
-#### rerun_workflow_run
+##### rerun_workflow_run
 Re-run an entire workflow run (Code mode only).
-
-#### update_pull_request_branch
-Bring a PR branch up to date with its base (Code mode only).
+#### Search & Discovery
+##### search_code
+Global code search across GitHub.
+##### search_orgs
+Search for GitHub organizations.
+##### search_pull_requests
+Search pull requests across repositories.
+##### search_repositories
+Search for repositories by criteria.
+##### search_users
+Search for GitHub users.
 
 ## Notes
 - Some tools appear in multiple conceptual groups; each tool has a dedicated anchor for direct linking.
-- Plan mode intentionally excludes all mutating / execution capabilities.
+- Ask mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
 - This document is the canonical source for tool availability; update table and definitions together.
