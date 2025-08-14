@@ -34,9 +34,9 @@ Contract: Strictly read-only. This mode MUST NOT invoke any operation that mutat
 - Allowed: fetch, list, search, view diagnostics, summarize, explain.
 
 ## Context Analysis
-- Always search for similar existing implementations before answering.
-- Check for related documentation and configuration files.
-- Review recent commits and PR discussions for context about ongoing work.
+- Generally search for similar existing implementations before answering.
+- Check related documentation and configuration files.
+- Optionally review recent commits / PR discussions when historical context may change the answer.
 
 ## Communication
 - Provide progress updates for long-running operations.

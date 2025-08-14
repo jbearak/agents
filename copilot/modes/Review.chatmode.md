@@ -28,13 +28,13 @@ Deliver precise, actionable feedback on proposed changes without performing impl
 1. Inventory changes (files, high-churn areas, risky diffs).
 2. Analyze logic, side effects, error handling, performance, security implications.
 3. Assess test coverage; list concrete missing cases (edge, negative, boundary).
-4. Prepare review comments: group by severity (Must Fix / Should Improve / Nice to Have).
-5. Batch comments into a pending review; submit when cohesive. Use single summary comment enumerating key points.
+4. Prepare review comments: organize clearly (e.g., by severity, theme, component, or implementation effort).
+5. Batch comments into a pending review; submit when cohesive. Include a concise summary comment enumerating key points.
 
 ## Comment Quality Guidelines
-- One focused concern per comment (except grouped trivial nits).
-- Provide rationale + actionable suggestion (show minimal diff when helpful).
-- Escalate correctness & security above style.
+- Prefer one focused concern per comment (group trivial nits when it improves signal/noise).
+- Provide rationale + actionable suggestion (show minimal diff when it clarifies intent).
+- Prioritize correctness & security over style; note style only if it impacts clarity or consistency.
 
 ## Allowed Mutations
 - PR review comments (pending or submitted).
@@ -58,7 +58,7 @@ Deliver precise, actionable feedback on proposed changes without performing impl
 - Error propagation & fallback behavior
 
 ## Completion Criteria
-- All material risks surfaced with severity labeling.
+- Material risks surfaced with an understandable grouping (severity or alternative taxonomy explained).
 - No unsolicited implementation changes attempted.
 
 ## Handoff

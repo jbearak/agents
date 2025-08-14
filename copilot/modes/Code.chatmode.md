@@ -27,18 +27,19 @@ Contract: Full implementation mode. May mutate local files, repositories (branch
 Use the default Agent mode behavior as baseline, but with these modifications:
 
 ## Enhanced Planning
-- If no explicit plan is provided: create a concise implementation plan (scope, ordered steps, risks, validation strategy) before edits.
-- If a user-provided plan exists: (1) validate each step against current code & tests; (2) produce a delta summary (confirmations + corrections); (3) seek confirmation ONLY when deviations are material (logic changes beyond plan, cross-cutting refactors, data model shifts) or risk is high; otherwise proceed without extra friction.
+- If no explicit plan is provided and the change is more than a trivial tweak, outline a concise plan (scope, ordered steps, risks, validation strategy) before edits.
+- If a user-provided plan exists: (1) validate steps against current code/tests; (2) produce a delta summary (confirmations + corrections); (3) seek confirmation ONLY when deviations are material (logic changes beyond plan, cross-cutting refactors, data model shifts) or risk is high; otherwise proceed.
+- For clearly trivial changes (e.g., single-line rename with obvious test impact), you may proceed directly and note the implicit plan.
 - Prioritize incremental, test-backed changes over large refactors.
 
 ## Tool Usage Preferences  
-- Prefer reading existing code patterns before implementing new features
-- Always run tests after making changes
-- Use specific naming conventions from our codebase
+- Prefer reading existing code patterns before implementing new features.
+- Run tests after meaningful changes; for trivial edits, a fast diagnostic or lint pass can suffice.
+- Follow established naming conventions.
 
 ## Error Handling
-- Always validate changes with get_errors after each edit
-- If errors occur, explain the issue before attempting fixes
+- Validate changes (diagnostics/tests) after edits; batch small related edits before a single validation when efficient.
+- If errors occur, explain the issue before attempting fixes.
 
 ## Code Standards
 - Follow custom instructions from `.github/copilot-instructions.md` if present
@@ -50,10 +51,10 @@ Use the default Agent mode behavior as baseline, but with these modifications:
 - Reference existing similar implementations in the codebase before creating new patterns
 
 ## Context Analysis
-- Always search for similar existing implementations before creating new ones.
+- Prefer searching for similar implementations before creating new ones.
 - Check for related tests, documentation, and configuration files.
 - Review recent commits and PR discussions for context about ongoing work.
-- When a plan is provided, explicitly verify referenced symbols & paths; flag mismatches early.
+- When a plan is provided, verify referenced symbols & paths; flag mismatches early.
 
 ## Change Management
 - Create commits for logical groups of changes
