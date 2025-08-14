@@ -61,7 +61,7 @@ Use the default Agent mode behavior as baseline, but with these modifications:
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
 - Document any breaking changes or migration steps needed
-- Follow git branching: never commit directly to main; create feature branches with descriptive names
+- Follow git branching: avoid committing directly to main; create feature branches with descriptive names (except for hotfixes, small repositories, or when explicitly required)
 - Use commit messages that reference the purpose and any relevant issue/dataset context
 
 ## Security Considerations
