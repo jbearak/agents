@@ -1,0 +1,79 @@
+# Git Workflow & Branch Management Standards
+
+## Branch Creation & Synchronization
+
+### Pre-Work Synchronization (REQUIRED)
+Before any branch operations, always synchronize with remote repository:
+```bash
+git fetch
+```
+
+### Creating New Branches
+**Always create from `origin/main`** (not local `main`) since `git fetch` doesn't update local main:
+```bash
+git fetch
+git checkout -b new-branch-name origin/main
+```
+
+### Working on Existing Branches
+When checking out existing branches, always pull latest changes:
+```bash
+git fetch
+git checkout existing-branch-name
+git pull origin existing-branch-name
+```
+
+### Base Branch Default
+- Default base branch is `main` unless explicitly specified otherwise
+- Always use `origin/{base-branch}` as the source for new branches to ensure latest remote state
+- Replace `{base-branch}` with the actual base branch name (typically `main`)
+
+## Branch Naming Conventions
+
+### Jira Integration
+Begin branch names with Jira issue keys to enable automatic linking:
+- Format: `{JIRA-KEY}-{descriptive-name}`
+- Example: `AWW-123-fix-authentication`
+- Example: `ACP-456-add-user-dashboard`
+
+### Alternative Naming (when Jira not applicable)
+Use conventional prefixes for non-Jira work:
+- `feature/` - New features
+- `bug/` - Bug fixes  
+- `hotfix/` - Critical production fixes
+- `docs/` - Documentation updates
+
+## Workspace Verification
+
+### Before Starting Work
+Always verify you're on the intended branch and synchronized:
+```bash
+git status                    # Check current branch and working tree
+git log --oneline -5         # Verify recent commits match expectations
+git branch -vv               # Check tracking relationship with remote
+```
+
+### Multi-Computer Development
+Account for work done on other computers/environments:
+- Never assume local repository is up-to-date
+- Always `git fetch` before creating or switching branches
+- Pull changes even if you "recently pulled" (might have been on wrong branch)
+
+## Git Workflow Best Practices
+
+### Local vs Remote Operations Priority
+1. **Prefer local git commands** over GitHub MCP/API for branch operations
+2. Use GitHub tools only for PR creation, review, and merge operations
+3. Create branches locally to ensure workspace synchronization
+
+### Workspace Synchronization Checks
+Before making changes, verify:
+- Current branch matches intended working branch
+- Working tree is clean (`git status`)
+- Local branch is up-to-date with remote tracking branch
+- No uncommitted changes that could interfere
+
+### Error Prevention
+- Never commit directly to `main` (except for hotfixes in small repositories)
+- Always create feature branches with descriptive names
+- Verify branch before pushing commits

@@ -57,6 +57,44 @@ Use the default Agent mode behavior as baseline, but with these modifications:
 - When a plan is provided, verify referenced symbols & paths; flag mismatches early.
 - For statistical/analytical work: ensure reproducibility through seed control and environment documentation when relevant.
 
+## Git Workflow & Branch Management
+
+### Pre-Work Synchronization (MANDATORY)
+Before any branch operations, always synchronize with remote repository:
+- Execute `git fetch` to get latest remote state
+- Verify current branch and sync status with `git status`
+- Check tracking relationship with `git branch -vv`
+
+### Branch Creation Priority
+1. **Prefer local git commands over GitHub MCP tools** for branch operations
+2. **Always create from `origin/{base-branch}`** (not local base branch):
+   ```bash
+   git fetch
+   git checkout -b branch-name origin/{base-branch}
+   ```
+   (Replace `{base-branch}` with actual base branch, typically `main`)
+3. Use GitHub tools primarily for PR creation, review, and merge operations
+
+### Working on Existing Branches
+When checking out existing branches, always pull latest changes:
+```bash
+git fetch
+git checkout existing-branch-name
+git pull origin existing-branch-name
+```
+
+### Branch Naming (Follow coding_guidelines.txt)
+- **Jira integration**: Use format `{JIRA-KEY}-{descriptive-name}` (e.g., `AWW-123-fix-auth`)
+- **Alternative**: Use conventional prefixes (`feature/`, `bug/`, `hotfix/`, `docs/`)
+- Default base branch is `main` unless explicitly specified otherwise
+
+### Workspace Verification
+Before making changes, verify:
+- Current branch matches intended working branch (`git status`)
+- Working tree is clean and synchronized
+- Local branch is up-to-date with remote tracking branch
+- No uncommitted changes that could interfere
+
 ## Change Management
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
