@@ -10,177 +10,153 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ├── README.md               # This documentation (modes, matrix, tool definitions)
 └── copilot/
 	└── modes/
-		├── Ask.chatmode.md   # Strict read-only Q&A / analysis (no mutations)
-		├── Plan.chatmode.md  # Remote planning & artifact curation (no code/PR/branch edits)
-		└── Code.chatmode.md  # Full coding & execution mode
+		├── Ask.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
+		├── Plan.chatmode.md    # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+		├── Review.chatmode.md  # PR & issue review feedback (comments only)
+		└── Code.chatmode.md    # Full coding, execution, PR + branch ops
 ```
 
 ## Modes Overview
 
-| Mode | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Sub-Issue Reprioritize | PR / Branch Ops | File | Contract Summary |
-|------|---------|-----------------------------|--------------------------------------------------|------------------------|-----------------|------|------------------|
-| Ask  | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | `copilot/modes/Ask.chatmode.md` | Strict read-only (no mutations anywhere) |
-| Plan | Plan work, refine scope, shape tickets/pages | No | Yes (Jira, Confluence, GitHub issues) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts only; no code/PR/branch edits |
-| Code | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation & execution capabilities |
+| Mode | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary |
+|------|---------|-----------------------------|--------------------------------------------------|------------------|---------------|-----------------------------|-----------------------|------|------------------|
+| Ask    | Q&A, exploration, explain code, gather context | No  | No (read-only viewing only) | No | No | No | No | No | `copilot/modes/Ask.chatmode.md` | Strict read-only (no mutations anywhere) |
+| Plan   | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
+| Review | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
+| Code   | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
 
-Ask mode is least-privilege. Plan mode can curate remote planning artifacts but cannot touch code, branches, or PR creation/merging. Code mode adds full local + repo mutation and execution.
+Privilege gradient: Ask < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
 ## Tool Availability Matrix
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | Ask Mode | Plan Mode | Code Mode |
-|------|----------|-----------|-----------|
+| Tool | Ask | Plan | Review | Code |
+|------|-----|------|--------|------|
 | **Built-In (VS Code / Core)** |||
 | *Code & Project Navigation* |||
-| [codebase](#codebase) | ✅ | ✅ | ✅ |
-| [findTestFiles](#findtestfiles) | ✅ | ✅ | ✅ |
-| [search](#search) | ✅ | ✅ | ✅ |
-| [searchResults](#searchresults) | ✅ | ✅ | ✅ |
-| [usages](#usages) | ✅ | ✅ | ✅ |
+| [codebase](#codebase) | ✅ | ✅ | ✅ | ✅ |
+| [findTestFiles](#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
+| [search](#search) | ✅ | ✅ | ✅ | ✅ |
+| [searchResults](#searchresults) | ✅ | ✅ | ✅ | ✅ |
+| [usages](#usages) | ✅ | ✅ | ✅ | ✅ |
 | *Quality & Diagnostics* |||
-| [problems](#problems) | ✅ | ✅ | ✅ |
-| [testFailure](#testfailure) | ✅ | ✅ | ✅ |
+| [problems](#problems) | ✅ | ✅ | ✅ | ✅ |
+| [testFailure](#testfailure) | ✅ | ✅ | ✅ | ✅ |
 | *Version Control & Changes* |||
-| [changes](#changes) | ✅ | ✅ | ✅ |
+| [changes](#changes) | ✅ | ✅ | ✅ | ✅ |
 | *Environment & Execution* |||
-| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ | ✅ |
-| [terminalSelection](#terminalselection) | ❌ | ❌ | ✅ |
+| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
+| [terminalSelection](#terminalselection) | ❌ | ❌ | ❌ | ✅ |
 | *Web & External Content* |||
-| [fetch](#fetch) | ✅ | ✅ | ✅ |
-| [githubRepo](#githubrepo) | ✅ | ✅ | ✅ |
+| [fetch](#fetch) | ✅ | ✅ | ✅ | ✅ |
+| [githubRepo](#githubrepo) | ✅ | ✅ | ✅ | ✅ |
 | *Editor & Extensions* |||
-| [extensions](#extensions) | ✅ | ✅ | ✅ |
-| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ✅ |
+| [extensions](#extensions) | ✅ | ✅ | ✅ | ✅ |
+| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ❌ | ✅ |
 | *Editing & Automation* |||
-| [editFiles](#editfiles) | ❌ | ❌ | ✅ |
-| [runCommands](#runcommands) | ❌ | ❌ | ✅ |
-| [runTasks](#runtasks) | ❌ | ❌ | ✅ |
+| [editFiles](#editfiles) | ❌ | ❌ | ❌ | ✅ |
+| [runCommands](#runcommands) | ❌ | ❌ | ❌ | ✅ |
+| [runTasks](#runtasks) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Request Context* |||
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ |
+| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
 | **Context7** |||
-| [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ |
-| [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ |
+| [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
+| [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
 | **Atlassian** |||
 | *Jira Issues & Operations* |||
-| [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ (view only) | ✅ | ✅ |
-| [createJiraIssue](#createjiraissue) | ❌ | ✅ | ✅ |
-| [editJiraIssue](#editjiraissue) | ❌ | ✅ | ✅ |
-| [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ |
-| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ (view) | ✅ | ✅ |
-| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ✅ | ✅ |
-| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ |
-| [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ✅ |
+| [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
+| [createJiraIssue](#createjiraissue) | ❌ | ✅ | ❌ | ✅ |
+| [editJiraIssue](#editJiraIssue) | ❌ | ✅ | ❌ | ✅ |
+| [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
+| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
+| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ✅ | ❌ | ✅ |
+| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
+| [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ❌ | ✅ |
 | *Jira Project Metadata* |||
-| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesetadata) | ✅ | ✅ | ✅ |
-| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ |
+| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
+| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Pages & Content* |||
-| [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ✅ |
-| [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](#getconfluencepageancestors) | ✅ | ✅ | ✅ |
-| [getConfluencePageDescendants](#getconfluencepagedescendants) | ✅ | ✅ | ✅ |
-| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ |
-| [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ✅ |
+| [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ❌ | ✅ |
+| [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](#getconfluencepageancestors) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageDescendants](#getconfluencepagedescendants) | ✅ | ✅ | ✅ | ✅ |
+| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
+| [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ |
 | *Confluence Comments* |||
-| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ✅ |
-| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ✅ |
-| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ |
-| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ |
+| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ❌ | ✅ |
+| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ❌ | ✅ |
+| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Spaces & Discovery* |||
-| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ | ✅ |
-| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ | ✅ |
+| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
+| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
 | *User & Identity* |||
-| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ |
-| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ |
+| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
+| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
 | *Other* |||
-| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ | ✅ |
+| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
 | **GitHub** |||
 | *Commits & Repository* |||
-| [create_branch](#create_branch) | ❌ | ❌ | ✅ |
-| [create_repository](#create_repository) | ❌ | ❌ | ✅ |
-| [get_commit](#get_commit) | ✅ | ✅ | ✅ |
-| [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ |
-| [get_tag](#get_tag) | ✅ | ✅ | ✅ |
-| [list_branches](#list_branches) | ✅ | ✅ | ✅ |
-| [list_commits](#list_commits) | ✅ | ✅ | ✅ |
-| [list_tags](#list_tags) | ✅ | ✅ | ✅ |
-| [push_files](#push_files) | ❌ | ❌ | ✅ |
+| [create_branch](#create_branch) | ❌ | ❌ | ❌ | ✅ |
+| [create_repository](#create_repository) | ❌ | ❌ | ❌ | ✅ |
+| [get_commit](#get_commit) | ✅ | ✅ | ✅ | ✅ |
+| [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
+| [get_tag](#get_tag) | ✅ | ✅ | ✅ | ✅ |
+| [list_branches](#list_branches) | ✅ | ✅ | ✅ | ✅ |
+| [list_commits](#list_commits) | ✅ | ✅ | ✅ | ✅ |
+| [list_tags](#list_tags) | ✅ | ✅ | ✅ | ✅ |
+| [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests – Retrieval* |||
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ |
-| [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ |
-| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ |
-| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ |
-| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ | ✅ |
-| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ | ✅ |
-| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ | ✅ |
-| [list_pull_requests](#list_pull_requests) | ✅ | ✅ | ✅ |
+| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
+| [list_pull_requests](#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
 | *Pull Requests – Actions* |||
-| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ❌ | ✅ |
-| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ❌ | ✅ |
-| [create_pull_request](#create_pull_request) | ❌ | ❌ | ✅ |
-| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ✅ |
-| [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ✅ |
-| [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ✅ |
-| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ❌ | ✅ |
-| [update_pull_request](#update_pull_request) | ❌ | ❌ | ✅ |
-| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ✅ |
+| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
+| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
+| [create_pull_request](#create_pull_request) | ❌ | ✅ | ❌ | ✅ |
+| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
+| [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
+| [request_copilot_review](#request_copilot_review) | ❌ | ✅ | ✅ | ✅ |
+| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
+| [update_pull_request](#update_pull_request) | ❌ | ✅ | ❌ | ✅ |
+| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
 | *Sub-Issues* |||
-| [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ✅ |
+| [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
+| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ✅ |
 | *Gists* |||
-| [list_gists](#list_gists) | ✅ | ✅ | ✅ |
-| [update_gist](#update_gist) | ❌ | ❌ | ✅ |
+| [list_gists](#list_gists) | ✅ | ✅ | ✅ | ✅ |
+| [update_gist](#update_gist) | ❌ | ❌ | ❌ | ✅ |
 | *Notifications* |||
-| [list_notifications](#list_notifications) | ✅ | ✅ | ✅ |
+| [list_notifications](#list_notifications) | ✅ | ✅ | ✅ | ✅ |
 | *Code Scanning & Security* |||
-| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ | ✅ |
+| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ | ✅ | ✅ |
 | *Workflows (GitHub Actions)* |||
-| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ✅ |
-| [get_workflow_run_logs](#get_workflow_run_logs) | ✅ | ✅ | ✅ |
-| [get_workflow_run_usage](#get_workflow_run_usage) | ✅ | ✅ | ✅ |
-| [list_workflow_jobs](#list_workflow_jobs) | ✅ | ✅ | ✅ |
-| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ✅ |
-| [list_workflow_runs](#list_workflow_runs) | ✅ | ✅ | ✅ |
-| [list_workflows](#list_workflows) | ✅ | ✅ | ✅ |
-| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ✅ |
-| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ✅ |
+| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ✅ | ✅ |
+| [get_workflow_run_logs](#get_workflow_run_logs) | ✅ | ✅ | ✅ | ✅ |
+| [get_workflow_run_usage](#get_workflow_run_usage) | ✅ | ✅ | ✅ | ✅ |
+| [list_workflow_jobs](#list_workflow_jobs) | ✅ | ✅ | ✅ | ✅ |
+| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ✅ | ✅ |
+| [list_workflow_runs](#list_workflow_runs) | ✅ | ✅ | ✅ | ✅ |
+| [list_workflows](#list_workflows) | ✅ | ✅ | ✅ | ✅ |
+| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ✅ |
+| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ❌ | ✅ |
 | *Search & Discovery* |||
-| [search_code](#search_code) | ✅ | ✅ | ✅ |
-| [search_orgs](#search_orgs) | ✅ | ✅ | ✅ |
-| [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ |
-| [search_repositories](#search_repositories) | ✅ | ✅ | ✅ |
-| [search_users](#search_users) | ✅ | ✅ | ✅ |
+| [search_code](#search_code) | ✅ | ✅ | ✅ | ✅ |
+| [search_orgs](#search_orgs) | ✅ | ✅ | ✅ | ✅ |
+| [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
+| [search_repositories](#search_repositories) | ✅ | ✅ | ✅ | ✅ |
+| [search_users](#search_users) | ✅ | ✅ | ✅ | ✅ |
 | *User & Account* |||
-| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ | ✅ |
-
-| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ✅ |
-| [merge_pull_request](#merge_pull_request) | ❌ | ✅ |
-| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ |
-| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ✅ |
-| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ |
-| [request_copilot_review](#request_copilot_review) | ❌ | ✅ |
-| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ✅ |
-| [list_pull_requests](#list_pull_requests) | ✅ | ✅ |
-| [list_sub_issues](#list_sub_issues) | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ |
-| [list_gists](#list_gists) | ✅ | ✅ |
-| [update_gist](#update_gist) | ❌ | ✅ |
-| [list_notifications](#list_notifications) | ✅ | ✅ |
-| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ |
-| [search_code](#search_code) | ✅ | ✅ |
-| [search_pull_requests](#search_pull_requests) | ✅ | ✅ |
-| [search_repositories](#search_repositories) | ✅ | ✅ |
-| [search_users](#search_users) | ✅ | ✅ |
-| [search_orgs](#search_orgs) | ✅ | ✅ |
-| [get_workflow_run](#get_workflow_run) | ✅ | ✅ |
-| [get_workflow_run_logs](#get_workflow_run_logs) | ✅ | ✅ |
-| [get_workflow_run_usage](#get_workflow_run_usage) | ✅ | ✅ |
-| [list_workflow_runs](#list_workflow_runs) | ✅ | ✅ |
-| [list_workflows](#list_workflows) | ✅ | ✅ |
-| [list_workflow_jobs](#list_workflow_jobs) | ✅ | ✅ |
-| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ |
-| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ✅ |
-| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ✅ |
+## Notes
+- Review mode adds PR review + issue commenting over Ask, without broader planning artifact mutation.
+- Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
+- Code mode includes full repository mutation (branches, merges, execution) and remains only mode for merging and workflow reruns.
 
 ## Using `coding_guidelines.txt` Across Tools
 
