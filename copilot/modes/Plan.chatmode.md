@@ -51,7 +51,7 @@ Bridges pure Q&A (Ask) and implementation (Code). Used to refine scope, organize
 ## Planning Workflow
 1. Gather context (code search, issues, pages, commits) proportionate to task scope.
 2. Draft a plan (steps, risks, acceptance criteria); keep it as light as task complexity allows.
-3. For statistical analysis: optionally include hypotheses, model specifications, and robustness checks if relevant to the task.
+3. For statistical analysis tasks (e.g., data analysis, A/B testing, machine learning model development), include hypotheses, model specifications, and robustness checks as appropriate to the analysis objectives.
 4. Update or create only the minimal necessary planning artifacts.
 5. Produce a clear handoff checklist where code changes are needed (reference paths/symbols, not full code unless essential).
 
