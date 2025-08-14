@@ -32,7 +32,7 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ```
 ./
 ├── README.md               # Main documentation (2773 words, 417 lines)
-├── coding_guidelines.txt   # Empty file for shared custom instructions
+├── coding_guidelines.txt   # Shared custom instructions for coding standards saved to https://github.com/organizations/Guttmacher/settings/copilot/custom_instructions
 └── copilot/
     └── modes/
         ├── Ask.chatmode.md     # Read-only Q&A mode (55 lines)

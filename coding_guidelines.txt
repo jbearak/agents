@@ -1,32 +1,110 @@
-# Git Workflow & Branch Management Standards
+# Coding Standards
 
-## Branch Creation & Synchronization
+## CORE RULES:
+- Snake_case for variables/functions: `calculate_mean()`, `age_years`
+- UPPER_SNAKE_CASE for constants: `MAX_ITERATIONS`
+- Include units: `height_meters`, `time_seconds`, `age_years`
+- Clear names over abbreviations: `temperature` > `temp` (common abbreviations like `avg` are OK)
+- Loop variables: prefix with `my_`, except single letters such as `i`, `j`, `k`
+- Loop collections: when a list exists primarily for iteration, prefix with `the_`
+- Array dimensions: dots in R/JAGS/Stan (`matrix.ij`), underscores elsewhere (`matrix_ij`)
+- 4 spaces indentation (unless file uses 2 spaces), no tabs
+- Space after commas: `func(a, b, c)`
+- Space before parenthesis in control: `for (i in 1:10)`
+- Comments: R uses `#`, Stata uses `*` (full-line) or `//` (end-line)
+- 80 char line limit, 72 for comments
 
-### Pre-Work Synchronization (REQUIRED)
-Before any branch operations, always synchronize with remote repository:
-```bash
-git fetch
+## DEBUG: 
+Read errors, test incrementally, check types/scope/syntax, use minimal examples, print intermediate values
+
+## GOOD EXAMPLES:
+
+### R
+```r
+# Variable naming with units and clarity
+response_time_milliseconds <- measure_response(participant_id)
+avg_score <- mean(test_scores)
+MAX_PARTICIPANTS <- 100
+
+# Proper loop structure
+for (my_participant in the_participants) {
+    my_age_years <- calculate_age(my_participant$birth_date)
+    my_scores <- test_results[my_participant$id]
+}
+
+# Single letter exception
+for (i in 1:n_trials) {
+    my_reaction_times <- trials[[i]]$reaction_time_ms
+}
+
+# Matrix operations
+for (i in 1:n_rows) {
+    for (j in 1:n_cols) {
+        my_correlation_matrix <- cor(data[, i], data[, j])
+    }
+}
 ```
 
-### Creating New Branches
-**Always create from `origin/main`** (not local `main`) since `git fetch` doesn't update local main:
-```bash
-git fetch
-git checkout -b new-branch-name origin/main
+### Stata
+```stata
+* Variable creation with clear names
+gen household_income_dollars = wage_hourly * hours_worked_weekly * 52
+global POVERTY_THRESHOLD = 12880
+
+* Proper loop with my_ prefix
+foreach my_state of local the_states {
+    * Calculate statistics by state
+    summarize unemployment_rate if state == "`my_state'"
+}
+
+* Matrix operations and macro handling
+matrix exchange_rates_usd = J(5, 1, .)
+local the_countries "UK France Germany Japan Canada"
+local the_rates "1.28 1.08 1.09 0.0063 0.73"
+local i = 1
+foreach my_country of local the_countries {
+    matrix exchange_rates_usd[`i', 1] = real(word("`the_rates'", `i'))
+    local i = `i' + 1
+}
 ```
 
-### Working on Existing Branches
-When checking out existing branches, always pull latest changes:
-```bash
-git fetch
-git checkout existing-branch-name
-git pull origin existing-branch-name
+## BAD EXAMPLES:
+
+### R
+```r
+# WRONG: wrong case, missing units
+avgAge <- mean(ages)  # Should be: avg_age <- mean(ages_years)
+for(participant in participants)  # Should be: for (my_participant in the_participants)
+
+# WRONG: missing units, unclear naming
+distance <- 5.2  # Should be: distance_kilometers <- 5.2
+
+# WRONG: missing my_ prefix and missing space before parenthesis
+for(name in names(vars)) { # Should be: for (my_name in names(the_vars)) {
+    var <- vars[name] # Should be: my_var <- the_vars[my_name]
+}
 ```
 
-### Base Branch Default
-- Default base branch is `main` unless explicitly specified otherwise
-- Always use `origin/{base-branch}` as the source for new branches to ensure latest remote state
-- Replace `{base-branch}` with the actual base branch name (typically `main`)
+### Stata
+```stata
+* WRONG: missing units
+gen inc = wage * hours  // Should be: income_dollars (or inc_dollars)
+
+* WRONG: camelCase
+forEach state in stateList  // Should be: foreach my_state of local the_states
+
+* WRONG: unquoted macro lists and invalid increment
+local rates 1.28 1.08 1.09  // Should be: local the_rates "1.28 1.08 1.09"
+local ++i  // Should be: local i = `i' + 1
+
+* WRONG: missing real() for type conversion and missing space after comma
+matrix[`i',1] = word("`rates'", `i')  // Should be: exchange_rates_usd[`i', 1] = real(word("`the_rates'", `i'))
+```
+
+## TEST CODE:
+- Stata: `stata -b do file.do` (batch mode), `stata -e "command"` (single command)
+- R: `Rscript file.R` (script), `R -e "command"` (single), `R` (interactive)
+- Python: `python file.py`
 
 ## Branch Naming Conventions
 
@@ -42,38 +120,3 @@ Use conventional prefixes for non-Jira work:
 - `bug/` - Bug fixes  
 - `hotfix/` - Critical production fixes
 - `docs/` - Documentation updates
-
-## Workspace Verification
-
-### Before Starting Work
-Always verify you're on the intended branch and synchronized:
-```bash
-git status                    # Check current branch and working tree
-git log --oneline -5         # Verify recent commits match expectations
-git branch -vv               # Check tracking relationship with remote
-```
-
-### Multi-Computer Development
-Account for work done on other computers/environments:
-- Never assume local repository is up-to-date
-- Always `git fetch` before creating or switching branches
-- Pull changes even if you "recently pulled" (might have been on wrong branch)
-
-## Git Workflow Best Practices
-
-### Local vs Remote Operations Priority
-1. **Prefer local git commands** over GitHub MCP/API for branch operations
-2. Use GitHub tools only for PR creation, review, and merge operations
-3. Create branches locally to ensure workspace synchronization
-
-### Workspace Synchronization Checks
-Before making changes, verify:
-- Current branch matches intended working branch
-- Working tree is clean (`git status`)
-- Local branch is up-to-date with remote tracking branch
-- No uncommitted changes that could interfere
-
-### Error Prevention
-- Never commit directly to `main` (except for hotfixes in small repositories)
-- Always create feature branches with descriptive names
-- Verify branch before pushing commits
