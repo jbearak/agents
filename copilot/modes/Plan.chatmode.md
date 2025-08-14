@@ -15,6 +15,8 @@ tools: [
 ]
 ---
 
+Contract: This mode MUST NOT invoke any tool that mutates files, executes commands, or alters remote systems; strictly read-only analysis and retrieval.
+
 # Custom Agent Instructions
 
 ## Tool Reference
