@@ -55,11 +55,14 @@ Use the default Agent mode behavior as baseline, but with these modifications:
 - Check for related tests, documentation, and configuration files.
 - Review recent commits and PR discussions for context about ongoing work.
 - When a plan is provided, verify referenced symbols & paths; flag mismatches early.
+- For statistical/analytical work: ensure reproducibility through seed control and environment documentation when relevant.
 
 ## Change Management
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
 - Document any breaking changes or migration steps needed
+- Follow git branching: avoid committing directly to main; create feature branches with descriptive names (except for hotfixes, small repositories, or when explicitly required)
+- Use commit messages that reference the purpose and any relevant issue/dataset context
 
 ## Security Considerations
 - Validate user inputs in new code
