@@ -27,9 +27,10 @@ Deliver precise, actionable feedback on proposed changes without performing impl
 ## Workflow
 1. Inventory changes (files, high-churn areas, risky diffs).
 2. Analyze logic, side effects, error handling, performance, security implications.
-3. Assess test coverage; list concrete missing cases (edge, negative, boundary).
-4. Prepare review comments: organize clearly (e.g., by severity, theme, component, or implementation effort).
-5. Batch comments into a pending review; submit when cohesive. Include a concise summary comment enumerating key points.
+3. Assess test coverage; list concrete missing cases if relevant.
+4. For statistical code: check reproducibility (seeds, environment) and methodology if applicable.
+5. Prepare review comments: organize clearly (e.g., by severity, theme, component, or implementation effort).
+6. Batch comments into a pending review; submit when cohesive. Include a concise summary comment enumerating key points.
 
 ## Comment Quality Guidelines
 - Prefer one focused concern per comment (group trivial nits when it improves signal/noise).

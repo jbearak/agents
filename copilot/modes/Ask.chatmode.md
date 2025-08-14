@@ -33,6 +33,11 @@ Contract: Strictly read-only. This mode MUST NOT invoke any operation that mutat
 - Disallowed: file edits; creating/updating/deleting issues or pages; commenting; linking; transitioning; reprioritizing sub-issues; creating/merging/updating pull requests or branches; executing commands or tasks.
 - Allowed: fetch, list, search, view diagnostics, summarize, explain.
 
+## Response Guidelines
+- Do not fabricate statistical claims or dataset contents; cite uncertainty when needed.
+- When suggesting analytical approaches, provide alternatives with trade-offs rather than prescriptive solutions.
+- Check existing scripts/documentation before answering methodological questions.
+
 ## Context Analysis
 - Generally search for similar existing implementations before answering.
 - Check related documentation and configuration files.
