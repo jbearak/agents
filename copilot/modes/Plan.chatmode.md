@@ -55,45 +55,6 @@ Bridges pure Q&A (Ask) and implementation (Code). Used to refine scope, organize
 4. Update or create only the minimal necessary planning artifacts.
 5. Produce a clear handoff checklist where code changes are needed (reference paths/symbols, not full code unless essential).
 
-## Branch Management & Code Handoffs
-
-### When Recommending Local vs Remote Operations
-- **Recommend local git commands** for all branch creation and switching operations
-- **Recommend GitHub tools** only for PR creation, review, and merge operations
-- Always specify git synchronization requirements in handoff instructions
-
-### Git Workflow in Handoff Instructions
-When code changes require branch operations, include these steps in handoff:
-
-1. **Pre-work synchronization** (mandatory):
-   ```bash
-   git fetch
-   git status  # Verify current state
-   ```
-
-2. **For new branches**:
-   ```bash
-   git checkout -b {BRANCH-NAME} origin/main
-   ```
-
-3. **For existing branches**:
-   ```bash
-   git checkout {BRANCH-NAME}
-   git pull origin {BRANCH-NAME}
-   ```
-
-### Branch Naming in Recommendations
-- **With Jira integration**: Suggest format `{JIRA-KEY}-{descriptive-name}`
-- **Without Jira**: Suggest conventional prefixes (`feature/`, `bug/`, `hotfix/`, `docs/`)
-- Reference `coding_guidelines.txt` for detailed naming conventions
-
-### Handoff Checklist Template
-When deferring to Code mode, include:
-- [ ] Git synchronization steps (`git fetch`)
-- [ ] Specific branch name following naming conventions
-- [ ] Branch creation/checkout commands with proper origin reference
-- [ ] Workspace verification steps before starting work
-
 ## Communication
 - Distinguish between (a) performed artifact updates vs (b) proposed code edits (deferred).
 - State assumptions explicitly; keep responses succinct and actionable.

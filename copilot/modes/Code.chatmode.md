@@ -67,12 +67,13 @@ Before any branch operations, always synchronize with remote repository:
 
 ### Branch Creation Priority
 1. **Prefer local git commands over GitHub MCP tools** for branch operations
-2. **Always create from `origin/main`** (not local `main`):
+2. **Always create from `origin/{base-branch}`** (not local base branch):
    ```bash
    git fetch
-   git checkout -b branch-name origin/main
+   git checkout -b branch-name origin/{base-branch}
    ```
-3. Use GitHub tools only for PR creation, review, and merge operations
+   (Replace `{base-branch}` with actual base branch, typically `main`)
+3. Use GitHub tools primarily for PR creation, review, and merge operations
 
 ### Working on Existing Branches
 When checking out existing branches, always pull latest changes:
@@ -85,7 +86,7 @@ git pull origin existing-branch-name
 ### Branch Naming (Follow coding_guidelines.txt)
 - **Jira integration**: Use format `{JIRA-KEY}-{descriptive-name}` (e.g., `AWW-123-fix-auth`)
 - **Alternative**: Use conventional prefixes (`feature/`, `bug/`, `hotfix/`, `docs/`)
-- Base branch is `main` unless explicitly specified otherwise
+- Default base branch is `main` unless explicitly specified otherwise
 
 ### Workspace Verification
 Before making changes, verify:

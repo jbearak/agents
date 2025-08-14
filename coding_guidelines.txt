@@ -25,7 +25,8 @@ git pull origin existing-branch-name
 
 ### Base Branch Default
 - Default base branch is `main` unless explicitly specified otherwise
-- Always use `origin/main` as the source for new branches to ensure latest remote state
+- Always use `origin/{base-branch}` as the source for new branches to ensure latest remote state
+- Replace `{base-branch}` with the actual base branch name (typically `main`)
 
 ## Branch Naming Conventions
 
@@ -33,7 +34,7 @@ git pull origin existing-branch-name
 Begin branch names with Jira issue keys to enable automatic linking:
 - Format: `{JIRA-KEY}-{descriptive-name}`
 - Example: `AWW-123-fix-authentication`
-- Example: `PWF-456-add-user-dashboard`
+- Example: `ACP-456-add-user-dashboard`
 
 ### Alternative Naming (when Jira not applicable)
 Use conventional prefixes for non-Jira work:
@@ -76,4 +77,3 @@ Before making changes, verify:
 - Never commit directly to `main` (except for hotfixes in small repositories)
 - Always create feature branches with descriptive names
 - Verify branch before pushing commits
-- Use `git status` frequently to maintain awareness of current state
