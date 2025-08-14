@@ -89,8 +89,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
 | [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ |
 | *Confluence Comments* |||
-| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ❌ | ✅ |
-| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ❌ | ✅ |
+| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ✅ | ✅ |
+| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ✅ | ✅ |
 | [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
 | [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Spaces & Discovery* |||
