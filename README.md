@@ -18,12 +18,17 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ## Modes Overview
 
-| Mode | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary |
-|------|---------|-----------------------------|--------------------------------------------------|------------------|---------------|-----------------------------|-----------------------|------|------------------|
-| Ask    | Q&A, exploration, explain code, gather context | No  | No (read-only viewing only) | No | No | No | No | No | `copilot/modes/Ask.chatmode.md` | Strict read-only (no mutations anywhere) |
-| Plan   | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
-| Review | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
-| Code   | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
+| Feature / Capability | Ask | Plan | Review | Code |
+|----------------------|-----|------|--------|------|
+| Purpose | Q&A, exploration, explain code, gather context | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | Provide review feedback on PRs / issues | Implement changes, run tests/commands |
+| Local File / Repo Mutation | No | No | No | Yes |
+| Remote Artifact Mutation (Issues/Pages/Comments) | No (read-only viewing only) | Yes (issues/pages) | No (except issue comments) | Yes |
+| Issue Commenting | No | Yes | Yes (issue comments only) | Yes |
+| PR Create/Edit | No | Yes (no branch create/update) | No | Yes |
+| PR Review (comments / batch) | No | Yes | Yes | Yes |
+| PR Merge / Branch Ops | No | No | No | Yes |
+| File | `copilot/modes/Ask.chatmode.md` | `copilot/modes/Plan.chatmode.md` | `copilot/modes/Review.chatmode.md` | `copilot/modes/Code.chatmode.md` |
+| Contract Summary | Strict read-only (no mutations anywhere) | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | PR review + issue comments only; no other mutations | Full implementation, execution, & PR lifecycle |
 
 Privilege gradient: Ask < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
@@ -52,8 +57,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [fetch](#fetch) | ✅ | ✅ | ✅ | ✅ |
 | [githubRepo](#githubrepo) | ✅ | ✅ | ✅ | ✅ |
 | *Editor & Extensions* |||
-| [extensions](#extensions) | ✅ | ✅ | ✅ | ✅ |
-| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ❌ | ✅ |
+| [extensions](#extensions) | ❌ | ❌ | ❌ | ❌ |
+| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
 | *Editing & Automation* |||
 | [editFiles](#editfiles) | ❌ | ❌ | ❌ | ✅ |
 | [runCommands](#runcommands) | ❌ | ❌ | ❌ | ✅ |

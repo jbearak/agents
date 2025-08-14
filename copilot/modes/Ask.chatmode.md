@@ -3,7 +3,7 @@ description: 'Ask Mode'
 tools: [
     'codebase', 'usages', 'problems', 'changes', 'testFailure',
     'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo',
-    'extensions', 'search', 'atlassian', 'Context7', 'get_commit', 'get_file_contents',
+    'search', 'atlassian', 'Context7', 'get_commit', 'get_file_contents',
     'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
     'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status',
     'get_tag', 'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage',
