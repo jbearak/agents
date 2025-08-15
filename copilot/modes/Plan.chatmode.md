@@ -11,7 +11,7 @@ tools: [
     'create_pull_request', 'update_pull_request', 'create_pending_pull_request_review',
     'add_comment_to_pending_review', 'submit_pending_pull_request_review',
     'list_branches', 'list_commits', 'list_pull_requests',
-    'list_notifications', 'list_sub_issues',
+    'list_notifications', 'list_sub_issues', 'reprioritize_sub_issue',
     'get_workflow_run', 'list_workflow_run_artifacts',
     'search_code', 'search_pull_requests', 'search_repositories',
     'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'getJiraIssue',

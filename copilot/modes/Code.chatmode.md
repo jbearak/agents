@@ -99,7 +99,7 @@ Before making changes, verify:
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
 - Document any breaking changes or migration steps needed
-- Follow git branching: avoid committing directly to main; create feature branches with descriptive names (except for hotfixes, small repositories, or when explicitly required)
+- **MANDATORY: Follow git branching** - ALWAYS create feature branches with descriptive names and avoid committing directly to main (no exceptions for documentation repositories)
 - Use commit messages that reference the purpose and any relevant issue/dataset context
 
 ## Security Considerations

@@ -133,7 +133,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
 | *Sub-Issues* |||
 | [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ❌ | ❌ | ❌ |
+| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ❌ |
 | *Gists* |||
 | [list_gists](#list_gists) | ❌ | ❌ | ❌ | ❌ |
 | [update_gist](#update_gist) | ❌ | ❌ | ❌ | ❌ |
