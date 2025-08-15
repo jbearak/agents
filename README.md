@@ -2,6 +2,24 @@
 
 Centralized documentation for Copilot modes, tool availability, and cross-tool custom instruction usage.
 
+## Table of Contents
+
+- [Repository Structure](#repository-structure)
+- [Modes Overview](#modes-overview)
+- [Tool Availability Matrix](#tool-availability-matrix)
+- [Notes](#notes)
+- [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
+	- [GitHub Copilot (Organization-Level)](#github-copilot-organization-level)
+	- [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
+	- [Warp (User-Level)](#warp-user-level)
+	- [Q (Repository-Level)](#q-repository-level)
+	- [Claude Code (Repository-Level)](#claude-code-repository-level)
+- [Tool Definitions](#tool-definitions)
+	- [Built-In (VS Code / Core)](#built-in-vs-code--core)
+	- [Context7](#context7)
+	- [Atlassian](#atlassian)
+	- [GitHub](#github)
+
 ## Repository Structure
 
 ```
