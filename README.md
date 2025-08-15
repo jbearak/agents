@@ -53,6 +53,24 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
+### Installation (VS Code)
+
+1. Choose **Configure Modes...** from the Mode menu in the Chat pane
+2. From the "Select the chat mode file to open" menu, press **Create new custom mode chat file...**
+3. From the "Select a location to create the mode file in..." menu, press **User Data Folder**
+4. From the "Enter the name of the custom chat mode file..." menu, type the mode name as you want it to appear in your modes menu
+5. Paste the file
+
+Repeat these steps for:
+- [Code](copilot/modes/Code.chatmode.md)
+- [Plan](copilot/modes/Plan.chatmode.md)
+- [Question](copilot/modes/Question.chatmode.md)
+- [Review](copilot/modes/Review.chatmode.md)
+
+You can also download the files directly to the folder:
+- Windows: C:\Users\`username`\AppData\Roaming\Code\User\prompts\
+- Mac: ~/Library/Application Support/Code/User/prompts/Plan.chatmode.md
+
 ## MCP Servers Overview
 
 ### Installation (VS Code)
