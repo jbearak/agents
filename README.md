@@ -6,24 +6,24 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes Overview](#modes-overview)
-  - [Installation (VS Code)](#installation-vs-code)
+- [Add Modes to VS Code](#add-modes-to-vs-code)
 - [MCP Servers Overview](#mcp-servers-overview)
-  - [Installation (VS Code)](#installation-vs-code-1)
-  - [Installation (Claude.ai)](#installation-claudeai)
+- [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
+- [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
-- [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
-	- [GitHub Copilot (Organization-Level)](#github-copilot-organization-level)
-	- [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
-	- [Warp (User-Level)](#warp-user-level)
-	- [Warp (Repository-Level)](#warp-repository-level)
-	- [Q (Repository-Level)](#q-repository-level)
-	- [Claude Code (Repository-Level)](#claude-code-repository-level)
+- [Using `coding_guidelines.txt` Across Tools](#using-coding-guidelinestxt-across-tools)
+  - [GitHub Copilot (Organization-Level)](#github-copilot-organization-level)
+  - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
+  - [Warp (User-Level)](#warp-user-level)
+  - [Warp (Repository-Level)](#warp-repository-level)
+  - [Q (Repository-Level)](#q-repository-level)
+  - [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [Tool Definitions](#tool-definitions)
-	- [Built-In (VS Code / Core)](#built-in-vs-code--core)
-	- [Context7](#context7)
-	- [Atlassian](#atlassian)
-	- [GitHub](#github)
+  - [Built-In (VS Code / Core)](#built-in-vs-code--core)
+  - [Context7](#context7)
+  - [Atlassian](#atlassian)
+  - [GitHub](#github)
 
 ## Repository Structure
 
@@ -41,22 +41,16 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ## Modes Overview
 
-| Feature / Capability | Question | Plan | Review | Code |
-|----------------------|-----|------|--------|------|
-| Purpose | Q&A, exploration, explain code, gather context | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | Provide review feedback on PRs / issues | Implement changes, run tests/commands |
-| Local File / Repo Mutation | No | No | No | Yes |
-| Remote Artifact Mutation (Issues/Pages/Comments) | No (read-only viewing only) | Yes (issues/pages) | No (except issue comments) | Yes |
-| Issue Commenting | No | Yes | Yes (issue comments only) | Yes |
-| PR Create/Edit | No | Yes (no branch create/update) | No | Yes |
-| PR Review (comments / batch) | No | Yes | Yes | Yes |
-| PR Merge / Branch Ops | No | No | No | Yes |
-| File | `copilot/modes/Question.chatmode.md` | `copilot/modes/Plan.chatmode.md` | `copilot/modes/Review.chatmode.md` | `copilot/modes/Code.chatmode.md` |
-| Contract Summary | Strict read-only (no mutations anywhere) | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | PR review + issue comments only; no other mutations | Full implementation, execution, & PR lifecycle |
-| Default Model | GPT-4.1 | Sonnet 4 | GPT-5 | Sonnet 4 |
+| Mode | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary | Default Model |
+|------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|--------------|
+| Question | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/Question.chatmode.md` | Strict read-only (no mutations anywhere) | GPT-4.1 |
+| Plan | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | Sonnet 4 |
+| Review | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations | GPT-5 |
+| Code | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle | Sonnet 4 |
 
 Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
-### Installation (VS Code)
+### Add Modes to VS Code
 
 1. Choose **Configure Modes...** from the Mode menu in the Chat pane
 2. From the "Select the chat mode file to open" menu, press **Create new custom mode chat file...**
@@ -76,7 +70,7 @@ You can also download the files directly to the folder:
 
 ## MCP Servers Overview
 
-### Installation (VS Code)
+### Add MCP Servers to VS Code
 
 Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp). From this list, press:
 - [Install GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D)
@@ -111,7 +105,7 @@ If you prefer to install the MCP servers manually:
 }
 ```
 
-### Installation (Claude.ai)
+### Add MCP Servers to Claude.ai
 
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
 2. Press each the **Connect** button (next to Atlassian and GitHub)
@@ -519,6 +513,14 @@ Search pull requests across repositories.
 Search for repositories by criteria.
 ##### search_users
 Search for GitHub users.
+
+#### User & Account
+##### get_me
+Get details for the authenticated GitHub user.
+
+#### File Operations
+##### create_or_update_file
+Create or update a single file in a repository (Code mode only).
 
 ## Notes
 - Some tools appear in multiple conceptual groups; each tool has a dedicated anchor for direct linking.
