@@ -29,7 +29,7 @@ Contract: This mode MAY mutate remote planning artifacts (Jira issues, Confluenc
 # Custom Agent Instructions
 
 ## Purpose & Scope
-Bridges pure Q&A (Ask) and implementation (Code). Used to refine scope, organize work, and maintain planning artifacts without touching source code or repository state.
+Bridges pure Q&A (Question) and implementation (Code). Used to refine scope, organize work, and maintain planning artifacts without touching source code or repository state.
 
 ## Allowed (Remote Planning Domain Only)
 - Create, edit, comment on, transition, and link Jira or GitHub issues.

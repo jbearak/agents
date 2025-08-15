@@ -10,7 +10,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ├── README.md               # This documentation (modes, matrix, tool definitions)
 └── copilot/
 	└── modes/
-		├── Ask.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
+		├── Question.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
 		├── Plan.chatmode.md    # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
 		├── Review.chatmode.md  # PR & issue review feedback (comments only)
 		└── Code.chatmode.md    # Full coding, execution, PR + branch ops
@@ -18,7 +18,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ## Modes Overview
 
-| Feature / Capability | Ask | Plan | Review | Code |
+| Feature / Capability | Question | Plan | Review | Code |
 |----------------------|-----|------|--------|------|
 | Purpose | Q&A, exploration, explain code, gather context | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | Provide review feedback on PRs / issues | Implement changes, run tests/commands |
 | Local File / Repo Mutation | No | No | No | Yes |
@@ -27,17 +27,17 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | PR Create/Edit | No | Yes (no branch create/update) | No | Yes |
 | PR Review (comments / batch) | No | Yes | Yes | Yes |
 | PR Merge / Branch Ops | No | No | No | Yes |
-| File | `copilot/modes/Ask.chatmode.md` | `copilot/modes/Plan.chatmode.md` | `copilot/modes/Review.chatmode.md` | `copilot/modes/Code.chatmode.md` |
+| File | `copilot/modes/? Question.chatmode.md` | `copilot/modes/📚 Plan.chatmode.md` | `copilot/modes/📚 Review.chatmode.md` | `copilot/modes/🚀 Code.chatmode.md` |
 | Contract Summary | Strict read-only (no mutations anywhere) | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | PR review + issue comments only; no other mutations | Full implementation, execution, & PR lifecycle |
 | Default Model | GPT-4.1 | Sonnet 4 | GPT-5 | Sonnet 4 |
 
-Privilege gradient: Ask < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
 ## Tool Availability Matrix
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | Ask | Plan | Review | Code |
+| Tool | Question | Plan | Review | Code |
 |------|-----|------|--------|------|
 | **Built-In (VS Code / Core)** |||
 | *Code & Project Navigation* |||
@@ -163,7 +163,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *File Operations* |||
 | [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
 ## Notes
-- Review mode adds PR review + issue commenting over Ask, without broader planning artifact mutation.
+- Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
 - Code mode includes full repository mutation (branches, merges, execution) and remains only mode for merging and workflow reruns.
 
@@ -417,5 +417,5 @@ Search for GitHub users.
 
 ## Notes
 - Some tools appear in multiple conceptual groups; each tool has a dedicated anchor for direct linking.
-- Ask mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
+- Question mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
 - This document is the canonical source for tool availability; update table and definitions together.

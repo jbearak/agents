@@ -1,5 +1,5 @@
 ---
-description: 'Ask Mode'
+description: 'Question Mode'
 tools: [
     'codebase', 'usages', 'problems', 'changes', 'testFailure',
     'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
