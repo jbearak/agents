@@ -6,6 +6,11 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes Overview](#modes-overview)
+	- [Installation (VS Code)](#installation-vs-code-1)
+- [MCP Servers Overview](#mcp-servers-overview)
+	- [Installation (VS Code)](#installation-vs-code)
+	- [Installation (Claude.ai)](#installation-claudeai)
+	- [Installation (Claude Desktop)](#installation-claude-desktop)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
 - [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
