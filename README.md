@@ -119,7 +119,7 @@ Note: This adds the ability to add files from GitHub, but does not add the GitHu
 1. From [Claude Desktop](https://claude.ai/download), open Settings > Developer
 2. Press **Edit Config**, which opens a (Windows) File Explorer or (Mac) Finder window to:
 - Windows: C:\Users\`username`\AppData\Roaming\Claude
-- Mac: ADLDFADAF
+- Mac: ~/Library/Application Support/Claude
 3. Open **claude_desktop_config.json**
 4. Paste:
 
