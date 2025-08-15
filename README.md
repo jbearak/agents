@@ -110,8 +110,6 @@ If you prefer to install the MCP servers manually:
 }
 ```
 
-**Note:** After making changes to the MCP configuration, restart VS Code for the new servers to take effect.
-
 ### Installation (Claude.ai)
 
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
