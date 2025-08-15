@@ -6,9 +6,9 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes Overview](#modes-overview)
-  - [Installation (VS Code)](#installation-vs-code-1)
-- [MCP Servers Overview](#mcp-servers-overview)
   - [Installation (VS Code)](#installation-vs-code)
+- [MCP Servers Overview](#mcp-servers-overview)
+  - [Installation (VS Code)](#installation-vs-code-1)
   - [Installation (Claude.ai)](#installation-claudeai)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
@@ -16,6 +16,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 	- [GitHub Copilot (Organization-Level)](#github-copilot-organization-level)
 	- [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
 	- [Warp (User-Level)](#warp-user-level)
+	- [Warp (Repository-Level)](#warp-repository-level)
 	- [Q (Repository-Level)](#q-repository-level)
 	- [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [Tool Definitions](#tool-definitions)
@@ -264,15 +265,31 @@ Legend: ✅ available, ❌ unavailable in that mode.
 
 ### Warp (User-Level)
 1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
-2. Paste `coding_guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the new rule.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
+
+### Warp (Repository-Level)
+1. Create `WARP.md`
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the file.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Q (Repository-Level)
 1. Create `.amazonq/rules/coding_guidelines.txt` in the repository root
-2. Paste `coding_guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the file.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
-2. Paste `coding_guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the file.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ## Tool Definitions
 
