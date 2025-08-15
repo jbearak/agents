@@ -6,6 +6,10 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes Overview](#modes-overview)
+  - [Installation (VS Code)](#installation-vs-code-1)
+- [MCP Servers Overview](#mcp-servers-overview)
+  - [Installation (VS Code)](#installation-vs-code)
+  - [Installation (Claude.ai)](#installation-claudeai)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
 - [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
@@ -45,11 +49,72 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | PR Create/Edit | No | Yes (no branch create/update) | No | Yes |
 | PR Review (comments / batch) | No | Yes | Yes | Yes |
 | PR Merge / Branch Ops | No | No | No | Yes |
-| File | `copilot/modes/? Question.chatmode.md` | `copilot/modes/📚 Plan.chatmode.md` | `copilot/modes/📚 Review.chatmode.md` | `copilot/modes/🚀 Code.chatmode.md` |
+| File | `copilot/modes/Question.chatmode.md` | `copilot/modes/Plan.chatmode.md` | `copilot/modes/Review.chatmode.md` | `copilot/modes/Code.chatmode.md` |
 | Contract Summary | Strict read-only (no mutations anywhere) | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | PR review + issue comments only; no other mutations | Full implementation, execution, & PR lifecycle |
 | Default Model | GPT-4.1 | Sonnet 4 | GPT-5 | Sonnet 4 |
 
 Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+
+### Installation (VS Code)
+
+1. Choose **Configure Modes...** from the Mode menu in the Chat pane
+2. From the "Select the chat mode file to open" menu, press **Create new custom mode chat file...**
+3. From the "Select a location to create the mode file in..." menu, press **User Data Folder**
+4. From the "Enter the name of the custom chat mode file..." menu, type the mode name as you want it to appear in your modes menu
+5. Paste the file
+
+Repeat these steps for:
+- [Code](copilot/modes/Code.chatmode.md)
+- [Plan](copilot/modes/Plan.chatmode.md)
+- [Question](copilot/modes/Question.chatmode.md)
+- [Review](copilot/modes/Review.chatmode.md)
+
+You can also download the files directly to the folder:
+- Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
+- Mac: ~/Library/Application Support/Code/User/prompts/
+
+## MCP Servers Overview
+
+### Installation (VS Code)
+
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp). From this list, press:
+- [Install GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D)
+- [Install Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D)
+- [Install Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
+
+Each of these links opens a VS Code window. For each of these MCP servers, press the **Install** button in that window. For Atlassian and GitHub, follow the steps to authorize Copilot to connect with them.
+
+If you prefer to install the MCP servers manually:
+
+1. From the Command Palette, choose **MCP: Open User Configuration**
+2. Paste:
+
+```json
+{
+  "servers": {
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v1/sse",
+      "type": "http"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "type": "http"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"]
+    }
+  }
+}
+```
+
+### Installation (Claude.ai)
+
+1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
+2. Press each the **Connect** button (next to Atlassian and GitHub)
+Note: This adds the ability to add files from GitHub, but does not add the GitHub MCP Server.
 
 ## Tool Availability Matrix
 
