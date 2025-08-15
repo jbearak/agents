@@ -96,10 +96,11 @@ Before making changes, verify:
 - No uncommitted changes that could interfere
 
 ## Change Management
+- **Before editing files**: If currently on main branch, strongly consider whether changes warrant creating a feature branch first using the git workflow above
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
 - Document any breaking changes or migration steps needed
-- **MANDATORY: Follow git branching** - ALWAYS create feature branches with descriptive names and avoid committing directly to main (no exceptions for documentation repositories)
+- Follow git branching: avoid committing directly to main; create feature branches with descriptive names (except when explicitly required)
 - Use commit messages that reference the purpose and any relevant issue/dataset context
 
 ## Security Considerations
