@@ -1,4 +1,3 @@
-```chatmode
 ---
 description: 'Plan Mode'
 tools: [

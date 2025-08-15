@@ -1,4 +1,3 @@
-```chatmode
 ---
 description: 'Review Mode'
 tools: [
