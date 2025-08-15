@@ -47,7 +47,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | PR Create/Edit | No | Yes (no branch create/update) | No | Yes |
 | PR Review (comments / batch) | No | Yes | Yes | Yes |
 | PR Merge / Branch Ops | No | No | No | Yes |
-| File | `copilot/modes/? Question.chatmode.md` | `copilot/modes/📚 Plan.chatmode.md` | `copilot/modes/📚 Review.chatmode.md` | `copilot/modes/🚀 Code.chatmode.md` |
+| File | `copilot/modes/Question.chatmode.md` | `copilot/modes/Plan.chatmode.md` | `copilot/modes/Review.chatmode.md` | `copilot/modes/Code.chatmode.md` |
 | Contract Summary | Strict read-only (no mutations anywhere) | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | PR review + issue comments only; no other mutations | Full implementation, execution, & PR lifecycle |
 | Default Model | GPT-4.1 | Sonnet 4 | GPT-5 | Sonnet 4 |
 
