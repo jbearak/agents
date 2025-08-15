@@ -43,24 +43,13 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 
 ### Key File Contents and Patterns
 
-**Mode File Formats:** There are two format variations:
-1. Standard YAML frontmatter (Ask.chatmode.md, Code.chatmode.md):
+**Mode File Format:**
+Standard YAML frontmatter:
    ```markdown
    ---
    description: 'Mode Name'
    tools: [...]
    ---
-   Contract: ...
-   ```
-
-2. Code-block wrapped (Plan.chatmode.md, Review.chatmode.md):
-   ```markdown
-   ```chatmode
-   ---
-   description: 'Mode Name'  
-   tools: [...]
-   ---
-   ```
    Contract: ...
    ```
 
