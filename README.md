@@ -6,10 +6,10 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes Overview](#modes-overview)
-	- [Installation (VS Code)](#installation-vs-code-1)
+  - [Installation (VS Code)](#installation-vs-code-1)
 - [MCP Servers Overview](#mcp-servers-overview)
-	- [Installation (VS Code)](#installation-vs-code)
-	- [Installation (Claude.ai)](#installation-claudeai)
+  - [Installation (VS Code)](#installation-vs-code)
+  - [Installation (Claude.ai)](#installation-claudeai)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
 - [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
@@ -70,8 +70,8 @@ Repeat these steps for:
 - [Review](copilot/modes/Review.chatmode.md)
 
 You can also download the files directly to the folder:
-- Windows: C:\Users\`username`\AppData\Roaming\Code\User\prompts\
-- Mac: ~/Library/Application Support/Code/User/prompts/Plan.chatmode.md
+- Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
+- Mac: ~/Library/Application Support/Code/User/prompts/
 
 ## MCP Servers Overview
 
@@ -109,6 +109,8 @@ If you prefer to install the MCP servers manually:
   }
 }
 ```
+
+**Note:** After making changes to the MCP configuration, restart VS Code for the new servers to take effect.
 
 ### Installation (Claude.ai)
 
