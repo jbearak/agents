@@ -1,5 +1,3 @@
-/Users/jmb/Library/Application Support/Code/User/mcp.json
-
 # Modes & Tools Reference
 
 Centralized documentation for Copilot modes, tool availability, and cross-tool custom instruction usage.
@@ -107,8 +105,6 @@ If you prefer to install the MCP servers manually:
   }
 }
 ```
-
-### Installation (Claude.ai and Claude Desktop)
 
 ### Installation (Claude.ai)
 
