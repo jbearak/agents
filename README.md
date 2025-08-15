@@ -261,6 +261,8 @@ Retrieve context for the currently focused pull request.
 
 ### Context7
 
+The [Context7 MCP Server](https://github.com/upstash/context7) retrieves up-to-date documentation and code examples for various programming languages and frameworks, from community-contributed sources (e.g., [ggplot2](https://context7.com/tidyverse/ggplot2)).
+
 #### resolve-library-id
 Resolve a package/library name to a Context7-compatible identifier.
 
@@ -268,6 +270,8 @@ Resolve a package/library name to a Context7-compatible identifier.
 Retrieve up-to-date documentation snippets for a resolved library ID.
 
 ### Atlassian
+
+The [Atlassian Remote MCP Server](https://support.atlassian.com/rovo/docs/getting-started-with-the-atlassian-remote-mcp-server/) provides lets an agent read/write from/to Jira and Confluence (but not Bitbucket).
 
 #### Jira Issues & Operations
 ##### addCommentToJiraIssue
@@ -328,6 +332,8 @@ Lookup account IDs by user name/email.
 Discover accessible Atlassian cloud resources and obtain cloud IDs.
 
 ### GitHub
+
+The [GitHub MCP Server](https://github.com/github/github-mcp-server) lets an agent read/write from/to GitHub.
 
 #### Commits & Repository
 ##### create_branch
