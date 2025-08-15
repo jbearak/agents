@@ -1,3 +1,5 @@
+/Users/jmb/Library/Application Support/Code/User/mcp.json
+
 # Modes & Tools Reference
 
 Centralized documentation for Copilot modes, tool availability, and cross-tool custom instruction usage.
@@ -50,6 +52,43 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | Default Model | GPT-4.1 | Sonnet 4 | GPT-5 | Sonnet 4 |
 
 Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+
+## MCP Servers Overview
+
+### Installation (VS Code)
+
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp). From this list, press:
+- [Install GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D)
+- [Install Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D)
+- [Install Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
+
+Each of these links opens a VS Code window. For each of these MCP servers, press the **Install** button in that window. For Atlassian and GitHub, follow the steps to authorize Copilot to connect with them.
+
+If you prefer to install the MCP servers manually:
+
+1. From the Command Palette, choose **MCP: Open User Configuration**
+2. Paste: 
+```json
+{
+	"servers": {
+		"atlassian": {
+			"url": "https://mcp.atlassian.com/v1/sse",
+			"type": "http"
+		},
+		"github": {
+			"url": "https://api.githubcopilot.com/mcp/",
+			"type": "http"
+		},
+		"context7": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@upstash/context7-mcp@latest"
+			]
+		}
+	}
+}
+```
 
 ## Tool Availability Matrix
 
