@@ -265,19 +265,31 @@ Legend: ✅ available, ❌ unavailable in that mode.
 
 ### Warp (User-Level)
 1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
-2. Paste `coding_guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the new rule.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Warp (Repository-Level)
 1. Create `WARP.md`
-2. Paste `coding-guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the file.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Q (Repository-Level)
 1. Create `.amazonq/rules/coding_guidelines.txt` in the repository root
-2. Paste `coding_guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the file.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
-2. Paste `coding_guidelines.txt` content.
+2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+3. Save the file.
+
+Repeat for [YAGNI.txt](YAGNI.txt).
 
 ## Tool Definitions
 
