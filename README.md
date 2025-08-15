@@ -10,7 +10,6 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 - [MCP Servers Overview](#mcp-servers-overview)
 	- [Installation (VS Code)](#installation-vs-code)
 	- [Installation (Claude.ai)](#installation-claudeai)
-	- [Installation (Claude Desktop)](#installation-claude-desktop)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
 - [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
@@ -116,38 +115,6 @@ If you prefer to install the MCP servers manually:
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
 2. Press each the **Connect** button (next to Atlassian and GitHub)
 Note: This adds the ability to add files from GitHub, but does not add the GitHub MCP Server.
-
-### Installation (Claude Desktop)
-
-1. From [Claude Desktop](https://claude.ai/download), open Settings > Developer
-2. Press **Edit Config**, which opens a (Windows) File Explorer or (Mac) Finder window to:
-- Windows: C:\Users\`username`\AppData\Roaming\Claude
-- Mac: ~/Library/Application Support/Claude
-3. Open **claude_desktop_config.json**
-4. Paste: 
-```json
-{
-  "mcpServers": {
-    "GitHub": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "your_token_here"
-      }
-    },
-    "Context7": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
-      ]
-    }
-  }
-}
-```
-
-
-5. Close and reopen Claude Desktop
 
 ## Tool Availability Matrix
 
