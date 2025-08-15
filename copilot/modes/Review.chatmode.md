@@ -5,13 +5,13 @@ tools: [
     'codebase', 'usages', 'problems', 'changes', 'testFailure', 'terminalLastCommand',
     'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
     'resolve-library-id', 'get-library-docs',
-    'get_commit', 'get_file_contents', 'get_me', 'list_branches', 'list_commits', 'list_tags',
+    'get_commit', 'get_file_contents', 'get_me', 'list_branches', 'list_commits',
     'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
     'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'list_pull_requests', 'activePullRequest',
-    'add_comment_to_pending_review', 'create_pending_pull_request_review', 'submit_pending_pull_request_review', 'request_copilot_review',
-    'list_notifications', 'search_code', 'search_pull_requests', 'search_repositories', 'search_users', 'search_orgs', 'list_sub_issues',
+    'add_comment_to_pending_review', 'create_pending_pull_request_review', 'submit_pending_pull_request_review',
+    'list_notifications', 'search_code', 'search_pull_requests', 'search_repositories', 'list_sub_issues',
     'addCommentToJiraIssue', 'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql', 'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects',
-    'getConfluencePage', 'getConfluencePageAncestors', 'getConfluencePageDescendants', 'getPagesInConfluenceSpace',
+    'getConfluencePage', 'getPagesInConfluenceSpace',
     'getConfluencePageFooterComments', 'getConfluencePageInlineComments', 'getConfluenceSpaces', 'searchConfluenceUsingCql',
     'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
