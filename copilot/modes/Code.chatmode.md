@@ -4,16 +4,16 @@ tools: [
 	'codebase', 'usages', 'problems', 'changes', 'testFailure', 'terminalSelection', 'terminalLastCommand',
 	'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
 	'editFiles', 'runCommands', 'runTasks', 'create_or_update_file',
-	'add_comment_to_pending_review', 'create_pending_pull_request_review', 'submit_pending_pull_request_review', 'request_copilot_review',
+	'add_comment_to_pending_review', 'create_pending_pull_request_review', 'submit_pending_pull_request_review',
 	'create_pull_request', 'update_pull_request', 'merge_pull_request', 'update_pull_request_branch', 'create_pull_request_with_copilot',
-	'create_branch', 'push_files', 'create_repository', 'reprioritize_sub_issue',
+	'create_branch', 'push_files', 'create_repository',
 	'get_commit', 'get_file_contents', 'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
-	'get_tag', 'list_branches', 'list_commits', 'list_tags', 'list_pull_requests', 'list_code_scanning_alerts', 'list_notifications', 'list_gists', 'list_sub_issues',
-	'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage', 'list_workflow_jobs', 'list_workflow_run_artifacts', 'list_workflow_runs', 'list_workflows', 'rerun_failed_jobs', 'rerun_workflow_run',
-	'search_code', 'search_orgs', 'search_pull_requests', 'search_repositories', 'search_users',
+	'list_branches', 'list_commits', 'list_pull_requests', 'list_notifications', 'list_sub_issues',
+	'get_workflow_run', 'list_workflow_run_artifacts',
+	'search_code', 'search_pull_requests', 'search_repositories',
 	'resolve-library-id', 'get-library-docs',
-	'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'getTransitionsForJiraIssue', 'searchJiraIssuesUsingJql', 'transitionJiraIssue',
-	'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects', 'createConfluencePage', 'getConfluencePage', 'getConfluencePageAncestors', 'getConfluencePageDescendants', 'getPagesInConfluenceSpace', 'updateConfluencePage',
+	'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql', 'transitionJiraIssue',
+	'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects', 'createConfluencePage', 'getConfluencePage', 'getPagesInConfluenceSpace', 'updateConfluencePage',
 	'createConfluenceFooterComment', 'createConfluenceInlineComment', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments', 'getConfluenceSpaces', 'searchConfluenceUsingCql',
 	'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
@@ -96,10 +96,11 @@ Before making changes, verify:
 - No uncommitted changes that could interfere
 
 ## Change Management
+- **Before editing files**: If currently on main branch, strongly consider whether changes warrant creating a feature branch first using the git workflow above
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
 - Document any breaking changes or migration steps needed
-- Follow git branching: avoid committing directly to main; create feature branches with descriptive names (except for hotfixes, small repositories, or when explicitly required)
+- Follow git branching: avoid committing directly to main; create feature branches with descriptive names (except when explicitly required)
 - Use commit messages that reference the purpose and any relevant issue/dataset context
 
 ## Security Considerations

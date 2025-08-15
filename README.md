@@ -75,7 +75,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [editJiraIssue](#editjiraissue) | ❌ | ✅ | ❌ | ✅ |
 | [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
 | [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
-| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ✅ | ❌ | ✅ |
+| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
 | [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
 | [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ❌ | ✅ |
 | *Jira Project Metadata* |||
@@ -84,8 +84,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Confluence Pages & Content* |||
 | [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ❌ | ✅ |
 | [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](#getconfluencepageancestors) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageDescendants](#getconfluencepagedescendants) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
+| [getConfluencePageDescendants](#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
 | [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
 | [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ |
 | *Confluence Comments* |||
@@ -107,10 +107,10 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [create_repository](#create_repository) | ❌ | ❌ | ❌ | ✅ |
 | [get_commit](#get_commit) | ✅ | ✅ | ✅ | ✅ |
 | [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
-| [get_tag](#get_tag) | ✅ | ✅ | ✅ | ✅ |
+| [get_tag](#get_tag) | ❌ | ❌ | ❌ | ❌ |
 | [list_branches](#list_branches) | ✅ | ✅ | ✅ | ✅ |
 | [list_commits](#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](#list_tags) | ✅ | ✅ | ✅ | ✅ |
+| [list_tags](#list_tags) | ❌ | ❌ | ❌ | ❌ |
 | [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests – Retrieval* |||
 | [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
@@ -127,37 +127,40 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [create_pull_request](#create_pull_request) | ❌ | ✅ | ❌ | ✅ |
 | [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
 | [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
-| [request_copilot_review](#request_copilot_review) | ❌ | ✅ | ✅ | ✅ |
+| [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
 | [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
 | [update_pull_request](#update_pull_request) | ❌ | ✅ | ❌ | ✅ |
 | [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
 | *Sub-Issues* |||
 | [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ✅ |
+| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ❌ |
 | *Gists* |||
-| [list_gists](#list_gists) | ✅ | ✅ | ✅ | ✅ |
-| [update_gist](#update_gist) | ❌ | ❌ | ❌ | ✅ |
+| [list_gists](#list_gists) | ❌ | ❌ | ❌ | ❌ |
+| [update_gist](#update_gist) | ❌ | ❌ | ❌ | ❌ |
 | *Notifications* |||
 | [list_notifications](#list_notifications) | ✅ | ✅ | ✅ | ✅ |
 | *Code Scanning & Security* |||
-| [list_code_scanning_alerts](#list_code_scanning_alerts) | ✅ | ✅ | ✅ | ✅ |
+| [list_code_scanning_alerts](#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
 | *Workflows (GitHub Actions)* |||
-| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ✅ | ✅ |
-| [get_workflow_run_logs](#get_workflow_run_logs) | ✅ | ✅ | ✅ | ✅ |
-| [get_workflow_run_usage](#get_workflow_run_usage) | ✅ | ✅ | ✅ | ✅ |
-| [list_workflow_jobs](#list_workflow_jobs) | ✅ | ✅ | ✅ | ✅ |
-| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ✅ | ✅ |
-| [list_workflow_runs](#list_workflow_runs) | ✅ | ✅ | ✅ | ✅ |
-| [list_workflows](#list_workflows) | ✅ | ✅ | ✅ | ✅ |
-| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ✅ |
-| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ❌ | ✅ |
+| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ❌ | ✅ |
+| [get_workflow_run_logs](#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
+| [get_workflow_run_usage](#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_jobs](#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ❌ | ✅ |
+| [list_workflow_runs](#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflows](#list_workflows) | ❌ | ❌ | ❌ | ❌ |
+| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
+| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
 | *Search & Discovery* |||
 | [search_code](#search_code) | ✅ | ✅ | ✅ | ✅ |
-| [search_orgs](#search_orgs) | ✅ | ✅ | ✅ | ✅ |
+| [search_orgs](#search_orgs) | ❌ | ❌ | ❌ | ❌ |
 | [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
 | [search_repositories](#search_repositories) | ✅ | ✅ | ✅ | ✅ |
-| [search_users](#search_users) | ✅ | ✅ | ✅ | ✅ |
+| [search_users](#search_users) | ❌ | ❌ | ❌ | ❌ |
 | *User & Account* |||
+| [get_me](#get_me) | ✅ | ✅ | ✅ | ✅ |
+| *File Operations* |||
+| [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
 ## Notes
 - Review mode adds PR review + issue commenting over Ask, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
