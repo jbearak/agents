@@ -17,6 +17,7 @@ tools: [
 	'createConfluenceFooterComment', 'createConfluenceInlineComment', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments', 'getConfluenceSpaces', 'searchConfluenceUsingCql',
 	'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
+model: Claude Sonnet 4
 ---
 
 Contract: Full implementation mode. May mutate local files, repositories (branches, commits, pull requests), run commands and tasks, and reprioritize sub-issues. Keep edits minimal, validated via diagnostics/tests, and purpose-driven; defer pure planning artifact shaping (when no code change) to Plan Mode.

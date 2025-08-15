@@ -17,6 +17,7 @@ tools: [
     'getConfluenceSpaces', 'searchConfluenceUsingCql', 'atlassianUserInfo', 'lookupJiraAccountId',
     'getAccessibleAtlassianResources'
 ]
+model: GPT-4.1
 ---
 
 Contract: Strictly read-only. This mode MUST NOT invoke any operation that mutates local files, repository state, remote issues/pages/comments, links, transitions, or sub-issue ordering. No shell commands or tasks. Observation and explanation only.

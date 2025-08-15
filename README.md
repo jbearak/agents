@@ -29,6 +29,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | PR Merge / Branch Ops | No | No | No | Yes |
 | File | `copilot/modes/Ask.chatmode.md` | `copilot/modes/Plan.chatmode.md` | `copilot/modes/Review.chatmode.md` | `copilot/modes/Code.chatmode.md` |
 | Contract Summary | Strict read-only (no mutations anywhere) | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | PR review + issue comments only; no other mutations | Full implementation, execution, & PR lifecycle |
+| Default Model | GPT-4.1 | Sonnet 4 | GPT-5 | Sonnet 4 |
 
 Privilege gradient: Ask < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 

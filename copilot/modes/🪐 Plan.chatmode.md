@@ -21,6 +21,7 @@ tools: [
     'getConfluenceSpaces', 'searchConfluenceUsingCql', 'atlassianUserInfo', 'lookupJiraAccountId',
     'getAccessibleAtlassianResources'
 ]
+model: Claude Sonnet 4
 ---
 
 Contract: This mode MAY mutate remote planning artifacts (Jira issues, Confluence pages & comments, their links, GitHub issue data); create, update, and review (comment on) pull requests; and reprioritize GitHub sub-issues. It MUST NOT alter local workspace/repository files, create/modify branches or commits, merge PRs, update PR branches, nor run shell commands or tasks.
