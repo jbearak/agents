@@ -8,7 +8,7 @@ tools: [
 	'create_pull_request', 'update_pull_request', 'merge_pull_request', 'update_pull_request_branch', 'create_pull_request_with_copilot',
 	'create_branch', 'push_files', 'create_repository', 'reprioritize_sub_issue',
 	'get_commit', 'get_file_contents', 'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
-	'get_tag', 'list_branches', 'list_commits', 'list_tags', 'list_pull_requests', 'list_code_scanning_alerts', 'list_notifications', 'list_gists', 'list_sub_issues',
+	'get_tag', 'list_branches', 'list_commits', 'list_tags', 'list_pull_requests', 'list_code_scanning_alerts', 'list_notifications', 'list_gists', 'list_sub_issues', 'update_gist',
 	'get_workflow_run', 'get_workflow_run_logs', 'get_workflow_run_usage', 'list_workflow_jobs', 'list_workflow_run_artifacts', 'list_workflow_runs', 'list_workflows', 'rerun_failed_jobs', 'rerun_workflow_run',
 	'search_code', 'search_orgs', 'search_pull_requests', 'search_repositories', 'search_users',
 	'resolve-library-id', 'get-library-docs',

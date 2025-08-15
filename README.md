@@ -158,6 +158,9 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [search_repositories](#search_repositories) | ✅ | ✅ | ✅ | ✅ |
 | [search_users](#search_users) | ✅ | ✅ | ✅ | ✅ |
 | *User & Account* |||
+| [get_me](#get_me) | ✅ | ✅ | ✅ | ✅ |
+| *File Operations* |||
+| [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
 ## Notes
 - Review mode adds PR review + issue commenting over Ask, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
