@@ -175,24 +175,23 @@ Legend: ✅ available, ❌ unavailable in that mode.
 3. Save; changes propagate to organization members (may require editor reload).
 4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
 
-### GitHub Copilot (User-Level Fallback)
-If org-level not available: GitHub profile > Settings > Copilot > Personalized suggestions / Custom Instructions. Paste same contents; note these may be overridden by org policy later.
+### GitHub Copilot (Repository-Level)
+1. Create or edit `.github/copilot-instructions.md`
+2. Paste `coding_guidelines.txt` content.
 
-### Warp
-1. Open Warp Settings > AI / Copilot (name may vary by version).
-2. Locate Custom Instructions / System Prompt field.
-3. Paste `coding_guidelines.txt` content.
-4. Re-open any AI panels to ensure reload.
+### Warp (User-Level)
+1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
+2. Paste `coding_guidelines.txt` content.
 
-### Q (Per-Project Assumption)
-Some AI assistants named "Q" load per-repo instruction files. Assumed pattern (adjust to actual implementation): place a copy (or symlink) at `./q/instructions.md` or `.q/instructions.md` within each repository. Keep it identical to `coding_guidelines.txt` to avoid drift.
+### Q (Repository-Level)
+1. Create `.amazonq/rules/coding_guidelines.txt` in the repository root
+2. Paste `coding_guidelines.txt` content.
 
-### Synchronization Tips
-- Track changes via normal PR review in this repo.
-- When updating external destinations, include commit SHA in the external UI notes.
-- Avoid editing in multiple places; always edit the canonical file then propagate.
+### Claude Code (Repository-Level)
+1. Create or edit `CLAUDE.md` in the repository root
+2. Paste `coding_guidelines.txt` content.
 
-## Anchored Tool Definitions
+## Tool Definitions
 
 ### Built-In (VS Code / Core)
 
