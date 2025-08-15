@@ -17,7 +17,6 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 	- [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
 	- [Warp (User-Level)](#warp-user-level)
 	- [Warp (Repository-Level)](#warp-repository-level)
-	- [Warp Prompts](#warp-prompts)
 	- [Q (Repository-Level)](#q-repository-level)
 	- [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [Tool Definitions](#tool-definitions)
@@ -269,24 +268,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 2. Paste `coding_guidelines.txt` content.
 
 ### Warp (Repository-Level)
-1. Create `/WARP.md` in the repository root.
-2. Paste your repository’s coding rules and agent instructions (you can reuse or adapt `coding_guidelines.txt`).
-3. Warp applies these rules when the working directory is inside this repo (project-scoped rules).
-Notes:
-- Project rules override user-level rules for sessions in this repo.
-- Keep `/WARP.md` concise and authoritative; link to longer docs when needed.
-- Guardrail: In Warp, MCP tools are not granulated per-tool. Do not use the GitHub MCP server for file/branch mutations (create/edit/delete files, create/update/push branches). Perform those operations locally (terminal/git) instead; reserve GitHub MCP for PR retrieval and non-destructive planning actions.
-
-### Warp Prompts
-Warp supports saved prompts and Slash Commands to trigger them. Prompts don’t set models or toolsets, but they’re useful to capture the instruction text of modes.
-Steps:
-1. Open Warp Drive → Prompts → + New Prompt
-2. Name it (e.g., "🚀 Code Mode")
-3. Paste the instruction text you want (you can adapt content from `copilot/modes/*.chatmode.md`)
-4. Optionally assign a Slash Command (e.g., `/plan`, `/review`, `/code`) for quick access
-Notes:
-- Prompts complement the mode docs; they don’t change tool availability.
-- See https://docs.warp.dev/knowledge-and-collaboration/warp-drive/prompts and https://docs.warp.dev/agents/slash-commands.
+1. Create `WARP.md`
+2. Paste `coding-guidelines.txt` content.
 
 ### Q (Repository-Level)
 1. Create `.amazonq/rules/coding_guidelines.txt` in the repository root
