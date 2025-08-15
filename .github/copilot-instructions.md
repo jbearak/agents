@@ -8,7 +8,6 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 
 **Bootstrap and validate the repository:**
 - `cd /home/runner/work/agents/agents` (or repository root)
-- **Validate documentation structure:** `python3 /tmp/test-scenario/validate-repository.py` -- takes < 0.1 seconds. NEVER CANCEL.
 - **Lint markdown files:** Install markdownlint first with `mkdir -p /tmp/validation && cd /tmp/validation && npm init -y && npm install markdownlint-cli`, then run `./node_modules/.bin/markdownlint /path/to/repo/README.md /path/to/repo/copilot/modes/*.md` -- takes < 1 second. NEVER CANCEL.
 - **Verify git status:** `git --no-pager status && git --no-pager log --oneline -5` -- takes < 0.1 seconds. NEVER CANCEL.
 
@@ -18,9 +17,9 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 
 1. **Documentation Navigation Test:** Verify an agent can navigate the repository structure by reading README.md and understanding the mode hierarchy. Test with: `head -50 README.md | grep -E "(##|###)"` -- takes < 0.1 seconds.
 
-2. **Mode File Structure Test:** Validate that all mode files follow correct format (YAML frontmatter with tools list and contract section). Test with the validation script above.
+2. **Mode File Structure Test:** Validate that all mode files follow correct format (YAML frontmatter with tools list and contract section). Check manually by viewing each file.
 
-3. **Cross-Reference Validation:** Ensure `.github/copilot-instructions.md` is properly referenced in `copilot/modes/Code.chatmode.md` on line 45. Verify with: `grep -n "copilot-instructions.md" copilot/modes/Code.chatmode.md`
+3. **Cross-Reference Validation:** Ensure `.github/copilot-instructions.md` is properly referenced in `copilot/modes/Code.chatmode.md` on line 46. Verify with: `grep -n "copilot-instructions.md" copilot/modes/Code.chatmode.md`
 
 4. **Markdown Quality Check:** Run full markdown linting to ensure documentation quality. The linting will show many existing issues - this is expected and not blocking.
 
@@ -31,14 +30,14 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ### Repository Structure
 ```
 ./
-├── README.md               # Main documentation (2773 words, 417 lines)
+├── README.md               # Main documentation (3191 words, 528 lines)
 ├── coding_guidelines.txt   # Shared custom instructions for coding standards saved to https://github.com/organizations/Guttmacher/settings/copilot/custom_instructions
 └── copilot/
     └── modes/
-        ├── Question.chatmode.md     # Read-only Q&A mode (55 lines)
-        ├── Plan.chatmode.md    # Planning mode (73 lines)
+        ├── Question.chatmode.md     # Read-only Q&A mode (54 lines)
+        ├── Plan.chatmode.md    # Planning mode (71 lines)
         ├── Review.chatmode.md  # Review mode (67 lines)
-        └── Code.chatmode.md    # Full implementation mode (102 lines)
+        └── Code.chatmode.md    # Full implementation mode (142 lines)
 ```
 
 ### Key File Contents and Patterns
@@ -57,7 +56,7 @@ Standard YAML frontmatter:
 
 **Key Relationships:**
 - `coding_guidelines.txt` is referenced as the canonical source for multi-tool custom instructions
-- `.github/copilot-instructions.md` (this file) is referenced in Code.chatmode.md line 45
+- `.github/copilot-instructions.md` (this file) is referenced in Code.chatmode.md line 46
 - Mode files define different privilege levels: Question < Review < Plan < Code
 
 ### Frequently Needed Information
@@ -69,9 +68,8 @@ Standard YAML frontmatter:
 - **Code Mode:** Full implementation including merge & branch operations
 
 **Build/Test Commands:** This repository has no traditional build process. The validation workflow is:
-1. Structure validation: `python3 /tmp/test-scenario/validate-repository.py`
-2. Markdown linting: `markdownlint *.md **/*.md`  
-3. Git status check: `git --no-pager status`
+1. Markdown linting: `markdownlint *.md **/*.md`  
+2. Git status check: `git --no-pager status`
 
 **Timing Expectations:**
 - All validation operations: < 1 second
