@@ -12,7 +12,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
-- [Using `coding_guidelines.txt` Across Tools](#using-coding-guidelinestxt-across-tools)
+- [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
   - [GitHub Copilot (Organization-Level)](#github-copilot-organization-level)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [Warp (User-Level)](#warp-user-level)
@@ -125,131 +125,131 @@ Note: This adds the ability to add files from GitHub, but does not add the GitHu
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | Question | Plan | Review | Code |
-|------|-----|------|--------|------|
-| **Built-In (VS Code / Core)** |||
-| *Code & Project Navigation* |||
-| [codebase](#codebase) | ✅ | ✅ | ✅ | ✅ |
-| [findTestFiles](#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
-| [search](#search) | ✅ | ✅ | ✅ | ✅ |
-| [searchResults](#searchresults) | ✅ | ✅ | ✅ | ✅ |
-| [usages](#usages) | ✅ | ✅ | ✅ | ✅ |
-| *Quality & Diagnostics* |||
-| [problems](#problems) | ✅ | ✅ | ✅ | ✅ |
-| [testFailure](#testfailure) | ✅ | ✅ | ✅ | ✅ |
-| *Version Control & Changes* |||
-| [changes](#changes) | ✅ | ✅ | ✅ | ✅ |
-| *Environment & Execution* |||
-| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
-| [terminalSelection](#terminalselection) | ❌ | ❌ | ❌ | ✅ |
-| *Web & External Content* |||
-| [fetch](#fetch) | ✅ | ✅ | ✅ | ✅ |
-| [githubRepo](#githubrepo) | ✅ | ✅ | ✅ | ✅ |
-| *Editor & Extensions* |||
-| [extensions](#extensions) | ❌ | ❌ | ❌ | ❌ |
-| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
-| *Editing & Automation* |||
-| [editFiles](#editfiles) | ❌ | ❌ | ❌ | ✅ |
-| [runCommands](#runcommands) | ❌ | ❌ | ❌ | ✅ |
-| [runTasks](#runtasks) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Request Context* |||
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
-| **Context7** |||
-| [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
-| [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
-| **Atlassian** |||
-| *Jira Issues & Operations* |||
-| [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
-| [createJiraIssue](#createjiraissue) | ❌ | ✅ | ❌ | ✅ |
-| [editJiraIssue](#editjiraissue) | ❌ | ✅ | ❌ | ✅ |
-| [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
-| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
-| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
-| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
-| [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ❌ | ✅ |
-| *Jira Project Metadata* |||
-| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
-| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
-| *Confluence Pages & Content* |||
-| [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ❌ | ✅ |
-| [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
-| [getConfluencePageDescendants](#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
-| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
-| [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ |
-| *Confluence Comments* |||
-| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ❌ | ✅ |
-| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ❌ | ✅ |
-| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
-| *Confluence Spaces & Discovery* |||
-| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
-| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
-| *User & Identity* |||
-| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
-| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
-| *Other* |||
-| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
-| **GitHub** |||
-| *Commits & Repository* |||
-| [create_branch](#create_branch) | ❌ | ❌ | ❌ | ✅ |
-| [create_repository](#create_repository) | ❌ | ❌ | ❌ | ✅ |
-| [get_commit](#get_commit) | ✅ | ✅ | ✅ | ✅ |
-| [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
-| [get_tag](#get_tag) | ❌ | ❌ | ❌ | ❌ |
-| [list_branches](#list_branches) | ✅ | ✅ | ✅ | ✅ |
-| [list_commits](#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](#list_tags) | ❌ | ❌ | ❌ | ❌ |
-| [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Requests – Retrieval* |||
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
-| [list_pull_requests](#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| *Pull Requests – Actions* |||
-| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pull_request](#create_pull_request) | ❌ | ✅ | ❌ | ✅ |
-| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
-| [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
-| [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
-| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [update_pull_request](#update_pull_request) | ❌ | ✅ | ❌ | ✅ |
-| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
-| *Sub-Issues* |||
-| [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ❌ |
-| *Gists* |||
-| [list_gists](#list_gists) | ❌ | ❌ | ❌ | ❌ |
-| [update_gist](#update_gist) | ❌ | ❌ | ❌ | ❌ |
-| *Notifications* |||
-| [list_notifications](#list_notifications) | ✅ | ✅ | ✅ | ✅ |
-| *Code Scanning & Security* |||
-| [list_code_scanning_alerts](#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
-| *Workflows (GitHub Actions)* |||
-| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ❌ | ✅ |
-| [get_workflow_run_logs](#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
-| [get_workflow_run_usage](#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_jobs](#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ❌ | ✅ |
-| [list_workflow_runs](#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflows](#list_workflows) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
-| *Search & Discovery* |||
-| [search_code](#search_code) | ✅ | ✅ | ✅ | ✅ |
-| [search_orgs](#search_orgs) | ❌ | ❌ | ❌ | ❌ |
-| [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| [search_repositories](#search_repositories) | ✅ | ✅ | ✅ | ✅ |
-| [search_users](#search_users) | ❌ | ❌ | ❌ | ❌ |
-| *User & Account* |||
-| [get_me](#get_me) | ✅ | ✅ | ✅ | ✅ |
-| *File Operations* |||
-| [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
+| Tool | Question | Plan | Review | Code | Junior Coder |
+|------|-----|------|--------|------|-------------|
+| **Built-In (VS Code / Core)** | | | | | |
+| *Code & Project Navigation* | | | | | |
+| [codebase](#codebase) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [findTestFiles](#findtestfiles) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [search](#search) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [searchResults](#searchresults) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [usages](#usages) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Quality & Diagnostics* | | | | | |
+| [problems](#problems) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [testFailure](#testfailure) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Version Control & Changes* | | | | | |
+| [changes](#changes) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Environment & Execution* | | | | | |
+| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [terminalSelection](#terminalselection) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| *Web & External Content* | | | | | |
+| [fetch](#fetch) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [githubRepo](#githubrepo) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Editor & Extensions* | | | | | |
+| [extensions](#extensions) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| *Editing & Automation* | | | | | |
+| [editFiles](#editfiles) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [runCommands](#runcommands) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [runTasks](#runtasks) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| *Pull Request Context* | | | | | |
+| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Context7** | | | | | |
+| [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Atlassian** | | | | | |
+| *Jira Issues & Operations* | | | | | |
+| [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ | ✅ |
+| [createJiraIssue](#createjiraissue) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [editJiraIssue](#editjiraissue) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| *Jira Project Metadata* | | | | | |
+| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Confluence Pages & Content* | | | | | |
+| [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [getConfluencePageDescendants](#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| *Confluence Comments* | | | | | |
+| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Confluence Spaces & Discovery* | | | | | |
+| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *User & Identity* | | | | | |
+| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Other* | | | | | |
+| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **GitHub** | | | | | |
+| *Commits & Repository* | | | | | |
+| [create_branch](#create_branch) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [create_repository](#create_repository) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [get_commit](#get_commit) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_tag](#get_tag) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [list_branches](#list_branches) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [list_commits](#list_commits) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [list_tags](#list_tags) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| *Pull Requests  Retrieval* | | | | | |
+| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [list_pull_requests](#list_pull_requests) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Pull Requests  Actions* | | | | | |
+| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ | ✅ |
+| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ | ✅ |
+| [create_pull_request](#create_pull_request) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ | ✅ |
+| [update_pull_request](#update_pull_request) | ❌ | ✅ | ❌ | ✅ | ✅ |
+| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ | ✅ |
+| *Sub-Issues* | | | | | |
+| [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ❌ | ❌ |
+| *Gists* | | | | | |
+| [list_gists](#list_gists) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [update_gist](#update_gist) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| *Notifications* | | | | | |
+| [list_notifications](#list_notifications) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *Code Scanning & Security* | | | | | |
+| [list_code_scanning_alerts](#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| *Workflows (GitHub Actions)* | | | | | |
+| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ❌ | ✅ | ✅ |
+| [get_workflow_run_logs](#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [get_workflow_run_usage](#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_jobs](#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ❌ | ✅ | ✅ |
+| [list_workflow_runs](#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [list_workflows](#list_workflows) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| *Search & Discovery* | | | | | |
+| [search_code](#search_code) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [search_orgs](#search_orgs) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [search_repositories](#search_repositories) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [search_users](#search_users) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| *User & Account* | | | | | |
+| [get_me](#get_me) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| *File Operations* | | | | | |
+| [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ | ✅ |
 ## Notes
 - Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
