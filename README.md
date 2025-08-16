@@ -245,13 +245,11 @@ Legend: ✅ available, ❌ unavailable in that mode.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
 - Code mode includes full repository mutation (branches, merges, execution) and remains only mode for merging and workflow reruns.
 
-### Model Selection and Cost Considerations
+### Model Selection
 
-**Model Multipliers**: GPT-5 Mini and GPT-4.1 have a [model multiplier of 0](https://docs.github.com/en/copilot/concepts/billing/copilot-requests), meaning they do not consume [credits](https://docs.github.com/en/copilot/concepts/billing/copilot-requests). This makes them ideal for cost-effective operations.
+Question Mode uses GPT-5 Mini as its default model for cost-effectiveness and speed. GPT-5 Mini, like GPT-4.1, has a [model multiplier of 0](https://docs.github.com/en/copilot/concepts/billing/copilot-requests), meaning it does not consume [premium requests](https://docs.github.com/en/copilot/concepts/billing/copilot-requests). This makes it ideal for the read-only, exploratory nature of Question Mode.
 
-**Question Mode**: Uses GPT-5 Mini as its default model for optimal cost-effectiveness and speed. Since GPT-5 Mini doesn't consume credits and offers better capabilities than GPT-4.1, it's perfect for the read-only, exploratory nature of Question Mode.
-
-**Other Modes**: GPT-5 Mini can also be used in Plan, Review, and Code modes for targeted code analysis or lighter workloads where the cost savings and speed advantages are valuable. This is particularly useful for focused tasks that don't require the full capabilities of premium models.
+Other modes may also benefit from GPT-5 Mini for targeted code analysis or lighter workloads where the cost savings and speed advantages are valuable.
 
 ## Using `coding_guidelines.txt` Across Tools
 
