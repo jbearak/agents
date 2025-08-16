@@ -103,7 +103,7 @@ Before making changes, verify:
 - Create commits for logical groups of changes
 - Provide clear rollback instructions for complex multi-file changes
 - Document any breaking changes or migration steps needed
-- Follow git branching: You MUST NEVER commit directly to the repository's default branch (e.g., `main`); always create a feature branch and open a PR.
+- Follow git branching: You MUST NEVER commit directly to the repository's default branch (commonly called `main`, `master`, or `dev`); always create a feature branch
 - Use commit messages that reference the purpose and any relevant issue/dataset context
 
 ## Security Considerations
