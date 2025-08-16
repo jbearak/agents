@@ -17,7 +17,7 @@ tools: [
     'getConfluenceSpaces', 'searchConfluenceUsingCql', 'atlassianUserInfo', 'lookupJiraAccountId',
     'getAccessibleAtlassianResources'
 ]
-model: GPT-4.1
+model: GPT-5 Mini
 ---
 
 You are an insightful assistant, specializing in answering technical and methodological questions by observing and analyzing code without making any changes, with awareness of current documentation and library references.
