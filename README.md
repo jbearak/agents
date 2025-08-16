@@ -36,7 +36,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 		├── Question.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
 		├── Plan.chatmode.md    # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
 		├── Review.chatmode.md  # PR & issue review feedback (comments only)
-		├── Junior Coder.chatmode.md    # Full coding with GPT-5 mini model & enhanced guidance
+		├── Junior Coder.chatmode.md    # Full coding with cost-effective GPT-5 mini model
 		└── Code.chatmode.md    # Full coding, execution, PR + branch ops
 ```
 
@@ -253,7 +253,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 
 Question Mode uses GPT-5 Mini as its default model for cost-effectiveness and speed. GPT-5 Mini, like GPT-4.1, has a [model multiplier of 0](https://docs.github.com/en/copilot/concepts/billing/copilot-requests), meaning it does not consume [premium requests](https://docs.github.com/en/copilot/concepts/billing/copilot-requests). This makes it ideal for the read-only, exploratory nature of Question Mode.
 
-Junior Coder Mode also uses GPT-5 Mini as its default model, making it cost-effective for development scenarios where the enhanced guidance and comprehensive explanations provide value without premium costs. The "Junior" designation refers to the smaller model size, not the target user experience level.
+Junior Coder Mode also uses GPT-5 Mini as its default model, making it cost-effective for development scenarios where the smaller model size provides adequate capability without premium costs. The "Junior" designation refers to the smaller model size, not the target user experience level.
 
 Other modes may also benefit from GPT-5 Mini for targeted code analysis or lighter workloads where the cost savings and speed advantages are valuable.
 
