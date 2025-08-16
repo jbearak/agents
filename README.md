@@ -36,6 +36,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 		├── Question.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
 		├── Plan.chatmode.md    # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
 		├── Review.chatmode.md  # PR & issue review feedback (comments only)
+		├── Junior Coder.chatmode.md    # Full coding with educational guidance & explanations
 		└── Code.chatmode.md    # Full coding, execution, PR + branch ops
 ```
 
@@ -46,9 +47,10 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | Question | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/Question.chatmode.md` | Strict read-only (no mutations anywhere) | GPT-5 Mini |
 | Plan | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | Sonnet 4 |
 | Review | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations | GPT-5 |
+| Junior Coder | Implement changes with guidance and explanations | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Junior Coder.chatmode.md` | Full implementation with educational focus & step-by-step guidance | GPT-5 Mini |
 | Code | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle | Sonnet 4 |
 
-Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Junior Coder & Code (full lifecycle incl. merge & branch ops).
 
 ### Add Modes to VS Code
 
@@ -60,6 +62,7 @@ Privilege gradient: Question < Review (adds review + issue comments) < Plan (add
 
 Repeat these steps for:
 - [Code](copilot/modes/Code.chatmode.md)
+- [Junior Coder](copilot/modes/Junior%20Coder.chatmode.md)
 - [Plan](copilot/modes/Plan.chatmode.md)
 - [Question](copilot/modes/Question.chatmode.md)
 - [Review](copilot/modes/Review.chatmode.md)
@@ -243,11 +246,14 @@ Legend: ✅ available, ❌ unavailable in that mode.
 ## Notes
 - Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
-- Code mode includes full repository mutation (branches, merges, execution) and remains only mode for merging and workflow reruns.
+- Junior Coder and Code modes include full repository mutation (branches, merges, execution), with Junior Coder emphasizing educational guidance and step-by-step explanations.
+- Code mode remains the primary choice for experienced developers and complex workflows.
 
 ### Model Selection
 
 Question Mode uses GPT-5 Mini as its default model for cost-effectiveness and speed. GPT-5 Mini, like GPT-4.1, has a [model multiplier of 0](https://docs.github.com/en/copilot/concepts/billing/copilot-requests), meaning it does not consume [premium requests](https://docs.github.com/en/copilot/concepts/billing/copilot-requests). This makes it ideal for the read-only, exploratory nature of Question Mode.
+
+Junior Coder Mode also uses GPT-5 Mini as its default model, making it cost-effective for learning and development scenarios where the additional guidance and explanations provide value without premium costs.
 
 Other modes may also benefit from GPT-5 Mini for targeted code analysis or lighter workloads where the cost savings and speed advantages are valuable.
 
