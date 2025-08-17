@@ -48,11 +48,12 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 | QnA | GPT-4.1 | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/QnA.chatmode.md` | Strict read-only (no mutations anywhere) |
 | Plan | Sonnet 4 | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
 | Review | GPT-5 | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
-| Code | Sonnet 4 / GPT-5 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
+| Code-GPT5 | GPT-5 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code-GPT5.chatmode.md` | Full implementation, execution, & PR lifecycle |
+| Code-Sonnet4 | Sonnet 4 | | | | | | | | `copilot/modes/Code-Sonnet4.chatmode.md` | |
 
 Privilege gradient: QnA < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
-Note: **Code-GPT5** and **Code-Sonnet4** modes contain instructions tailored to their respective models.
+Note: **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts.
 
 ### Add Modes to VS Code
 
