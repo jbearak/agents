@@ -121,8 +121,8 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
         row_data <- data.frame(
           Tool = tool_name,
           QnA = cells[2],
-          Plan = cells[3], 
-          Review = cells[4],
+          Review = cells[3],
+          Plan = cells[4], 
           Code = cells[5],
           stringsAsFactors = FALSE
         )
