@@ -1,6 +1,6 @@
-# Modes & Tools Reference
+# Reference for agent modes, model/tool capability tiers, MCP server configuration, and reusing shared coding instructions across agents.
 
-Centralized documentation for Copilot modes, tool availability, and cross-tool custom instruction usage.
+This README provides an overview of the various agent modes, capabilities of models/tools, and guidelines for configuring the MCP server. Additionally, it includes instructions for reusing shared coding practices across different agents.
 
 ## Table of Contents
 
