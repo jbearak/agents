@@ -109,7 +109,100 @@ If you prefer to install the MCP servers manually:
 
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
 2. Press each the **Connect** button (next to Atlassian and GitHub)
-Note: This adds the ability to add files from GitHub, but does not add the GitHub MCP Server.
+Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
+
+### Add MCP Servers to Claude Desktop
+
+When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Therefore, only add local servers.
+
+1. Open Settings > Developer > Edit Config
+2. Open `claude_desktop_config.json` for editing
+3. Paste:
+```
+{
+    "mcpServers": {
+        "Context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ],
+            "env": {},
+            "working_directory": null
+        },
+        "GitHub": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "ghcr.io/github/github-mcp-server"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "<Your_GitHub_Token_Here>"
+            }
+        }
+    }
+}
+```
+4. Obtain your GitHub personal access token from [GitHub Settings](https://github.com/settings/tokens) and paste it in place of `<Your_GitHub_Token_Here>`
+5. Restart Claude Desktop
+
+#### Storing GitHub Token in Keychain
+
+You can store your GitHub personal access token in your login keychain instead of pasting it directly into the config file. To do this on a Mac:
+
+Your `claude_desktop_config.json` file should look like this:
+
+```json
+{
+    "mcpServers": {
+        "Context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ],
+            "env": {},
+            "working_directory": null
+        },
+        "GitHub": {
+            "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
+            "args": [],
+            "env": {
+            "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
+            },
+            "working_directory": null
+        }
+    }
+}
+```
+
+0. Replace `<username>` with your actual username in the config file.
+1. Open Keychain Access and create a new generic password named GitHub which contains your access token.
+2. Create a file named `~/bin/mcp-github-wrapper.sh` with the following content:
+
+```bash
+#!/opt/homebrew/bin/bash
+GITHUB_TOKEN=$(security find-generic-password -s "GitHub" -a "$USER" -w 2>/dev/null)
+
+# Check if token was retrieved successfully
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "Error: Could not retrieve GitHub token from keychain" >&2
+    echo "Make sure the token is stored in keychain with service name 'GitHub'" >&2
+    echo "You may need to run: security unlock-keychain" >&2
+    exit 1
+fi
+
+# Run the Docker container with the token
+exec /opt/homebrew/bin/docker run -i --rm \
+    -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
+    ghcr.io/github/github-mcp-server "$@"
+
+```
+
 
 ## Tool Availability Matrix
 
