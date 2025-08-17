@@ -26,6 +26,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [Context7](#context7)
   - [Atlassian](#atlassian)
   - [GitHub](#github)
+  - [Notes][#notes]
 
 ## Repository Structure
 
@@ -734,7 +735,8 @@ Get details for the authenticated GitHub user.
 ##### create_or_update_file
 Create or update a single file in a repository (Code mode only).
 
-## Notes
-- Some tools appear in multiple conceptual groups; each tool has a dedicated anchor for direct linking.
+### Notes
+- Definitions come from the MCP servers
 - QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
-- This document is the canonical source for tool availability; update table and definitions together.
+- This document is the canonical source for tool availability.
+- Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
