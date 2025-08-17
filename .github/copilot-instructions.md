@@ -36,7 +36,7 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ├── coding_guidelines.txt   # Shared custom instructions for coding standards saved to https://github.com/organizations/Guttmacher/settings/copilot/custom_instructions
 └── copilot/
     └── modes/
-        ├── Question.chatmode.md     # Read-only Q&A mode (54 lines)
+    ├── QnA.chatmode.md     # Read-only Q&A mode (renamed from Question)
         ├── Plan.chatmode.md    # Planning mode (71 lines)
         ├── Review.chatmode.md  # Review mode (67 lines)
         └── Code.chatmode.md    # Full implementation mode (142 lines)
@@ -59,12 +59,12 @@ Standard YAML frontmatter:
 **Key Relationships:**
 - `coding_guidelines.txt` is referenced as the canonical source for multi-tool custom instructions
 - `.github/copilot-instructions.md` (this file) is referenced in Code.chatmode.md line 46
-- Mode files define different privilege levels: Question < Review < Plan < Code
+- Mode files define different privilege levels: QnA < Review < Plan < Code
 
 ### Frequently Needed Information
 
 **Mode Capabilities:**
-- **Question Mode:** Read-only analysis, no mutations anywhere
+- **QnA Mode:** Read-only analysis, no mutations anywhere
 - **Review Mode:** PR review comments + issue comments only
 - **Plan Mode:** Planning artifacts + PR create/edit (no merge/branch ops)
 - **Code Mode:** Full implementation including merge & branch operations
