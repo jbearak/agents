@@ -183,8 +183,8 @@ On Mac you can use emojis in the file names:
 | Claude Code       | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌              |
 | GitHub Copilot    | ✅      | ❌        | ✅     | ✅         | ✅      | ✅              | ❌              |
 | Q                 | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
-| Rovo              | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
-| Warp              | ✅      | ✅        | ✅     | ✅         | ❌      | ✅              | ✅              |
+| Rovo              | ✅      | ❌        | ✅     | ❌         | ❌      | ❌              | ❌              |
+| Warp              | ✅      | ✅        | ✅     | ❌         | ✅      | ✅              | ✅              |
 
 **Note:** None of these agents specify whether GPT-5 refers to the model with minimal, low, medium, or high reasoning.
 
