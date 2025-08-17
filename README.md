@@ -34,7 +34,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ├── README.md               # This documentation (modes, matrix, tool definitions)
 └── copilot/
     └── modes/
-        ├── Question.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
+  ├── QnA.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
         ├── Plan.chatmode.md    # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
         ├── Review.chatmode.md  # PR & issue review feedback (comments only)
         └── Code.chatmode.md    # Full coding, execution, PR + branch ops
@@ -44,12 +44,12 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 | Mode | Default Model | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary |
 |------|--------------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|
-| Question | GPT-4.1 | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/Question.chatmode.md` | Strict read-only (no mutations anywhere) |
+| QnA | GPT-4.1 | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/QnA.chatmode.md` | Strict read-only (no mutations anywhere) |
 | Plan | Sonnet 4 | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
 | Review | GPT-5 | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
 | Code | Sonnet 4 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
 
-Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+Privilege gradient: QnA < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
 ### Add Modes to VS Code
 
@@ -62,7 +62,7 @@ Privilege gradient: Question < Review (adds review + issue comments) < Plan (add
 Repeat these steps for:
 - [Code](copilot/modes/Code.chatmode.md)
 - [Plan](copilot/modes/Plan.chatmode.md)
-- [Question](copilot/modes/Question.chatmode.md)
+- [QnA](copilot/modes/QnA.chatmode.md)
 - [Review](copilot/modes/Review.chatmode.md)
 
 You can also download the files directly to the folder:
@@ -208,14 +208,14 @@ exec /opt/homebrew/bin/docker run -i --rm \
 ### Tool Availability Matrix
 
 - Modes organized left-to-right from least to most privileges
-- Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
+- Review mode adds PR review + issue commenting over QnA, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
 - Code mode includes full repository mutation (branches, merges, execution).
 - See [Modes](#modes)
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | Question | Review | Plan | Code |
+| Tool | QnA | Review | Plan | Code |
 |------|-----|--------|------|------|
 | **Built-In (VS Code / Core)** | | | | |
 | *Code & Project Navigation* | | | | |
@@ -635,5 +635,5 @@ Create or update a single file in a repository (Code mode only).
 
 ## Notes
 - Some tools appear in multiple conceptual groups; each tool has a dedicated anchor for direct linking.
-- Question mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
+- QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
 - This document is the canonical source for tool availability; update table and definitions together.

@@ -120,7 +120,7 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
       if (tool_name != "" && !is.na(tool_name)) {
         row_data <- data.frame(
           Tool = tool_name,
-          Question = cells[2],
+          QnA = cells[2],
           Plan = cells[3], 
           Review = cells[4],
           Code = cells[5],
@@ -136,7 +136,7 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
 
 # Function to convert tool matrix to expected toolsets per mode
 convert_matrix_to_toolsets <- function(tool_matrix) {
-  modes <- c("Question", "Plan", "Review", "Code")
+  modes <- c("QnA", "Plan", "Review", "Code")
   expected_toolsets <- list()
   
   for (mode in modes) {
@@ -199,7 +199,7 @@ validate_toolsets <- function() {
   
   # Extract actual toolsets from chatmode files
   cat("Reading toolsets from chatmode.md files...\n")
-  modes <- c("Question", "Plan", "Review", "Code")
+  modes <- c("QnA", "Plan", "Review", "Code")
   actual_toolsets <- list()
   
   for (mode in modes) {

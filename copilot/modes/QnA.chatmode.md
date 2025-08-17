@@ -1,5 +1,5 @@
 ---
-description: 'Question Mode'
+description: 'QnA Mode'
 tools: [
   'codebase', 'usages', 'problems', 'changes', 'testFailure',
   'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
