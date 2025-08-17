@@ -144,7 +144,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [runTasks](#runtasks) | ❌ | ❌ | ❌ | ✅ |
 | **GitHub Pull Requests Extension (VS Code)** | | | | |
 | [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
-| [copilotCodingAgent](#copilotcodingagent) | ❌ | ❌ | ❌ | ❌ |
+| [copilotCodingAgent](#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
 | **Context7** | | | | |
 | [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
 | [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
