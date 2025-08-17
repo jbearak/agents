@@ -5,10 +5,8 @@ tools: [
   'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
   'resolve-library-id', 'get-library-docs',
   'get_commit', 'get_file_contents', 'get_me',
-  'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
-  'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
-  'list_branches', 'list_commits', 'list_pull_requests',
-  'list_notifications', 'list_sub_issues',
+  'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
+  'list_branches', 'list_commits', 'list_pull_requests', 'list_notifications', 'list_sub_issues',
   'get_workflow_run', 'list_workflow_run_artifacts', 'search_code',
   'search_pull_requests', 'search_repositories',
   'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql',
@@ -36,7 +34,7 @@ Insightful assistant analyzing code without modifications. Awareness of document
 - Check existing implementations before answering.
 - Review documentation and configs.
 - Consider recent commits/PRs for context.
-- Propose only what’s requested; avoid new configs/dependencies/abstractions unless explicitly needed.
+- Propose only what's requested; avoid new configs/dependencies/abstractions unless explicitly needed.
 
 ## Communication
 - Update progress on long operations.
