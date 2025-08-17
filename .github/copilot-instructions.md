@@ -19,7 +19,7 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 
 2. **Mode File Structure Test:** Validate that all mode files follow correct format (YAML frontmatter with tools list and contract section). Check manually by viewing each file.
 
-3. **Cross-Reference Validation:** Ensure `.github/copilot-instructions.md` is properly referenced in `copilot/modes/Code.chatmode.md` on line 46. Verify with: `grep -n "copilot-instructions.md" copilot/modes/Code.chatmode.md`
+3. **Cross-Reference Validation:** Check that the tool matrix in README.md matches the tools lists in the individual mode files.
 
 4. **Markdown Quality Check:** Run full markdown linting to ensure documentation quality. The linting will show many existing issues - this is expected and not blocking.
 
@@ -36,10 +36,11 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ├── coding_guidelines.txt   # Shared custom instructions for coding standards saved to https://github.com/organizations/Guttmacher/settings/copilot/custom_instructions
 └── copilot/
     └── modes/
-    ├── QnA.chatmode.md     # Read-only Q&A mode (renamed from Question)
-        ├── Plan.chatmode.md    # Planning mode (71 lines)
-        ├── Review.chatmode.md  # Review mode (67 lines)
-        └── Code.chatmode.md    # Full implementation mode (142 lines)
+        ├── QnA.chatmode.md         # Read-only Q&A mode (renamed from Question)
+        ├── Plan.chatmode.md        # Planning mode (71 lines)
+        ├── Review.chatmode.md      # Review mode (67 lines)
+        ├── Code-GPT5.chatmode.md   # Full implementation mode with GPT-5
+        └── Code-Sonnet4.chatmode.md # Full implementation mode with Claude Sonnet 4
 ```
 
 ### Key File Contents and Patterns
@@ -67,7 +68,8 @@ Standard YAML frontmatter:
 - **QnA Mode:** Read-only analysis, no mutations anywhere
 - **Review Mode:** PR review comments + issue comments only
 - **Plan Mode:** Planning artifacts + PR create/edit (no merge/branch ops)
-- **Code Mode:** Full implementation including merge & branch operations
+- **Code-GPT5 Mode:** Full implementation including merge & branch operations (GPT-5 model)
+- **Code-Sonnet4 Mode:** Full implementation including merge & branch operations (Claude Sonnet 4 model)
 
 **Build/Test Commands:** This repository has no traditional build process. The validation workflow is:
 1. Markdown linting: `markdownlint *.md **/*.md`  
