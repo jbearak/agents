@@ -23,7 +23,7 @@ tools: [
   'createConfluencePage', 'updateConfluencePage', 'createConfluenceFooterComment', 'createConfluenceInlineComment',
   'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
-model: GPT-5
+model: GPT-5 (Preview)
 ---
 
 Implementation mode; small or large changes; prefer minimal, test-backed edits; plan for non-trivial.
