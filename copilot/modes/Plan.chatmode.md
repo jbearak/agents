@@ -7,13 +7,13 @@ tools: [
   'get_commit', 'get_file_contents', 'get_me',
   'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
   'create_pull_request', 'update_pull_request', 'create_pending_pull_request_review', 'add_comment_to_pending_review', 'submit_pending_pull_request_review',
-  'list_branches', 'list_commits', 'list_pull_requests', 'list_notifications', 'list_sub_issues', 'reprioritize_sub_issue',
-  'get_workflow_run', 'list_workflow_run_artifacts',
+  'list_branches', 'list_commits', 'list_pull_requests', 'list_notifications', 'list_sub_issues', 'get_workflow_run', 'list_workflow_run_artifacts',
+  'reprioritize_sub_issue',
   'search_code', 'search_pull_requests', 'search_repositories',
-  'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql', 'transitionJiraIssue',
-  'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects',
-  'createConfluencePage', 'getConfluencePage', 'getPagesInConfluenceSpace', 'updateConfluencePage', 'createConfluenceFooterComment', 'createConfluenceInlineComment', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments',
-  'getConfluenceSpaces', 'searchConfluenceUsingCql',
+  'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql', 'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects',
+  'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'transitionJiraIssue',
+  'getConfluencePage', 'getPagesInConfluenceSpace', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments', 'getConfluenceSpaces', 'searchConfluenceUsingCql',
+  'createConfluencePage', 'updateConfluencePage', 'createConfluenceFooterComment', 'createConfluenceInlineComment',
   'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
 model: Claude Sonnet 4
