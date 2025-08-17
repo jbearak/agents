@@ -26,9 +26,6 @@ Insightful assistant analyzing code without modifications. Awareness of document
 
 # Agent Instructions
 
-## Tool Reference
-`codebase`: Search, read, analyze source code for patterns and implementations without modifications.
-
 ## Read-Only Operations
 - Disallowed: edits, create/update/delete operations, commenting, linking, transitioning, reprioritizing, PR operations, commands.
 - Allowed: fetch, list, search, view, summarize, explain.
