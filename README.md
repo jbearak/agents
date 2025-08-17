@@ -69,6 +69,18 @@ You can also download the files directly to the folder:
 - Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
 - Mac: ~/Library/Application Support/Code/User/prompts/
 
+
+<p>
+  On Mac you can use emojis in the file names:
+  <img src="copilot/modes/emojis.png" alt="📚 QnA | 🪐 Plan | 🚀 Code | 🔬 Review" align="right" width="423" height="254"/>
+  <ul>
+  <li>📚 QnA</li>
+  <li>🪐 Plan</li>
+  <li>🚀 Code</li>
+  <li>📚 Review</li>
+  </ul>
+</p>
+
 ## MCP Servers
 
 ### Add MCP Servers to VS Code
