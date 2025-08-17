@@ -77,7 +77,7 @@ You can also download the files directly to the folder:
   <li>📚 QnA</li>
   <li>🪐 Plan</li>
   <li>🚀 Code</li>
-  <li>📚 Review</li>
+  <li>🔬 Review</li>
   </ul>
 </p>
 
