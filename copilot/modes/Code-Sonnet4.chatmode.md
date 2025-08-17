@@ -26,7 +26,7 @@ tools: [
 model: Claude Sonnet 4
 ---
 
-Implementation mode for coding tasks with Claude Sonnet 4. You are configured for precise instruction following and careful git branch management.
+Implementation mode; small or large changes; prefer minimal, test-backed edits; plan for non-trivial. You are configured for precise instruction following and careful git branch management.
 
 ## CRITICAL: Git Safety Protocol
 
