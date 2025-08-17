@@ -12,7 +12,6 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
 - [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
 - [Tool Availability Matrix](#tool-availability-matrix)
-- [Notes](#notes)
 - [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
@@ -208,6 +207,12 @@ exec /opt/homebrew/bin/docker run -i --rm \
 
 ## Tool Availability Matrix
 
+- Modes organized left-to-right from least to most privileges
+- Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
+- Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
+- Code mode includes full repository mutation (branches, merges, execution).
+- See [Modes Overview](#modes-overview)
+
 Legend: ✅ available, ❌ unavailable in that mode.
 
 | Tool | Question | Review | Plan | Code |
@@ -335,10 +340,6 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get_me](#get_me) | ✅ | ✅ | ✅ | ✅ |
 | *File Operations* | | | | |
 | [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
-## Notes
-- Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
-- Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
-- Code mode includes full repository mutation (branches, merges, execution).
 
 ## Using `code_style_guidelines.txt` Across Tools
 
