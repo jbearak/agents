@@ -194,7 +194,7 @@ On Mac you can use emojis in the file names:
 | Agent             | SR Available | Notes |
 |-------------------|--------------|-----------------------------------------------------------|
 | Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu |
-| Claude Code       | ✅           | Use keywords: "think" < "think hard" < "ultrathink"       |
+| Claude Code       | ✅           | Use keywords: ["think" < "think hard" < "think harder" < "ultrathink"](https://www.anthropic.com/engineering/claude-code-best-practices)       |
 | GitHub Copilot    | —            | Use Sonnet 3.7                                            |
 | Q                 | —            |                                                           |
 | Rovo              | —            |                                                           |
