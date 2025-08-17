@@ -65,21 +65,18 @@ Repeat these steps for:
 - [QnA](copilot/modes/QnA.chatmode.md)
 - [Review](copilot/modes/Review.chatmode.md)
 
+
 You can also download the files directly to the folder:
 - Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
 - Mac: ~/Library/Application Support/Code/User/prompts/
 
+<img src="copilot/modes/emojis.png" alt="📚 QnA | 🪐 Plan | 🚀 Code | 🔬 Review" align="right" width="423" height="254"/>
 
-<p>
-  On Mac you can use emojis in the file names:
-  <img src="copilot/modes/emojis.png" alt="📚 QnA | 🪐 Plan | 🚀 Code | 🔬 Review" align="right" width="423" height="254"/>
-  <ul>
-  <li>📚 QnA</li>
-  <li>🪐 Plan</li>
-  <li>🚀 Code</li>
-  <li>🔬 Review</li>
-  </ul>
-</p>
+On Mac you can use emojis in the file names:
+  - 📚 QnA
+  - 🪐 Plan
+  - 🚀 Code
+  - 🔬 Review
 
 ## MCP Servers
 
