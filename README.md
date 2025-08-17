@@ -6,6 +6,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes](#modes)
+  - [Modes Overview](#modes-overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [MCP Servers](#mcp-servers)
   - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
@@ -42,6 +43,12 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ```
 
 ## Modes
+
+### Modes Overview
+
+We define **four categories** of modes for different use cases, that follow a **privilege gradient:** **QnA < Review** (adds review + issue comments) **< Plan** (adds planning artifact + PR creation/edit) **< Code** (full lifecycle incl. merge & branch ops).
+
+From these four categories, we create **five modes**. **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts. We do this because these models respond differently to prompts and possess different strengths. For reference, see OpenAI's [GPT-5 prompting guide](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide) and Anthropic's [Claude 4 prompt engineering best practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices).
 
 <table>
   <thead>
@@ -120,9 +127,19 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   </tbody>
 </table>
 
-Privilege gradient: QnA < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+### Why custom modes?
 
-Note: **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts.
+- In VS Code, **switching among built-in modes does not set the model**.
+  - I found this cumbersome, annoying, and a cognitive burden.
+  - I wanted to switch between Ask/GPT-4.1 and Agent/Sonnet in one click.
+- VS Code **does not remember which tools you turned on and off.**
+  - When you reopen VS Code, it resets all tools to their default state.
+  - This drove me to create custom modes, and then I got carried away...
+- You can **type less** because each mode contains prompts tailored to its specific use case.
+- The modes contain prompts tailored to their default models.
+- **You can still use the built-in modes.**
+  - Switch to **Agent** mode when you do not want to use tailored instructions.
+
 
 ### Add Modes to VS Code
 
