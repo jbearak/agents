@@ -132,7 +132,7 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
 - In VS Code, **switching among built-in modes does not set the model**.
   - I found this cumbersome, annoying, and a cognitive burden.
   - I wanted to switch between Ask/GPT-4.1 and Agent/Sonnet in one click.
-- VS Code **does not remember which tools you turned on and off.**
+- The built-in **Agent mode does not remember which tools you turned on and off.**
   - When you reopen VS Code, it resets all tools to their default state.
   - This drove me to create custom modes, and then I got carried away...
 - You can **type less** because each mode contains prompts tailored to its specific use case.
