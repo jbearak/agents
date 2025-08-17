@@ -115,8 +115,8 @@ Note: This adds the ability to add files from GitHub, but does not add the GitHu
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | Question | Plan | Review | Code |
-|------|-----|------|--------|------|
+| Tool | Question | Review | Plan | Code |
+|------|-----|--------|------|------|
 | **Built-In (VS Code / Core)** | | | | |
 | *Code & Project Navigation* | | | | |
 | [codebase](#codebase) | ✅ | ✅ | ✅ | ✅ |
@@ -151,31 +151,31 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | **Atlassian** | | | | |
 | *Jira Issues & Operations* | | | | |
 | [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
-| [createJiraIssue](#createjiraissue) | ❌ | ✅ | ❌ | ✅ |
-| [editJiraIssue](#editjiraissue) | ❌ | ✅ | ❌ | ✅ |
+| [createJiraIssue](#createjiraissue) | ❌ | ❌ | ✅ | ✅ |
+| [editJiraIssue](#editjiraissue) | ❌ | ❌ | ✅ | ✅ |
 | [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
 | [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
 | [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
 | [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
-| [transitionJiraIssue](#transitionjiraissue) | ❌ | ✅ | ❌ | ✅ |
+| [transitionJiraIssue](#transitionjiraissue) | ❌ | ❌ | ✅ | ✅ |
 | *Jira Project Metadata* | | | | |
 | [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
 | [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Pages & Content* | | | | |
-| [createConfluencePage](#createconfluencepage) | ❌ | ✅ | ❌ | ✅ |
-| [getConfluencePage](#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
-| [getConfluencePageDescendants](#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
-| [getPagesInConfluenceSpace](#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
-| [updateConfluencePage](#updateconfluencepage) | ❌ | ✅ | ❌ | ✅ |
+| [createConfluencePage](#createconfluencepage) | ❌ | ❌ | ✅ | ✅ |
+| [getConfluencePage](#getConfluencePage) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](#getConfluencePageAncestors) | ❌ | ❌ | ❌ | ❌ |
+| [getConfluencePageDescendants](#getConfluencePageDescendants) | ❌ | ❌ | ❌ | ❌ |
+| [getPagesInConfluenceSpace](#getPagesInConfluenceSpace) | ✅ | ✅ | ✅ | ✅ |
+| [updateConfluencePage](#updateConfluencePage) | ❌ | ❌ | ✅ | ✅ |
 | *Confluence Comments* | | | | |
-| [createConfluenceFooterComment](#createconfluencefootercomment) | ❌ | ✅ | ❌ | ✅ |
-| [createConfluenceInlineComment](#createconfluenceinlinecomment) | ❌ | ✅ | ❌ | ✅ |
-| [getConfluencePageFooterComments](#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageInlineComments](#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
+| [createConfluenceFooterComment](#createConfluenceFooterComment) | ❌ | ❌ | ✅ | ✅ |
+| [createConfluenceInlineComment](#createConfluenceInlineComment) | ❌ | ❌ | ✅ | ✅ |
+| [getConfluencePageFooterComments](#getConfluencePageFooterComments) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageInlineComments](#getConfluencePageInlineComments) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Spaces & Discovery* | | | | |
-| [getConfluenceSpaces](#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
-| [searchConfluenceUsingCql](#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluenceSpaces](#getConfluenceSpaces) | ✅ | ✅ | ✅ | ✅ |
+| [searchConfluenceUsingCql](#searchConfluenceUsingCql) | ✅ | ✅ | ✅ | ✅ |
 | *User & Identity* | | | | |
 | [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
 | [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
@@ -203,16 +203,16 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Pull Requests  Actions* | | | | |
 | [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
 | [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pull_request](#create_pull_request) | ❌ | ✅ | ❌ | ✅ |
+| [create_pull_request](#create_pull_request) | ❌ | ❌ | ✅ | ✅ |
 | [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
 | [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
 | [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
 | [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [update_pull_request](#update_pull_request) | ❌ | ✅ | ❌ | ✅ |
+| [update_pull_request](#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
 | [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
 | *Sub-Issues* | | | | |
 | [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ✅ | ❌ | ❌ |
+| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |
 | *Gists* | | | | |
 | [list_gists](#list_gists) | ❌ | ❌ | ❌ | ❌ |
 | [update_gist](#update_gist) | ❌ | ❌ | ❌ | ❌ |
@@ -221,11 +221,11 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Code Scanning & Security* | | | | |
 | [list_code_scanning_alerts](#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
 | *Workflows (GitHub Actions)* | | | | |
-| [get_workflow_run](#get_workflow_run) | ✅ | ✅ | ❌ | ✅ |
+| [get_workflow_run](#get_workflow_run) | ✅ | ❌ | ✅ | ✅ |
 | [get_workflow_run_logs](#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
 | [get_workflow_run_usage](#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflow_jobs](#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ✅ | ❌ | ✅ |
+| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ❌ | ✅ | ✅ |
 | [list_workflow_runs](#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflows](#list_workflows) | ❌ | ❌ | ❌ | ❌ |
 | [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
