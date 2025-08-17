@@ -41,12 +41,12 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ## Modes Overview
 
-| Mode | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary | Default Model |
-|------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|--------------|
-| Question | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/Question.chatmode.md` | Strict read-only (no mutations anywhere) | GPT-4.1 |
-| Plan | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) | Sonnet 4 |
-| Review | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations | GPT-5 |
-| Code | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle | Sonnet 4 |
+| Mode | Default Model | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary |
+|------|--------------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|
+| Question | GPT-4.1 | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/Question.chatmode.md` | Strict read-only (no mutations anywhere) |
+| Plan | Sonnet 4 | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
+| Review | GPT-5 | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
+| Code | Sonnet 4 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
 
 Privilege gradient: Question < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
