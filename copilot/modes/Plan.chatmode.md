@@ -54,5 +54,3 @@ Include hypotheses, specifications, checks.
 
 ## YAGNI
 Essential artifacts only.
-
-**Note:** New tools default read-only.
