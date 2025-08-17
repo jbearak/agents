@@ -5,8 +5,8 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ## Table of Contents
 
 - [Repository Structure](#repository-structure)
-- [Modes][#modes]
-  - [Modes Overview](#modes-overview)
+- [Modes](#modes)
+  - [Overview](#overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [MCP Servers](#mcp-servers)
   - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
