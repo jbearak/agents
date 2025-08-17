@@ -181,17 +181,17 @@ On Mac you can use emojis in the file names:
 |-------------------|----------|----------|-------|------------|---------|----------------|------------------|
 | Claude.ai/Desktop | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌              |
 | Claude Code       | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌              |
-| GitHub Copilot    | ✅      | ❌        | ✅     | ❌         | ✅      | ✅              | ❌              |
+| GitHub Copilot    | ✅      | ❌        | ✅     | ✅         | ✅      | ✅              | ❌              |
 | Q                 | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
 | Rovo              | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
-| Warp              | ✅      | ✅        | ✅     | ✅         | ✅      | ✅              | ✅              |
+| Warp              | ✅      | ✅        | ✅     | ✅         | ❌      | ✅              | ✅              |
 
 **Note:** None of these agents specify whether GPT-5 refers to the model with minimal, low, medium, or high reasoning.
 
 
 ### Simulated Reasoning
 
-| Agent             | SR Available | Notes
+| Agent             | SR Available | Notes |
 |-------------------|--------------|-----------------------------------------------------------|
 | Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu |
 | Claude Code       | ✅           | Use keywords: "think" < "think hard" < "ultrathink"       |
