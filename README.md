@@ -6,6 +6,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes](#modes)
+  - [Modes Overview](#modes-overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [MCP Servers](#mcp-servers)
   - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
@@ -43,16 +44,102 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ## Modes
 
-| Mode | Default Model | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary |
-|------|--------------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|
-| QnA | GPT-4.1 | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/QnA.chatmode.md` | Strict read-only (no mutations anywhere) |
-| Plan | Sonnet 4 | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
-| Review | GPT-5 | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
-| Code | Sonnet 4 / GPT-5 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
+### Modes Overview
 
-Privilege gradient: QnA < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
+We define **four categories** of modes for different use cases, that follow a **privilege gradient:** **QnA < Review** (adds review + issue comments) **< Plan** (adds planning artifact + PR creation/edit) **< Code** (full lifecycle incl. merge & branch ops).
 
-Note: **Code-GPT5** and **Code-Sonnet4** modes contain instructions tailored to their respective models.
+From these four categories, we create **five modes**. **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts. We do this because these models respond differently to prompts and possess different strengths. For reference, see OpenAI's [GPT-5 prompting guide](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide) and Anthropic's [Claude 4 prompt engineering best practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices).
+
+<table>
+  <thead>
+    <tr>
+      <th>Mode</th>
+      <th>Default Model</th>
+      <th>Purpose</th>
+      <th>Local File / Repo Mutation</th>
+      <th>Remote Artifact Mutation (Issues/Pages/Comments)</th>
+      <th>Issue Commenting</th>
+      <th>PR Create/Edit</th>
+      <th>PR Review (comments / batch)</th>
+      <th>PR Merge / Branch Ops</th>
+      <th>File</th>
+      <th>Contract Summary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>QnA</td>
+      <td>GPT-4.1</td>
+      <td>Q&amp;A, exploration, explain code, gather context</td>
+      <td>No</td>
+      <td>No (read-only viewing only)</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td><code>copilot/modes/QnA.chatmode.md</code></td>
+      <td>Strict read-only (no mutations anywhere)</td>
+    </tr>
+    <tr>
+      <td>Plan</td>
+      <td>Sonnet 4</td>
+      <td>Plan work, refine scope, shape tickets/pages, organize PR scaffolding</td>
+      <td>No</td>
+      <td>Yes (issues/pages)</td>
+      <td>Yes</td>
+      <td>Yes (no branch create/update)</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td><code>copilot/modes/Plan.chatmode.md</code></td>
+      <td>Mutate planning artifacts + create/edit/review PRs (no merge/branch ops)</td>
+    </tr>
+    <tr>
+      <td>Review</td>
+      <td>GPT-5</td>
+      <td>Provide review feedback on PRs / issues</td>
+      <td>No</td>
+      <td>No (except issue comments)</td>
+      <td>Yes (issue comments only)</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td><code>copilot/modes/Review.chatmode.md</code></td>
+      <td>PR review + issue comments only; no other mutations</td>
+    </tr>
+    <tr>
+      <td>Code-GPT5</td>
+      <td>GPT-5</td>
+      <td rowspan="2">Implement changes, run tests/commands</td>
+      <td rowspan="2">Yes</td>
+      <td rowspan="2">Yes</td>
+      <td rowspan="2">Yes</td>
+      <td rowspan="2">Yes</td>
+      <td rowspan="2">Yes</td>
+      <td rowspan="2">Yes</td>
+      <td><code>copilot/modes/Code-GPT5.chatmode.md</code></td>
+      <td rowspan="2">Full implementation, execution, &amp; PR lifecycle</td>
+    </tr>
+    <tr>
+      <td>Code-Sonnet4</td>
+      <td>Sonnet 4</td>
+      <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Why custom modes?
+
+- In VS Code, **switching among built-in modes does not set the model**.
+  - I found this cumbersome, annoying, and a cognitive burden.
+  - I wanted to switch between Ask/GPT-4.1 and Agent/Sonnet in one click.
+- VS Code **does not remember which tools you turned on and off.**
+  - When you reopen VS Code, it resets all tools to their default state.
+  - This drove me to create custom modes, and then I got carried away...
+- You can **type less** because each mode contains prompts tailored to its specific use case.
+- The modes contain prompts tailored to their default models.
+- **You can still use the built-in modes.**
+  - Switch to **Agent** mode when you do not want to use tailored instructions.
+
 
 ### Add Modes to VS Code
 
