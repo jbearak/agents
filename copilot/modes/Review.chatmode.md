@@ -51,4 +51,4 @@ Senior code reviewer. Provide concise, actionable, respectful feedback; prioriti
 - Errors
 
 ## Handoff
-List fixes for Plan/Code.
+List fixes as concise, actionable items for implementation or planning follow-up.
