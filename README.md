@@ -17,7 +17,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
   - [Warp (Repository-Level)](#warp-repository-level)
-  - [Warp (User-Level)](#warp-repository-level)
+  - [Warp (User-Level)](#warp-user-level)
   - [Q (Repository-Level)](#q-repository-level)
   - [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [Tool Definitions](#tool-definitions)
