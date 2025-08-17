@@ -31,8 +31,8 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ```
 ./
-├── code_style_guidelines.txt   # Source of shared custom instructions (org-wide & multi-tool)
-├── README.md               # This documentation (modes, matrix, tool definitions)
+├── code_style_guidelines.txt   # General coding style guidelines
+├── README.md                   # This document
 └── copilot/
     └── modes/
         ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
