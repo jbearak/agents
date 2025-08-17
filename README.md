@@ -735,6 +735,6 @@ Get details for the authenticated GitHub user.
 Create or update a single file in a repository (Code mode only).
 
 ## Notes
-- Some tools appear in multiple conceptual groups; each tool has a dedicated anchor for direct linking.
+- Definitions come from the MCP servers
 - QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
-- This document is the canonical source for tool availability; update table and definitions together.
+- This document is the canonical source for tool availability; update table and definitions together and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
