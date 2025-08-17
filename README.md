@@ -10,6 +10,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 - [MCP Servers Overview](#mcp-servers-overview)
 - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
 - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
+- [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
 - [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
