@@ -109,7 +109,7 @@ If you prefer to install the MCP servers manually:
 
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
 2. Press each the **Connect** button (next to Atlassian and GitHub)
-Note: This adds the ability to add files from GitHub, but does not add the GitHub MCP Server.
+Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
 
 ### Add MCP Servers to Claude Desktop
 
