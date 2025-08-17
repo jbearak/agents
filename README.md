@@ -6,7 +6,6 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 - [Repository Structure](#repository-structure)
 - [Modes](#modes)
-  - [Overview](#modes-overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [MCP Servers](#mcp-servers)
   - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
@@ -41,7 +40,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
         └── Code.chatmode.md    # Full coding, execution, PR + branch ops
 ```
 
-## Modes Overview
+## Modes
 
 | Mode | Default Model | Purpose | Local File / Repo Mutation | Remote Artifact Mutation (Issues/Pages/Comments) | Issue Commenting | PR Create/Edit | PR Review (comments / batch) | PR Merge / Branch Ops | File | Contract Summary |
 |------|--------------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|
@@ -212,7 +211,7 @@ exec /opt/homebrew/bin/docker run -i --rm \
 - Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
 - Code mode includes full repository mutation (branches, merges, execution).
-- See [Modes Overview](#modes-overview)
+- See [Modes](#modes)
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
