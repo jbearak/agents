@@ -5,13 +5,14 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ## Table of Contents
 
 - [Repository Structure](#repository-structure)
-- [Modes Overview](#modes-overview)
-- [Add Modes to VS Code](#add-modes-to-vs-code)
-- [MCP Servers Overview](#mcp-servers-overview)
-- [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
-- [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
-- [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
-- [Tool Availability Matrix](#tool-availability-matrix)
+- [Modes][#modes]
+  - [Modes Overview](#modes-overview)
+  - [Add Modes to VS Code](#add-modes-to-vs-code)
+- [MCP Servers](#mcp-servers)
+  - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
+  - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
+  - [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
+  - [Tool Availability Matrix](#tool-availability-matrix)
 - [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
@@ -69,7 +70,7 @@ You can also download the files directly to the folder:
 - Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
 - Mac: ~/Library/Application Support/Code/User/prompts/
 
-## MCP Servers Overview
+## MCP Servers
 
 ### Add MCP Servers to VS Code
 
@@ -205,7 +206,7 @@ exec /opt/homebrew/bin/docker run -i --rm \
 ```
 
 
-## Tool Availability Matrix
+### Tool Availability Matrix
 
 - Modes organized left-to-right from least to most privileges
 - Review mode adds PR review + issue commenting over Question, without broader planning artifact mutation.
