@@ -37,6 +37,7 @@ Full implementation mode.
 
 ## Git
 **Pre-work:** `git fetch`, verify branch
+- Ensure working tree clean and up-to-date
 
 **Create branch:**
 ```bash
