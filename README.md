@@ -9,6 +9,9 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [Modes Overview](#modes-overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [Models](#models)
+  - [Models Available in Each Agent](#models-available-in-each-agent)
+  - [Simulated Reasoning](#simulated-reasoning)
+  - [Context Window](#context-window)
 - [MCP Servers](#mcp-servers)
   - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
   - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
@@ -172,14 +175,48 @@ On Mac you can use emojis in the file names:
 
 ## Models
 
+### Models Available in Each Agent
+
 | Agent             | Sonnet 4 | Opus 4.1 | GPT-5 | GPT-5 mini | GPT 4.1 | Gemini 2.5 Pro | Gemini 2.5 Flash |
 |-------------------|----------|----------|-------|------------|---------|----------------|------------------|
-| Claude.ai/Desktop | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌               |
-| Claude Code       | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌               |
-| GitHub Copilot    | ✅      | ❌        | ✅     | ❌         | ✅      | ✅              | ❌               |
-| Q                 | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌               |
-| Rovo              | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌               |
-| Warp              | ✅      | ✅        | ✅     | ✅         | ✅      | ✅              | ✅               |
+| Claude.ai/Desktop | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌              |
+| Claude Code       | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌              |
+| GitHub Copilot    | ✅      | ❌        | ✅     | ❌         | ✅      | ✅              | ❌              |
+| Q                 | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
+| Rovo              | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
+| Warp              | ✅      | ✅        | ✅     | ✅         | ✅      | ✅              | ✅              |
+
+**Note:** None of these agents specify whether GPT-5 refers to the model with minimal, low, medium, or high reasoning.
+
+
+### Simulated Reasoning
+
+| Agent             | SR Available | Notes
+|-------------------|--------------|-----------------------------------------------------------|
+| Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu |
+| Claude Code       | ✅           | Use keywords: "think" < "think hard" < "ultrathink"       |
+| GitHub Copilot    | —            | Use Sonnet 3.7                                            |
+| Q                 | —            |                                                           |
+| Rovo              | —            |                                                           |
+| Warp              | —            | Use o3                                                    |
+
+
+### Context Window
+
+| Agent             | Claude Sonnet and Opus | GPT-5 and GPT-5 mini | GPT 4.1 | Gemini  |
+|-------------------|------------------------|----------------------|---------|---------|
+| GitHub Copilot    | 111,836                | 108,637              | 111,452	| 108,637 |
+| Claude.ai/Desktop | 200,000                | —                    | —       | —       |
+| Claude Code       | 200,000                | —                    | —       | —       |
+| Rovo              | 200,000                | 400,000              |         | —       |
+| Q                 | 200,000                | —                    |         | —       |
+| Warp              | 200,000                | ?                    | ?       | ?       |
+
+- Context windows are measured in tokens.
+- A token is roughly 4 characters long.
+- For example, 'unbreakable' consists of 'un' - 'break' - 'able'.
+
+**Note:** Agents will generally compress/prune context windows to fit within their limits in multi-turn chats. However, Claude.ai/Desktop will not; if after several turns you exceed the context window, you cannot continue the chat.
 
 ## MCP Servers
 
