@@ -247,6 +247,12 @@ Legend: ✅ available, ❌ unavailable in that mode.
 
 ## Using `code_style_guidelines.txt` Across Tools
 
+### GitHub Copilot (Repository-Level)
+1. Create or edit `.github/copilot-instructions.md`
+2. Paste `code_style_guidelines.txt` content.
+
+Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
+
 ### GitHub Copilot (GitHub.com Chats)
 
 #### Organization-Level Instructions
@@ -262,24 +268,13 @@ Reference: [Adding organization custom instructions for GitHub Copilot](https://
 #### Personal Instructions
 **Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
 
+Since the organization-level instructions equal `code_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
+
 1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
+2. Open Custom Instructions editor and paste your personal instructions.
 3. Save; changes apply to your personal GitHub.com chats.
 
 Reference: [Adding personal custom instructions for GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-personal-instructions)
-
-### GitHub Copilot (Repository-Level)
-1. Create or edit `.github/copilot-instructions.md`
-2. Paste `code_style_guidelines.txt` content.
-
-Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
-
-### Warp (User-Level)
-1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
-3. Save the new rule.
-
-Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Warp (Repository-Level)
 1. Create `WARP.md`
@@ -287,6 +282,12 @@ Repeat for [YAGNI.txt](YAGNI.txt).
 3. Save the file.
 
 Repeat for [YAGNI.txt](YAGNI.txt).
+
+### Warp (User-Level)
+1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
+2. Paste your personal instructions.
+3. Save the new rule.
+
 
 ### Q (Repository-Level)
 1. Create `.amazonq/rules/code_style_guidelines.txt` in the repository root
