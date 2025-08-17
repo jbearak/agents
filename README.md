@@ -199,7 +199,7 @@ fi
 # Run the Docker container with the token
 exec /opt/homebrew/bin/docker run -i --rm \
     -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
-    mcp/github "$@"
+    ghcr.io/github/github-mcp-server "$@"
 
 ```
 
