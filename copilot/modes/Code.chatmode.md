@@ -30,7 +30,6 @@ Implementation mode; small or large changes; prefer minimal, test‑backed edits
 - Trivial: proceed
 
 ## Standards
-- Follow `.github/copilot-instructions.md`
 - Match existing style
 - Descriptive commits
 - Reference similar code
