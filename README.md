@@ -12,8 +12,8 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
 - [Tool Availability Matrix](#tool-availability-matrix)
 - [Notes](#notes)
-- [Using `coding_guidelines.txt` Across Tools](#using-coding_guidelinestxt-across-tools)
-  - [GitHub Copilot (Organization-Level)](#github-copilot-organization-level)
+- [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
+  - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [Warp (User-Level)](#warp-user-level)
   - [Warp (Repository-Level)](#warp-repository-level)
@@ -29,7 +29,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ```
 ./
-├── coding_guidelines.txt   # Source of shared custom instructions (org-wide & multi-tool)
+├── code_style_guidelines.txt   # Source of shared custom instructions (org-wide & multi-tool)
 ├── README.md               # This documentation (modes, matrix, tool definitions)
 └── copilot/
     └── modes/
@@ -245,42 +245,59 @@ Legend: ✅ available, ❌ unavailable in that mode.
 - Plan mode extends Review with planning artifact creation/edit and PR creation/edit (no merge / branch ops).
 - Code mode includes full repository mutation (branches, merges, execution).
 
-## Using `coding_guidelines.txt` Across Tools
+## Using `code_style_guidelines.txt` Across Tools
 
-### GitHub Copilot (Organization-Level)
+### GitHub Copilot (GitHub.com Chats)
+
+#### Organization-Level Instructions
+**Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) below.
+
 1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `coding_guidelines.txt`.
+2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
 3. Save; changes propagate to organization members (may require editor reload).
 4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
 
+Reference: [Adding organization custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-organization-instructions)
+
+#### Personal Instructions
+**Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
+
+1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
+2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
+3. Save; changes apply to your personal GitHub.com chats.
+
+Reference: [Adding personal custom instructions for GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-personal-instructions)
+
 ### GitHub Copilot (Repository-Level)
 1. Create or edit `.github/copilot-instructions.md`
-2. Paste `coding_guidelines.txt` content.
+2. Paste `code_style_guidelines.txt` content.
+
+Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
 
 ### Warp (User-Level)
 1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
-2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the new rule.
 
 Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Warp (Repository-Level)
 1. Create `WARP.md`
-2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
 
 Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Q (Repository-Level)
-1. Create `.amazonq/rules/coding_guidelines.txt` in the repository root
-2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+1. Create `.amazonq/rules/code_style_guidelines.txt` in the repository root
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
 
 Repeat for [YAGNI.txt](YAGNI.txt).
 
 ### Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
-2. Paste [coding_guidelines.txt](coding_guidelines.txt) content.
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
 
 Repeat for [YAGNI.txt](YAGNI.txt).
