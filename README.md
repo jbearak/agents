@@ -172,14 +172,14 @@ On Mac you can use emojis in the file names:
 
 ## Models
 
-| Agent             | GPT-5 | Sonnet 4 | GPT 4.1 | Opus 4.1 | Gemini 2.5 Pro | Gemini 2.5 Flash | GPT-5 mini | o4 mini |
-|-------------------|-------|----------|---------|----------|----------------|------------------|------------|---------|
-| Claude.ai/Desktop | ❌     |  ✅      | ❌      | ✅        | ❌            | ❌                | ❌         | ❌      |
-| Claude Code       | ❌     |  ✅      | ❌      | ✅        | ❌            | ❌                | ❌         | ❌      |
-| GitHub Copilot    | ✅     |  ✅      | ✅      | ❌        | ✅            | ❌                | ❌         | ✅      |
-| Q                 | ❌     |  ✅      | ❌      | ❌        | ❌            | ❌                | ❌         | ❌      |
-| Rovo              | ❌     |  ✅      | ❌      | ❌        | ❌            | ❌                | ❌         | ❌      |
-| Warp              | ✅     |  ✅      | ✅      | ✅        | ✅            | ✅                | ✅         | ✅      |
+| Agent             | Sonnet 4 | Opus 4.1 | o4 mini | GPT-5 | GPT-5 mini | GPT 4.1 | Gemini 2.5 Pro | Gemini 2.5 Flash |
+|-------------------|----------|----------|---------|-------|------------|---------|----------------|------------------|
+| Claude.ai/Desktop | ✅      | ✅        | ❌      | ❌     | ❌         | ❌      | ❌              | ❌               |
+| Claude Code       | ✅      | ✅        | ❌      | ❌     | ❌         | ❌      | ❌              | ❌               |
+| GitHub Copilot    | ✅      | ❌        | ✅      | ✅     | ❌         | ✅      | ✅              | ❌               |
+| Q                 | ✅      | ❌        | ❌      | ❌     | ❌         | ❌      | ❌              | ❌               |
+| Rovo              | ✅      | ❌        | ❌      | ❌     | ❌         | ❌      | ❌              | ❌               |
+| Warp              | ✅      | ✅        | ✅      | ✅     | ✅         | ✅      | ✅              | ✅               |
 
 ## MCP Servers
 
