@@ -34,7 +34,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 ├── README.md               # This documentation (modes, matrix, tool definitions)
 └── copilot/
     └── modes/
-  ├── QnA.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
+        ├── QnA.chatmode.md     # Strict read-only Q&A / analysis (no mutations)
         ├── Plan.chatmode.md    # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
         ├── Review.chatmode.md  # PR & issue review feedback (comments only)
         └── Code.chatmode.md    # Full coding, execution, PR + branch ops
