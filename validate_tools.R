@@ -136,27 +136,32 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
 
 # Function to convert tool matrix to expected toolsets per mode
 convert_matrix_to_toolsets <- function(tool_matrix) {
-  modes <- c("QnA", "Plan", "Review", "Code")
+  # The README has a single 'Code' column that applies to both Code chatmodes.
+  base_modes <- c("QnA", "Review", "Plan", "Code")
   expected_toolsets <- list()
-  
-  for (mode in modes) {
+
+  for (mode in base_modes) {
     if (!mode %in% names(tool_matrix)) {
       warning(paste("Mode", mode, "not found in tool matrix"))
       next
     }
-    
-    # Get tools that have checkmark for this mode (handle encoding issues)
+
     mode_column <- tool_matrix[[mode]]
-    # Look specifically for checkmarks (including encoded ones) - be more strict
     has_tool <- str_detect(mode_column, "✅|✓|���") & !is.na(mode_column)
     mode_tools <- tool_matrix[has_tool, "Tool"]
     mode_tools <- mode_tools[!is.na(mode_tools)]
     mode_tools <- str_trim(mode_tools)
     mode_tools <- mode_tools[mode_tools != ""]
-    
+
     expected_toolsets[[mode]] <- sort(unique(mode_tools))
   }
-  
+
+  # Duplicate the single Code column for both implementation-specific Code modes.
+  if (!is.null(expected_toolsets[["Code"]])) {
+    expected_toolsets[["Code-GPT5"]] <- expected_toolsets[["Code"]]
+    expected_toolsets[["Code-Sonnet4"]] <- expected_toolsets[["Code"]]
+  }
+
   return(expected_toolsets)
 }
 
@@ -199,7 +204,7 @@ validate_toolsets <- function() {
   
   # Extract actual toolsets from chatmode files
   cat("Reading toolsets from chatmode.md files...\n")
-  modes <- c("QnA", "Plan", "Review", "Code")
+  modes <- c("QnA", "Plan", "Review", "Code-GPT5", "Code-Sonnet4")
   actual_toolsets <- list()
   
   for (mode in modes) {
