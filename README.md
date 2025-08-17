@@ -30,15 +30,16 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 
 ```
 ./
-├── code_style_guidelines.txt   # Source of shared custom instructions (org-wide & multi-tool)
-├── README.md               # This documentation (modes, matrix, tool definitions)
+├── code_style_guidelines.txt        # Source of shared custom instructions (org-wide & multi-tool)
+├── README.md                        # This documentation (modes, matrix, tool definitions)
 └── copilot/
     └── modes/
         ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
         ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
         ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
-        └── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
-        ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+        ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+        ├── Review-Gemini.chatmode.md # PR & issue review feedback (Gemini 2.5 Pro model)
+        └── Review-GPT5.chatmode.md  # PR & issue review feedback (GPT-5 model)
 ```
 
 ## Modes
@@ -47,12 +48,14 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 |------|--------------|---------|-----------------------------|--------------------------------------------------|------------------|----------------|------------------------------|-----------------------|------|------------------|
 | QnA | GPT-4.1 | Q&A, exploration, explain code, gather context | No | No (read-only viewing only) | No | No | No | No | `copilot/modes/QnA.chatmode.md` | Strict read-only (no mutations anywhere) |
 | Plan | Sonnet 4 | Plan work, refine scope, shape tickets/pages, organize PR scaffolding | No | Yes (issues/pages) | Yes | Yes (no branch create/update) | Yes | No | `copilot/modes/Plan.chatmode.md` | Mutate planning artifacts + create/edit/review PRs (no merge/branch ops) |
-| Review | GPT-5 | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review.chatmode.md` | PR review + issue comments only; no other mutations |
-| Code | Sonnet 4 / GPT-5 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code.chatmode.md` | Full implementation, execution, & PR lifecycle |
+| Review-Gemini | Gemini 2.5 Pro | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review-Gemini.chatmode.md` | PR review + issue comments only; no other mutations |
+| Review-GPT5 | GPT-5 | Provide review feedback on PRs / issues | No | No (except issue comments) | Yes (issue comments only) | No | Yes | No | `copilot/modes/Review-GPT5.chatmode.md` | PR review + issue comments only; no other mutations |
+| Code-Sonnet4 | Sonnet 4 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code-Sonnet4.chatmode.md` | Full implementation, execution, & PR lifecycle |
+| Code-GPT5 | GPT-5 | Implement changes, run tests/commands | Yes | Yes | Yes | Yes | Yes | Yes | `copilot/modes/Code-GPT5.chatmode.md` | Full implementation, execution, & PR lifecycle |
 
 Privilege gradient: QnA < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
-Note: **Code-GPT5** and **Code-Sonnet4** modes contain instructions tailored to their respective models.
+Note: **Code-GPT5**, **Code-Sonnet4**, **Review-Gemini**, and **Review-GPT5** modes contain instructions tailored to their respective models.
 
 ### Add Modes to VS Code
 
@@ -67,7 +70,8 @@ Repeat these steps for:
 - [Plan](copilot/modes/Plan.chatmode.md)
 - [Code-Sonnet4](copilot/modes/Code-Sonnet4.chatmode.md)
 - [Code-GPT5](copilot/modes/Code-GPT5.chatmode.md)
-- [Review](copilot/modes/Review.chatmode.md)
+- [Review-Gemini](copilot/modes/Review-Gemini.chatmode.md)
+- [Review-GPT5](copilot/modes/Review-GPT5.chatmode.md)
 
 
 You can also download the files directly to the folder:
@@ -79,7 +83,8 @@ On Mac you can use emojis in the file names:
   - 🔭 Plan
   - 🚀 Code-GPT5
   - ☄️ Code-Sonnet4
-  - 🔬 Review
+  - 🔬 Review-Gemini
+  - 🧪 Review-GPT5
 
 ## MCP Servers
 
@@ -225,7 +230,7 @@ exec /opt/homebrew/bin/docker run -i --rm \
 - Code modes include full repository mutation (branches, merges, execution).
 - See [Modes](#modes)
 
-Note: "Code" shows toolsets for "Code - GPT-5" and "Code - Sonnet-4" modes.
+Note: "Code" shows toolsets for "Code-GPT5" and "Code-Sonnet4" modes. "Review" shows toolsets for both "Review-Gemini" and "Review-GPT5" modes.
 
 Legend: ✅ available, ❌ unavailable in that mode.
 

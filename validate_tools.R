@@ -137,6 +137,7 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
 # Function to convert tool matrix to expected toolsets per mode
 convert_matrix_to_toolsets <- function(tool_matrix) {
   # The README has a single 'Code' column that applies to both Code chatmodes.
+  # Similarly, a single 'Review' column applies to both Review chatmodes.
   base_modes <- c("QnA", "Review", "Plan", "Code")
   expected_toolsets <- list()
 
@@ -160,6 +161,12 @@ convert_matrix_to_toolsets <- function(tool_matrix) {
   if (!is.null(expected_toolsets[["Code"]])) {
     expected_toolsets[["Code-GPT5"]] <- expected_toolsets[["Code"]]
     expected_toolsets[["Code-Sonnet4"]] <- expected_toolsets[["Code"]]
+  }
+
+  # Duplicate the single Review column for both model-specific Review modes.
+  if (!is.null(expected_toolsets[["Review"]])) {
+    expected_toolsets[["Review-Gemini"]] <- expected_toolsets[["Review"]]
+    expected_toolsets[["Review-GPT5"]] <- expected_toolsets[["Review"]]
   }
 
   return(expected_toolsets)
@@ -204,7 +211,7 @@ validate_toolsets <- function() {
   
   # Extract actual toolsets from chatmode files
   cat("Reading toolsets from chatmode.md files...\n")
-  modes <- c("QnA", "Plan", "Review", "Code-GPT5", "Code-Sonnet4")
+  modes <- c("QnA", "Plan", "Review-Gemini", "Review-GPT5", "Code-GPT5", "Code-Sonnet4")
   actual_toolsets <- list()
   
   for (mode in modes) {
