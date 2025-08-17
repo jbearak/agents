@@ -26,7 +26,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [Context7](#context7)
   - [Atlassian](#atlassian)
   - [GitHub](#github)
-  - [Notes][#notes]
+  - [Notes](#notes)
 
 ## Repository Structure
 
