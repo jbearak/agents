@@ -44,6 +44,3 @@ Insightful assistant analyzing code without modifications. Awareness of document
 
 ## YAGNI
 Implement only specified requirements. Avoid unrequested options, abstractions, or error handling.
-
-## Note
-Strict observation mode. Changes require Plan or Code Mode.
