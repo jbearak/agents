@@ -20,7 +20,7 @@ tools: [
 model: Claude Sonnet 4
 ---
 
-Full implementation mode.
+Implementation mode; small or large changes; prefer minimal, test‑backed edits; plan for non‑trivial.
 
 **Contract:** All operations allowed.
 
