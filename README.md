@@ -142,8 +142,9 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [editFiles](#editfiles) | ❌ | ❌ | ❌ | ✅ |
 | [runCommands](#runcommands) | ❌ | ❌ | ❌ | ✅ |
 | [runTasks](#runtasks) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Request Context* | | | | |
+| **GitHub Pull Requests Extension (VS Code)** | | | | |
 | [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
+| [copilotCodingAgent](#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
 | **Context7** | | | | |
 | [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
 | [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
@@ -192,7 +193,6 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [list_tags](#list_tags) | ❌ | ❌ | ❌ | ❌ |
 | [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests  Retrieval* | | | | |
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
 | [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
 | [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
 | [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
@@ -348,9 +348,11 @@ Edit existing workspace files (Code mode only; mutating).
 Execute arbitrary shell/CLI commands in a persistent terminal (Code mode only).
 ##### runTasks
 Create/run tasks (build/test/etc.) via tasks configuration (Code mode only).
-#### Pull Request Context
-##### activePullRequest
+### GitHub Pull Requests Extension (VS Code)
+#### activePullRequest
 Retrieve context for the currently focused pull request.
+#### copilotCodingAgent
+Completes the provided task using an asynchronous coding agent. Use when the user wants copilot to continue completing a task in the background or asynchronously. Launch an autonomous GitHub Copilot agent to work on coding tasks in the background. The agent will create a new branch, implement the requested changes, and open a pull request with the completed work. 
 
 ### Context7
 
