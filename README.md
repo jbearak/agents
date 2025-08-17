@@ -113,7 +113,7 @@ Note: This adds the ability to add files from GitHub, but does not add the GitHu
 
 ### Add MCP Servers to Claude Desktop
 
-Adding MCP servers to Claude.ai adds them to Claude Desktop. Hence, you don't need to add them separately.
+When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Therefore, only add local servers.
 
 1. Open Settings > Developer > Edit Config
 2. Open `claude_desktop_config.json` for editing
