@@ -8,6 +8,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
 - [Modes](#modes)
   - [Modes Overview](#modes-overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
+- [Models](#models)
 - [MCP Servers](#mcp-servers)
   - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
   - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
@@ -168,6 +169,17 @@ On Mac you can use emojis in the file names:
   - 🚀 Code-GPT5
   - ☄️ Code-Sonnet4
   - 🔬 Review
+
+## Models
+
+| Agent             | GPT-5 | Sonnet 4 | GPT 4.1 | Opus 4.1 | Gemini 2.5 Pro | Gemini 2.5 Flash | GPT-5 mini | o4 mini |
+|-------------------|-------|----------|---------|----------|----------------|------------------|------------|---------|
+| Claude.ai/Desktop | ❌     |  ✅      | ❌      | ✅        | ❌            | ❌                | ❌         | ❌      |
+| Claude Code       | ❌     |  ✅      | ❌      | ✅        | ❌            | ❌                | ❌         | ❌      |
+| GitHub Copilot    | ✅     |  ✅      | ✅      | ❌        | ✅            | ❌                | ❌         | ✅      |
+| Q                 | ❌     |  ✅      | ❌      | ❌        | ❌            | ❌                | ❌         | ❌      |
+| Rovo              | ❌     |  ✅      | ❌      | ❌        | ❌            | ❌                | ❌         | ❌      |
+| Warp              | ✅     |  ✅      | ✅      | ✅        | ✅            | ✅                | ✅         | ✅      |
 
 ## MCP Servers
 
