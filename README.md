@@ -192,7 +192,6 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [list_tags](#list_tags) | ❌ | ❌ | ❌ | ❌ |
 | [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests  Retrieval* | | | | |
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
 | [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
 | [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
 | [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
