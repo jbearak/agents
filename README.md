@@ -22,6 +22,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [Tool Definitions](#tool-definitions)
   - [Built-In (VS Code / Core)](#built-in-vs-code--core)
+  - [GitHub Pull Requests Extension (VS Code)](#github-pull-requests-extension-vs-code)
   - [Context7](#context7)
   - [Atlassian](#atlassian)
   - [GitHub](#github)
@@ -437,6 +438,7 @@ Edit existing workspace files (Code mode only; mutating).
 Execute arbitrary shell/CLI commands in a persistent terminal (Code mode only).
 ##### runTasks
 Create/run tasks (build/test/etc.) via tasks configuration (Code mode only).
+
 ### GitHub Pull Requests Extension (VS Code)
 #### activePullRequest
 Retrieve context for the currently focused pull request.
