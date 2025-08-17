@@ -120,8 +120,6 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   </tbody>
 </table>
 
-<sub>HTML used here (instead of Markdown) to enable rowspan for shared Code mode capabilities.</sub>
-
 Privilege gradient: QnA < Review (adds review + issue comments) < Plan (adds planning artifact + PR creation/edit) < Code (full lifecycle incl. merge & branch ops).
 
 Note: **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts.
