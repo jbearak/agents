@@ -281,8 +281,6 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
 
-Repeat for [YAGNI.txt](YAGNI.txt).
-
 ### Warp (User-Level)
 1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
 2. Paste your personal instructions.
@@ -294,14 +292,10 @@ Repeat for [YAGNI.txt](YAGNI.txt).
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
 
-Repeat for [YAGNI.txt](YAGNI.txt).
-
 ### Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
-
-Repeat for [YAGNI.txt](YAGNI.txt).
 
 ## Tool Definitions
 
