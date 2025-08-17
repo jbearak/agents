@@ -15,7 +15,7 @@ tools: [
     'getConfluenceSpaces', 'searchConfluenceUsingCql',
   'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
 ]
-model: GPT-5 (Preview)
+model: Gemini 2.5 Pro
 ---
 
 Senior code reviewer. Provide concise, actionable, respectful feedback; prioritize correctness and security.
