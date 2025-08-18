@@ -353,6 +353,143 @@ exec /opt/homebrew/bin/docker run -i --rm \
 
 ```
 
+##### Detailed steps: Creating the Keychain item (Mac)
+
+If you're unfamiliar with Keychain Access, here is an explicit walkthrough for step 1 above:
+
+1. Press `Command (⌘) + Space` to open Spotlight, type `Keychain Access`, press `Return`.
+2. In the left sidebar, ensure the `login` keychain is selected and the category `Passwords` is highlighted.
+3. From the menu bar choose `File > New Password Item…` (or click the `+` button if visible).
+4. In the dialog:
+   - Keychain Item Name (or Name): `GitHub`
+   - Account Name: your macOS username (or simply `token` — must match the `-a "$USER"` used in the script; leaving it as your username keeps things consistent).
+   - Password: paste your GitHub Personal Access Token.
+5. Click `Add`.
+6. (Optional) Test retrieval in Terminal:
+   ```bash
+   security find-generic-password -s "GitHub" -a "$USER" -w
+   ```
+   This should print only the token (no extra whitespace). If you see an error, confirm the keychain is unlocked (`Keychain Access > lock icon`) and that the Account name matches `$USER`.
+7. Make the wrapper script executable:
+   ```bash
+   chmod +x ~/bin/mcp-github-wrapper.sh
+   ```
+8. Restart Claude Desktop.
+
+Notes:
+- The shebang `#!/opt/homebrew/bin/bash` assumes Homebrew installed bash. If not, change to `#!/bin/bash`.
+- If your keychain auto-locks, you may need to unlock it after a reboot: `security unlock-keychain login.keychain-db`.
+- The script deliberately uses `exec` so the Docker process replaces the wrapper (cleaner process tree).
+
+##### Verification (Mac)
+
+Run:
+```bash
+~/bin/mcp-github-wrapper.sh --help 2>&1 | head -5
+```
+If the token loads correctly, Docker help text (or MCP server usage) appears without an authentication error. If you instead see: `Could not retrieve GitHub token`, re-check steps 4–6.
+
+#### Storing GitHub Token Securely on Windows
+
+You can achieve a similar setup on Windows using the Windows Credential Manager plus a PowerShell wrapper script. Two approaches exist: GUI (simplest) or PowerShell (scriptable). The instructions below assume Docker Desktop is installed and `docker` is on your `PATH`.
+
+##### 1. Add a Generic Credential (GUI)
+
+1. Open `Control Panel` (press `Win` key, type “Control Panel”).
+2. Navigate: `User Accounts > Credential Manager`.
+3. Choose `Windows Credentials`.
+4. Click `Add a generic credential`.
+5. Internet or network address: `GitHub`
+6. User name: `token` (placeholder; not used by GitHub)
+7. Password: paste your GitHub Personal Access Token.
+8. Click `OK` to save.
+
+##### 2. Confirm it exists (Terminal)
+
+```
+Confirm it exists:
+```powershell
+Get-StoredCredential -Target "GitHub"
+```
+
+##### 3. Create the PowerShell wrapper script
+
+Create a directory for helper scripts if you don’t already have one:
+```powershell
+New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null
+```
+
+Create the file `C:\Users\<username>\bin\mcp-github-wrapper.ps1` (replace `<username>`). Contents:
+```powershell
+Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+  try { Import-Module CredentialManager -ErrorAction Stop } catch {
+    Write-Error 'CredentialManager module not found. Install with: Install-Module -Name CredentialManager -Scope CurrentUser'
+    exit 1
+  }
+} else { Import-Module CredentialManager | Out-Null }
+
+$cred = Get-StoredCredential -Target 'GitHub'
+if (-not $cred) {
+  Write-Error "Generic Credential 'GitHub' not found. Create it in Credential Manager first."
+  exit 1
+}
+
+$env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
+
+docker run -i --rm `
+  -e GITHUB_PERSONAL_ACCESS_TOKEN=$env:GITHUB_PERSONAL_ACCESS_TOKEN `
+  ghcr.io/github/github-mcp-server @Args
+```
+
+Optional: Unblock the script (if downloaded) and set execution policy (scoped to user):
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+```
+
+##### 4. Update `claude_desktop_config.json` (Windows)
+
+In most installations the file resides at (if uncertain, search):
+`C:\Users\<username>\AppData\Roaming\Claude\claude_desktop_config.json`
+
+Add or modify the `GitHub` entry:
+```jsonc
+{
+  "mcpServers": {
+    "GitHub": {
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File",
+        "C:/Users/<username>/bin/mcp-github-wrapper.ps1"
+      ],
+      "env": {},
+      "working_directory": null
+    }
+  }
+}
+```
+
+##### 5. Verification (Windows)
+
+Run (outside Claude) to confirm wrapper works:
+```powershell
+& $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help 2>&1 | Select-Object -First 10
+```
+Expected: Docker help text (or MCP server usage). If you see an error about credentials, re-run step 1 or step 2 to create the Generic Credential named `GitHub`.
+
+##### Security Notes (Windows)
+
+- The Generic Credential is stored securely (DPAPI) scoped to the current user profile.
+- The script exports the token only to the container environment; it does not echo it.
+- Avoid embedding the token in the JSON config or scripts directly.
+
+
 
 ### Tool Availability Matrix
 
