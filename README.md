@@ -263,95 +263,129 @@ Note: This adds the ability to add files from GitHub, but does not add the [GitH
 
 ### Add MCP Servers to Claude Desktop
 
-When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Therefore, only add local servers.
+When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Only add local servers here. For the GitHub MCP server, always use secure secret retrieval (Keychain on macOS or Windows Credential Manager). Never paste access tokens directly into `claude_desktop_config.json`.
 
-1. Open Settings > Developer > Edit Config
-2. Open `claude_desktop_config.json` for editing
-3. Paste:
-```
-{
-    "mcpServers": {
-        "Context7": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@upstash/context7-mcp"
-            ],
-            "env": {},
-            "working_directory": null
-        },
-        "GitHub": {
-            "command": "docker",
-            "args": [
-                "run",
-                "-i",
-                "--rm",
-                "-e",
-                "GITHUB_PERSONAL_ACCESS_TOKEN",
-                "ghcr.io/github/github-mcp-server"
-            ],
-            "env": {
-                "GITHUB_PERSONAL_ACCESS_TOKEN": "<Your_GitHub_Token_Here>"
-            }
-        }
-    }
-}
-```
-4. Obtain your GitHub personal access token from [GitHub Settings](https://github.com/settings/tokens) and paste it in place of `<Your_GitHub_Token_Here>`
-5. Restart Claude Desktop
 
-#### Storing GitHub Token in Keychain
 
-You can store your GitHub personal access token in your login keychain instead of pasting it directly into the config file. To do this on a Mac:
+#### Windows (Credential Manager + PowerShell + Podman)
 
-Your `claude_desktop_config.json` file should look like this:
+1. Store token securely:
+   - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+   - Internet or network address: `GitHub`
+   - Username: `token` (placeholder)
+   - Password: (your PAT)
+2. (Optional) Inspect via PowerShell:
+   ```powershell
+   Install-Module -Name CredentialManager -Scope CurrentUser -Force
+   Import-Module CredentialManager
+   Get-StoredCredential -Target GitHub
+   ```
+3. Wrapper script `C:\Users\<username>\bin\mcp-github-wrapper.ps1`:
+   ```powershell
+   Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
+   Set-StrictMode -Version Latest
+   $ErrorActionPreference = 'Stop'
+   try {
+     Import-Module CredentialManager -ErrorAction Stop
+   } catch {
+     Write-Error 'Install CredentialManager module first'; exit 1
+   }
+   $cred = Get-StoredCredential -Target 'GitHub'
+   if (-not $cred) { Write-Error "Credential 'GitHub' not found"; exit 1 }
+   $env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
+   podman run -i --rm `
+     -e GITHUB_PERSONAL_ACCESS_TOKEN=$env:GITHUB_PERSONAL_ACCESS_TOKEN `
+     ghcr.io/github/github-mcp-server @Args
+   ```
+4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
+5. Set execution policy (user scope):
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+   ```
+6. Add to `claude_desktop_config.json`:
+   ```json
+   {
+     "mcpServers": {
+       "GitHub": {
+         "command": "powershell",
+         "args": [
+           "-NoProfile","-ExecutionPolicy","Bypass","-File",
+           "C:/Users/<username>/bin/mcp-github-wrapper.ps1"
+         ],
+         "env": {},
+         "working_directory": null
+       }
+     }
+   }
+   ```
+7. Install & init Podman:
+   ```powershell
+   winget install RedHat.Podman
+   podman machine init --cpus 2 --memory 4096 --disk-size 20
+   podman machine start
+   ```
+8. Verify wrapper:
+   ```powershell
+   & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 10
+   ```
+   If it errors about credentials, re-create the Generic Credential `GitHub`
 
-```json
-{
-    "mcpServers": {
-        "Context7": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@upstash/context7-mcp"
-            ],
-            "env": {},
-            "working_directory": null
-        },
-        "GitHub": {
-            "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
-            "args": [],
-            "env": {
-            "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
-            },
-            "working_directory": null
-        }
-    }
-}
-```
 
-0. Replace `<username>` with your actual username in the config file.
-1. Open Keychain Access and create a new generic password named GitHub which contains your access token.
-2. Create a file named `~/bin/mcp-github-wrapper.sh` with the following content:
+   
+#### macOS (Keychain + Wrapper Script)
 
-```bash
-#!/opt/homebrew/bin/bash
-GITHUB_TOKEN=$(security find-generic-password -s "GitHub" -a "$USER" -w 2>/dev/null)
+1. Create a keychain item:
+   - Open Keychain Access (⌘ + Space → "Keychain Access").
+   - Select the `login` keychain & `Passwords` category.
+   - File > New Password Item…
+     - Name: `GitHub`
+     - Account: your macOS username (must match `$USER`).
+     - Password: your GitHub Personal Access Token.
+   - Click Add.
+2. Create wrapper script `~/bin/mcp-github-wrapper.sh`:
+   ```bash
+   #!/opt/homebrew/bin/bash
+   GITHUB_TOKEN=$(security find-generic-password -s "GitHub" -a "$USER" -w 2>/dev/null)
+   if [ -z "$GITHUB_TOKEN" ]; then
+       echo "Error: Could not retrieve GitHub token from keychain" >&2
+       echo "Ensure keychain item 'GitHub' exists and keychain is unlocked" >&2
+       exit 1
+   fi
+   exec /opt/homebrew/bin/docker run -i --rm \
+       -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
+       ghcr.io/github/github-mcp-server "$@"
+   ```
+3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
+4. Edit (or create) `claude_desktop_config.json` and add:
+   ```json
+   {
+     "mcpServers": {
+       "Context7": {
+         "command": "npx",
+         "args": ["-y", "@upstash/context7-mcp"],
+         "env": {},
+         "working_directory": null
+       },
+       "GitHub": {
+         "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
+         "args": [],
+         "env": {
+           "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
+         },
+         "working_directory": null
+       }
+     }
+   }
+   ```
+   Replace `<username>` with your macOS user.
+5. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
+6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper.sh --help | head -5`
 
-# Check if token was retrieved successfully
-if [ -z "$GITHUB_TOKEN" ]; then
-    echo "Error: Could not retrieve GitHub token from keychain" >&2
-    echo "Make sure the token is stored in keychain with service name 'GitHub'" >&2
-    echo "You may need to run: security unlock-keychain" >&2
-    exit 1
-fi
+Notes:
+* If Homebrew bash path differs, change shebang to `#!/bin/bash`.
+* If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
 
-# Run the Docker container with the token
-exec /opt/homebrew/bin/docker run -i --rm \
-    -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
-    ghcr.io/github/github-mcp-server "$@"
-
-```
+Security rationale: Configuration keeps secrets exclusively in OS-provided secure storage; no plaintext tokens in versioned config files or scripts.
 
 
 ### Tool Availability Matrix
