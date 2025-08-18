@@ -483,6 +483,13 @@ Run (outside Claude) to confirm wrapper works:
 ```
 Expected: Docker help text (or MCP server usage). If you see an error about credentials, re-run step 1 or step 2 to create the Generic Credential named `GitHub`.
 
+**Note that you need Docker.** To install and launch Docker Desktop:
+```powershell
+winget install Docker.DockerDesktop
+refreshenv
+Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+```
+
 ##### Security Notes (Windows)
 
 - The Generic Credential is stored securely (DPAPI) scoped to the current user profile.
