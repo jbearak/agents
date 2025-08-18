@@ -551,7 +551,7 @@ Reference: [Adding repository custom instructions for GitHub Copilot](https://do
 ### GitHub Copilot (GitHub.com Chats)
 
 #### Organization-Level Instructions
-**Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) below.
+**Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
 
 1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
 2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
