@@ -305,37 +305,59 @@ When you connect MCP servers in Claude.ai, they automatically become available i
 
 #### Storing GitHub Token in Keychain
 
+
 You can store your GitHub personal access token in your login keychain instead of pasting it directly into the config file. To do this on a Mac:
 
 Your `claude_desktop_config.json` file should look like this:
 
 ```json
 {
-    "mcpServers": {
-        "Context7": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@upstash/context7-mcp"
-            ],
-            "env": {},
-            "working_directory": null
-        },
-        "GitHub": {
-            "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
-            "args": [],
-            "env": {
-            "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
-            },
-            "working_directory": null
-        }
+  "mcpServers": {
+    "Context7": {
+      "command": "npx",
+
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {},
+      "working_directory": null
+    },
+    "GitHub": {
+      "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
+      "args": [],
+      "env": {
+      "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
+      },
+      "working_directory": null
     }
+  }
 }
 ```
 
 0. Replace `<username>` with your actual username in the config file.
-1. Open Keychain Access and create a new generic password named GitHub which contains your access token.
-2. Create a file named `~/bin/mcp-github-wrapper.sh` with the following content:
+
+**Step-by-step: How to store your GitHub token in Keychain Access (Mac):**
+
+1. **Open Keychain Access:**
+   - Press `Cmd + Space` and type "Keychain Access", then press `Enter`.
+   - Or, open `Applications > Utilities > Keychain Access`.
+
+2. **Create a new generic password:**
+   - In the menu bar, select `File > New Password Item...`.
+   - In the dialog:
+   - **Keychain:** Select "login" (default).
+   - **Name:** Enter `GitHub` (this is the "Service Name").
+   - **Account Name:** Enter your macOS username (or leave blank).
+   - **Password:** Paste your GitHub personal access token.
+   - Click `Add`.
+
+3. **Verify:**
+   - Search for "GitHub" in Keychain Access.
+   - Double-click the item to confirm the token is stored.
+
+4. **Create a wrapper script:**
+   - Create a file named `~/bin/mcp-github-wrapper.sh` with the following content:
 
 ```bash
 #!/opt/homebrew/bin/bash
@@ -343,16 +365,16 @@ GITHUB_TOKEN=$(security find-generic-password -s "GitHub" -a "$USER" -w 2>/dev/n
 
 # Check if token was retrieved successfully
 if [ -z "$GITHUB_TOKEN" ]; then
-    echo "Error: Could not retrieve GitHub token from keychain" >&2
-    echo "Make sure the token is stored in keychain with service name 'GitHub'" >&2
-    echo "You may need to run: security unlock-keychain" >&2
-    exit 1
+  echo "Error: Could not retrieve GitHub token from keychain" >&2
+  echo "Make sure the token is stored in keychain with service name 'GitHub'" >&2
+  echo "You may need to run: security unlock-keychain" >&2
+  exit 1
 fi
 
 # Run the Docker container with the token
 exec /opt/homebrew/bin/docker run -i --rm \
-    -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
-    ghcr.io/github/github-mcp-server "$@"
+  -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
+  ghcr.io/github/github-mcp-server "$@"
 
 ```
 
