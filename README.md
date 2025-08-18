@@ -199,14 +199,16 @@ On Mac you can use emojis in the file names:
 
 ### Context Window
 
-| Agent             | Claude Sonnet | GPT-5     | GPT 4.1 | Gemini  |
-|-------------------|---------------|-----------|---------|---------|
-| GitHub Copilot    | 111,836       | 108,637   | 111,452	| 108,637 |
-| Claude.ai/Desktop | 200,000       | —         | —       | —       |
-| Claude Code       | 200,000       | —         | —       | —       |
-| Rovo              | 200,000       | 400,000   |         | —       |
-| Q                 | 200,000       | —         |         | —       |
-| Warp              | 200,000       | ?         | ?       | ?       |
+| Agent             | Claude Sonnet | GPT-5     | GPT 4.1   | Gemini    |
+|-------------------|---------------|-----------|-----------|-----------|
+| GitHub Copilot    | 111,836       | 108,637   | 111,452	  | 108,637   |
+| Claude.ai/Desktop | 200,000       | —         | —         | —         |
+| Claude Code       | 200,000       | —         | —         | —         |
+| Rovo              | 200,000       | 400,000   |           | —         |
+| Q                 | 200,000       | —         |           | —         |
+| Warp              | 200,000       | ?         | ?         | ?         |
+| **API:**          | 200,000       | 400,000   | 1,000,000 | 1,000,000 |
+| (in beta in API)  | (1,000,000)   | —         | —         | —         |
 
 - Context windows are measured in tokens.
 - A token is roughly 4 characters long.
