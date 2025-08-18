@@ -17,6 +17,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
   - [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
   - [Tool Availability Matrix](#tool-availability-matrix)
+- [Tools Glossary](TOOLS_GLOSSARY.md)
 - [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
@@ -391,133 +392,135 @@ Security rationale: Configuration keeps secrets exclusively in OS-provided secur
 
 Note: "Code" shows toolsets for "Code - GPT-5" and "Code - Sonnet-4" modes.
 
+📚 **For detailed tool descriptions, see the [Tools Glossary](TOOLS_GLOSSARY.md).**
+
 Legend: ✅ available, ❌ unavailable in that mode.
 
 | Tool | QnA | Review | Plan | Code |
 |------|-----|--------|------|------|
 | **Built-In (VS Code / Core)** | | | | |
 | *Code & Project Navigation* | | | | |
-| codebase | ✅ | ✅ | ✅ | ✅ |
-| findTestFiles | ✅ | ✅ | ✅ | ✅ |
-| search | ✅ | ✅ | ✅ | ✅ |
-| searchResults | ✅ | ✅ | ✅ | ✅ |
-| usages | ✅ | ✅ | ✅ | ✅ |
+| [codebase](TOOLS_GLOSSARY.md#codebase) | ✅ | ✅ | ✅ | ✅ |
+| [findTestFiles](TOOLS_GLOSSARY.md#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
+| [search](TOOLS_GLOSSARY.md#search) | ✅ | ✅ | ✅ | ✅ |
+| [searchResults](TOOLS_GLOSSARY.md#searchresults) | ✅ | ✅ | ✅ | ✅ |
+| [usages](TOOLS_GLOSSARY.md#usages) | ✅ | ✅ | ✅ | ✅ |
 | *Quality & Diagnostics* | | | | |
-| problems | ✅ | ✅ | ✅ | ✅ |
-| testFailure | ✅ | ✅ | ✅ | ✅ |
+| [problems](TOOLS_GLOSSARY.md#problems) | ✅ | ✅ | ✅ | ✅ |
+| [testFailure](TOOLS_GLOSSARY.md#testfailure) | ✅ | ✅ | ✅ | ✅ |
 | *Version Control & Changes* | | | | |
-| changes | ✅ | ✅ | ✅ | ✅ |
+| [changes](TOOLS_GLOSSARY.md#changes) | ✅ | ✅ | ✅ | ✅ |
 | *Environment & Execution* | | | | |
-| terminalLastCommand | ✅ | ✅ | ✅ | ✅ |
-| terminalSelection | ❌ | ❌ | ❌ | ✅ |
+| [terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
+| [terminalSelection](TOOLS_GLOSSARY.md#terminalselection) | ❌ | ❌ | ❌ | ✅ |
 | *Web & External Content* | | | | |
-| fetch | ✅ | ✅ | ✅ | ✅ |
-| githubRepo | ✅ | ✅ | ✅ | ✅ |
+| [fetch](TOOLS_GLOSSARY.md#fetch) | ✅ | ✅ | ✅ | ✅ |
+| [githubRepo](TOOLS_GLOSSARY.md#githubrepo) | ✅ | ✅ | ✅ | ✅ |
 | *Editor & Extensions* | | | | |
-| extensions | ❌ | ❌ | ❌ | ❌ |
-| vscodeAPI | ❌ | ❌ | ❌ | ❌ |
+| [extensions](TOOLS_GLOSSARY.md#extensions) | ❌ | ❌ | ❌ | ❌ |
+| [vscodeAPI](TOOLS_GLOSSARY.md#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
 | *Editing & Automation* | | | | |
-| editFiles | ❌ | ❌ | ❌ | ✅ |
-| runCommands | ❌ | ❌ | ❌ | ✅ |
-| runTasks | ❌ | ❌ | ❌ | ✅ |
+| [editFiles](TOOLS_GLOSSARY.md#editfiles) | ❌ | ❌ | ❌ | ✅ |
+| [runCommands](TOOLS_GLOSSARY.md#runcommands) | ❌ | ❌ | ❌ | ✅ |
+| [runTasks](TOOLS_GLOSSARY.md#runtasks) | ❌ | ❌ | ❌ | ✅ |
 | **GitHub Pull Requests Extension (VS Code)** | | | | |
-| activePullRequest | ✅ | ✅ | ✅ | ✅ |
-| copilotCodingAgent | ❌ | ❌ | ❌ | ✅ |
+| [activePullRequest](TOOLS_GLOSSARY.md#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
+| [copilotCodingAgent](TOOLS_GLOSSARY.md#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
 | **Context7** | | | | |
-| resolve-library-id | ✅ | ✅ | ✅ | ✅ |
-| get-library-docs | ✅ | ✅ | ✅ | ✅ |
+| [resolve-library-id](TOOLS_GLOSSARY.md#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
+| [get-library-docs](TOOLS_GLOSSARY.md#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
 | **Atlassian** | | | | |
 | *Jira Issues & Operations* | | | | |
-| addCommentToJiraIssue | ❌ | ✅ | ✅ | ✅ |
-| createJiraIssue | ❌ | ❌ | ✅ | ✅ |
-| editJiraIssue | ❌ | ❌ | ✅ | ✅ |
-| getJiraIssue | ✅ | ✅ | ✅ | ✅ |
-| getJiraIssueRemoteIssueLinks | ✅ | ✅ | ✅ | ✅ |
-| getTransitionsForJiraIssue | ❌ | ❌ | ❌ | ❌ |
-| searchJiraIssuesUsingJql | ✅ | ✅ | ✅ | ✅ |
-| transitionJiraIssue | ❌ | ❌ | ✅ | ✅ |
+| [addCommentToJiraIssue](TOOLS_GLOSSARY.md#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
+| [createJiraIssue](TOOLS_GLOSSARY.md#createjiraissue) | ❌ | ❌ | ✅ | ✅ |
+| [editJiraIssue](TOOLS_GLOSSARY.md#editjiraissue) | ❌ | ❌ | ✅ | ✅ |
+| [getJiraIssue](TOOLS_GLOSSARY.md#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
+| [getJiraIssueRemoteIssueLinks](TOOLS_GLOSSARY.md#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
+| [getTransitionsForJiraIssue](TOOLS_GLOSSARY.md#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
+| [searchJiraIssuesUsingJql](TOOLS_GLOSSARY.md#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
+| [transitionJiraIssue](TOOLS_GLOSSARY.md#transitionjiraissue) | ❌ | ❌ | ✅ | ✅ |
 | *Jira Project Metadata* | | | | |
-| getJiraProjectIssueTypesMetadata | ✅ | ✅ | ✅ | ✅ |
-| getVisibleJiraProjects | ✅ | ✅ | ✅ | ✅ |
+| [getJiraProjectIssueTypesMetadata](TOOLS_GLOSSARY.md#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
+| [getVisibleJiraProjects](TOOLS_GLOSSARY.md#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Pages & Content* | | | | |
-| createConfluencePage | ❌ | ❌ | ✅ | ✅ |
-| getConfluencePage | ✅ | ✅ | ✅ | ✅ |
-| getConfluencePageAncestors | ❌ | ❌ | ❌ | ❌ |
-| getConfluencePageDescendants | ❌ | ❌ | ❌ | ❌ |
-| getPagesInConfluenceSpace | ✅ | ✅ | ✅ | ✅ |
-| updateConfluencePage | ❌ | ❌ | ✅ | ✅ |
+| [createConfluencePage](TOOLS_GLOSSARY.md#createconfluencepage) | ❌ | ❌ | ✅ | ✅ |
+| [getConfluencePage](TOOLS_GLOSSARY.md#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](TOOLS_GLOSSARY.md#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
+| [getConfluencePageDescendants](TOOLS_GLOSSARY.md#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
+| [getPagesInConfluenceSpace](TOOLS_GLOSSARY.md#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
+| [updateConfluencePage](TOOLS_GLOSSARY.md#updateconfluencepage) | ❌ | ❌ | ✅ | ✅ |
 | *Confluence Comments* | | | | |
-| createConfluenceFooterComment | ❌ | ❌ | ✅ | ✅ |
-| createConfluenceInlineComment | ❌ | ❌ | ✅ | ✅ |
-| getConfluencePageFooterComments | ✅ | ✅ | ✅ | ✅ |
-| getConfluencePageInlineComments | ✅ | ✅ | ✅ | ✅ |
+| [createConfluenceFooterComment](TOOLS_GLOSSARY.md#createconfluencefootercomment) | ❌ | ❌ | ✅ | ✅ |
+| [createConfluenceInlineComment](TOOLS_GLOSSARY.md#createconfluenceinlinecomment) | ❌ | ❌ | ✅ | ✅ |
+| [getConfluencePageFooterComments](TOOLS_GLOSSARY.md#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageInlineComments](TOOLS_GLOSSARY.md#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Spaces & Discovery* | | | | |
-| getConfluenceSpaces | ✅ | ✅ | ✅ | ✅ |
-| searchConfluenceUsingCql | ✅ | ✅ | ✅ | ✅ |
+| [getConfluenceSpaces](TOOLS_GLOSSARY.md#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
+| [searchConfluenceUsingCql](TOOLS_GLOSSARY.md#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
 | *User & Identity* | | | | |
-| atlassianUserInfo | ✅ | ✅ | ✅ | ✅ |
-| lookupJiraAccountId | ✅ | ✅ | ✅ | ✅ |
+| [atlassianUserInfo](TOOLS_GLOSSARY.md#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
+| [lookupJiraAccountId](TOOLS_GLOSSARY.md#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
 | *Other* | | | | |
-| getAccessibleAtlassianResources | ✅ | ✅ | ✅ | ✅ |
+| [getAccessibleAtlassianResources](TOOLS_GLOSSARY.md#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
 | **GitHub** | | | | |
 | *Commits & Repository* | | | | |
-| create_branch | ❌ | ❌ | ❌ | ✅ |
-| create_repository | ❌ | ❌ | ❌ | ✅ |
-| get_commit | ✅ | ✅ | ✅ | ✅ |
-| get_file_contents | ✅ | ✅ | ✅ | ✅ |
-| get_tag | ❌ | ❌ | ❌ | ❌ |
-| list_branches | ✅ | ✅ | ✅ | ✅ |
-| list_commits | ✅ | ✅ | ✅ | ✅ |
-| list_tags | ❌ | ❌ | ❌ | ❌ |
-| push_files | ❌ | ❌ | ❌ | ✅ |
+| [create_branch](TOOLS_GLOSSARY.md#create_branch) | ❌ | ❌ | ❌ | ✅ |
+| [create_repository](TOOLS_GLOSSARY.md#create_repository) | ❌ | ❌ | ❌ | ✅ |
+| [get_commit](TOOLS_GLOSSARY.md#get_commit) | ✅ | ✅ | ✅ | ✅ |
+| [get_file_contents](TOOLS_GLOSSARY.md#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
+| [get_tag](TOOLS_GLOSSARY.md#get_tag) | ❌ | ❌ | ❌ | ❌ |
+| [list_branches](TOOLS_GLOSSARY.md#list_branches) | ✅ | ✅ | ✅ | ✅ |
+| [list_commits](TOOLS_GLOSSARY.md#list_commits) | ✅ | ✅ | ✅ | ✅ |
+| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ❌ | ❌ | ❌ | ❌ |
+| [push_files](TOOLS_GLOSSARY.md#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests  Retrieval* | | | | |
-| get_pull_request | ✅ | ✅ | ✅ | ✅ |
-| get_pull_request_comments | ✅ | ✅ | ✅ | ✅ |
-| get_pull_request_diff | ✅ | ✅ | ✅ | ✅ |
-| get_pull_request_files | ✅ | ✅ | ✅ | ✅ |
-| get_pull_request_reviews | ✅ | ✅ | ✅ | ✅ |
-| get_pull_request_status | ✅ | ✅ | ✅ | ✅ |
-| list_pull_requests | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request](TOOLS_GLOSSARY.md#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_comments](TOOLS_GLOSSARY.md#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_diff](TOOLS_GLOSSARY.md#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_files](TOOLS_GLOSSARY.md#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_reviews](TOOLS_GLOSSARY.md#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_status](TOOLS_GLOSSARY.md#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
+| [list_pull_requests](TOOLS_GLOSSARY.md#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
 | *Pull Requests  Actions* | | | | |
-| add_comment_to_pending_review | ❌ | ✅ | ✅ | ✅ |
-| create_pending_pull_request_review | ❌ | ✅ | ✅ | ✅ |
-| create_pull_request | ❌ | ❌ | ✅ | ✅ |
-| create_pull_request_with_copilot | ❌ | ❌ | ❌ | ✅ |
-| merge_pull_request | ❌ | ❌ | ❌ | ✅ |
-| request_copilot_review | ❌ | ❌ | ❌ | ❌ |
-| submit_pending_pull_request_review | ❌ | ✅ | ✅ | ✅ |
-| update_pull_request | ❌ | ❌ | ✅ | ✅ |
-| update_pull_request_branch | ❌ | ❌ | ❌ | ✅ |
+| [add_comment_to_pending_review](TOOLS_GLOSSARY.md#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
+| [create_pending_pull_request_review](TOOLS_GLOSSARY.md#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
+| [create_pull_request](TOOLS_GLOSSARY.md#create_pull_request) | ❌ | ❌ | ✅ | ✅ |
+| [create_pull_request_with_copilot](TOOLS_GLOSSARY.md#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
+| [merge_pull_request](TOOLS_GLOSSARY.md#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
+| [request_copilot_review](TOOLS_GLOSSARY.md#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
+| [submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
+| [update_pull_request](TOOLS_GLOSSARY.md#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
+| [update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
 | *Sub-Issues* | | | | |
-| list_sub_issues | ✅ | ✅ | ✅ | ✅ |
-| reprioritize_sub_issue | ❌ | ❌ | ✅ | ❌ |
+| [list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
+| [reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |
 | *Gists* | | | | |
-| list_gists | ❌ | ❌ | ❌ | ❌ |
-| update_gist | ❌ | ❌ | ❌ | ❌ |
+| [list_gists](TOOLS_GLOSSARY.md#list_gists) | ❌ | ❌ | ❌ | ❌ |
+| [update_gist](TOOLS_GLOSSARY.md#update_gist) | ❌ | ❌ | ❌ | ❌ |
 | *Notifications* | | | | |
-| list_notifications | ✅ | ✅ | ✅ | ✅ |
+| [list_notifications](TOOLS_GLOSSARY.md#list_notifications) | ✅ | ✅ | ✅ | ✅ |
 | *Code Scanning & Security* | | | | |
-| list_code_scanning_alerts | ❌ | ❌ | ❌ | ❌ |
+| [list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
 | *Workflows (GitHub Actions)* | | | | |
-| get_workflow_run | ✅ | ❌ | ✅ | ✅ |
-| get_workflow_run_logs | ❌ | ❌ | ❌ | ❌ |
-| get_workflow_run_usage | ❌ | ❌ | ❌ | ❌ |
-| list_workflow_jobs | ❌ | ❌ | ❌ | ❌ |
-| list_workflow_run_artifacts | ✅ | ❌ | ✅ | ✅ |
-| list_workflow_runs | ❌ | ❌ | ❌ | ❌ |
-| list_workflows | ❌ | ❌ | ❌ | ❌ |
-| rerun_failed_jobs | ❌ | ❌ | ❌ | ❌ |
-| rerun_workflow_run | ❌ | ❌ | ❌ | ❌ |
+| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ✅ | ❌ | ✅ | ✅ |
+| [get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
+| [get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ✅ | ❌ | ✅ | ✅ |
+| [list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflows](TOOLS_GLOSSARY.md#list_workflows) | ❌ | ❌ | ❌ | ❌ |
+| [rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
+| [rerun_workflow_run](TOOLS_GLOSSARY.md#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
 | *Search & Discovery* | | | | |
-| search_code | ✅ | ✅ | ✅ | ✅ |
-| search_orgs | ❌ | ❌ | ❌ | ❌ |
-| search_pull_requests | ✅ | ✅ | ✅ | ✅ |
-| search_repositories | ✅ | ✅ | ✅ | ✅ |
-| search_users | ❌ | ❌ | ❌ | ❌ |
+| [search_code](TOOLS_GLOSSARY.md#search_code) | ✅ | ✅ | ✅ | ✅ |
+| [search_orgs](TOOLS_GLOSSARY.md#search_orgs) | ❌ | ❌ | ❌ | ❌ |
+| [search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
+| [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
+| [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
 | *User & Account* | | | | |
-| get_me | ✅ | ✅ | ✅ | ✅ |
+| [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
 | *File Operations* | | | | |
-| create_or_update_file | ❌ | ❌ | ❌ | ✅ |
+| [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
 
 ## Using `code_style_guidelines.txt` Across Tools
 
