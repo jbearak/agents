@@ -189,28 +189,33 @@ On Mac you can use emojis in the file names:
 |-------------------|--------------|-----------------------------------------------------------|
 | Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu |
 | Claude Code       | ✅           | Use keywords: ["think" < "think hard" < "think harder" < "ultrathink"](https://www.anthropic.com/engineering/claude-code-best-practices)       |
-| GitHub Copilot    | —            | Use Sonnet 3.7                                            |
+| GitHub Copilot    | —            | Has Sonnet 3.7 Thinking and o4 mini                       |
 | Q                 | —            |                                                           |
 | Rovo              | —            |                                                           |
-| Warp              | —            | Use o3                                                    |
+| Warp              | —            | Has o3 and o4 mini                                        |
 
+
+**Note:** [GPT-5 adds reasoning_effort and verbosity parameters ranging from minimal/low to high](https://openai.com/index/introducing-gpt-5-for-developers/), but providers do not transparently communicate how they configure it. One can access high/high settings for planning tasks via the OpenAI API–agents that one can configure with API keys include [Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started) and [Roo](https://github.com/RooCodeInc/Roo-Code). (GitHub does not [yet](https://www.reddit.com/r/GithubCopilot/comments/1leq2q3/bring_your_own_keys_for_business_plan/) support BYOK on Copilot Business, and [seems](https://github.com/microsoft/vscode/issues/260460) to be refactoring their custom providers API.)
 
 ### Context Window
 
-| Agent             | Claude Sonnet | GPT-5     | GPT 4.1 | Gemini  |
-|-------------------|---------------|-----------|---------|---------|
-| GitHub Copilot    | 111,836       | 108,637   | 111,452	| 108,637 |
-| Claude.ai/Desktop | 200,000       | —         | —       | —       |
-| Claude Code       | 200,000       | —         | —       | —       |
-| Rovo              | 200,000       | 400,000   |         | —       |
-| Q                 | 200,000       | —         |         | —       |
-| Warp              | 200,000       | ?         | ?       | ?       |
+| Agent             | Claude Sonnet | GPT-5     | GPT 4.1   | Gemini    |
+|-------------------|---------------|-----------|-----------|-----------|
+| GitHub Copilot    | 111,836       | 108,637   | 111,452	  | 108,637   |
+| Claude.ai/Desktop | 200,000       | —         | —         | —         |
+| Claude Code       | 200,000       | —         | —         | —         |
+| Rovo              | 200,000       | 400,000   |           | —         |
+| Q                 | 200,000       | —         |           | —         |
+| Warp              | 200,000       | ?         | ?         | ?         |
+| **API:**          | 200,000       | 400,000   | 1,000,000 | 1,000,000 |
+| (in beta in API)  | (1,000,000)   | —         | —         | —         |
 
 - Context windows are measured in tokens.
 - A token is roughly 4 characters long.
 - For example, 'unbreakable' consists of 'un' - 'break' - 'able'.
 
 **Note:** Agents will generally compress/prune context windows to fit within their limits in multi-turn chats. However, Claude.ai/Desktop will not; if after several turns you exceed the context window, you cannot continue the chat.
+
 
 ## MCP Servers
 
