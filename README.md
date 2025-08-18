@@ -163,7 +163,10 @@ Repeat these steps for:
 
 
 You can also download the files directly to the folder:
-- Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
+- Windows: 
+  - CMD: %APPDATA%\Code\User\prompts\
+  - PowerShell: $env:APPDATA\Code\User\prompts\
+  - Git Bash: $APPDATA/Code/User/prompts/
 - Mac: ~/Library/Application Support/Code/User/prompts/
 
 On Mac you can use emojis in the file names:
