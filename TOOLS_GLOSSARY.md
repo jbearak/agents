@@ -2,6 +2,8 @@
 
 This document provides detailed definitions for all tools referenced in the [Tool Availability Matrix](README.md#tool-availability-matrix).
 
+**Note:** Definitions come from the MCP servers.
+
 ## Built-In (VS Code / Core)
 
 ### Code & Project Navigation
@@ -346,10 +348,3 @@ Get details for the authenticated GitHub user.
 
 #### create_or_update_file
 Create or update a single file in a repository (Code mode only).
-
-## Notes
-
-- Definitions come from the MCP servers
-- QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
-- This document is the canonical source for tool availability.
-- Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`

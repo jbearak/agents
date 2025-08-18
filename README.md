@@ -522,6 +522,13 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *File Operations* | | | | |
 | [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
 
+## Notes
+
+- QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
+- This document is the canonical source for tool availability.
+- Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
+
+
 ## Using `code_style_guidelines.txt` Across Tools
 
 ### GitHub Copilot (Repository-Level)
