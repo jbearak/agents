@@ -126,6 +126,8 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
   </tbody>
 </table>
 
+**Note:** One can use any model with any mode. For example, one might use Review mode with Sonnet or Gemini.
+
 ### Why custom modes?
 
 - In VS Code, **switching among built-in modes does not set the model**.
