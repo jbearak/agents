@@ -285,10 +285,11 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
    Set-StrictMode -Version Latest
    $ErrorActionPreference = 'Stop'
-   if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
-     try { Import-Module CredentialManager -ErrorAction Stop } catch {
-       Write-Error 'Install CredentialManager module first'; exit 1 }
-   } else { Import-Module CredentialManager | Out-Null }
+   try {
+     Import-Module CredentialManager -ErrorAction Stop
+   } catch {
+     Write-Error 'Install CredentialManager module first'; exit 1
+   }
    $cred = Get-StoredCredential -Target 'GitHub'
    if (-not $cred) { Write-Error "Credential 'GitHub' not found"; exit 1 }
    $env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
@@ -302,7 +303,7 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
    ```
 6. Add to `claude_desktop_config.json`:
-   ```jsonc
+   ```json
    {
      "mcpServers": {
        "GitHub": {
@@ -383,7 +384,6 @@ When you connect MCP servers in Claude.ai, they automatically become available i
 Notes:
 * If Homebrew bash path differs, change shebang to `#!/bin/bash`.
 * If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
-.
 
 Security rationale: Configuration keeps secrets exclusively in OS-provided secure storage; no plaintext tokens in versioned config files or scripts.
 
