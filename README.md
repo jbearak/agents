@@ -1,6 +1,6 @@
 # Modes & Tools Reference
 
-Centralized documentation for Copilot modes, tool availability, and cross-tool custom instruction usage.
+Reference for Copilot modes, models, MCP servers, and cross-tool custom instruction usage.
 
 ## Table of Contents
 
