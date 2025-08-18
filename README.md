@@ -195,7 +195,7 @@ On Mac you can use emojis in the file names:
 | Warp              | —            | Has o3 and o4 mini                                        |
 
 
-**Note:** GPT-5 adds reasoning_effort and verbosity parameters ranging from minimal/low to high, though providers configure these differently–one can access high/high settings for planning tasks via the OpenAI API. Agents one can configure with API keys include [Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started) and [Roo](https://github.com/RooCodeInc/Roo-Code)–GitHub does not [yet](https://www.reddit.com/r/GithubCopilot/comments/1leq2q3/bring_your_own_keys_for_business_plan/) support BYOK on Copilot Business, and [seems](https://github.com/microsoft/vscode/issues/260460) to be refactoring their custom providers API.
+**Note:** [GPT-5 adds reasoning_effort and verbosity parameters ranging from minimal/low to high](https://openai.com/index/introducing-gpt-5-for-developers/), but providers do not transparently communicate how they configure it. One can access high/high settings for planning tasks via the OpenAI API–agents that one can configure with API keys include [Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started) and [Roo](https://github.com/RooCodeInc/Roo-Code). (GitHub does not [yet](https://www.reddit.com/r/GithubCopilot/comments/1leq2q3/bring_your_own_keys_for_business_plan/) support BYOK on Copilot Business, and [seems](https://github.com/microsoft/vscode/issues/260460) to be refactoring their custom providers API.)
 
 ### Context Window
 
