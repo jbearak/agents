@@ -305,6 +305,12 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    ```json
    {
      "mcpServers": {
+       "Context7": {
+         "command": "npx",
+         "args": ["-y", "@upstash/context7-mcp"],
+         "env": {},
+         "working_directory": null
+       },
        "GitHub": {
          "command": "powershell",
          "args": [
