@@ -177,7 +177,6 @@ On Mac you can use emojis in the file names:
 | Claude Code       | ✅      | ✅        | ❌     | ❌         | ❌      | ❌              | ❌              |
 | GitHub Copilot    | ✅      | ❌        | ✅     | ✅         | ✅      | ✅              | ❌              |
 | Q                 | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
-| Rovo              | ✅      | ❌        | ✅     | ❌         | ❌      | ❌              | ❌              |
 | Warp              | ✅      | ✅        | ✅     | ❌         | ✅      | ✅              | ✅              |
 
 **Note:** None of these agents specify whether GPT-5 refers to the model with minimal, low, medium, or high reasoning.
@@ -191,7 +190,6 @@ On Mac you can use emojis in the file names:
 | Claude Code       | ✅           | Use keywords: ["think" < "think hard" < "think harder" < "ultrathink"](https://www.anthropic.com/engineering/claude-code-best-practices)       |
 | GitHub Copilot    | —            | Has Sonnet 3.7 Thinking and o4 mini                       |
 | Q                 | —            |                                                           |
-| Rovo              | —            |                                                           |
 | Warp              | —            | Has o3 and o4 mini                                        |
 
 
@@ -204,7 +202,6 @@ On Mac you can use emojis in the file names:
 | GitHub Copilot    | 111,836       | 108,637   | 111,452	  | 108,637   |
 | Claude.ai/Desktop | 200,000       | —         | —         | —         |
 | Claude Code       | 200,000       | —         | —         | —         |
-| Rovo              | 200,000       | 400,000   |           | —         |
 | Q                 | 200,000       | —         |           | —         |
 | Warp              | 200,000       | ?         | ?         | ?         |
 | **API:**          | 200,000       | 400,000   | 1,000,000 | 1,000,000 |
