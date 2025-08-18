@@ -391,7 +391,7 @@ If the token loads correctly, Docker help text (or MCP server usage) appears wit
 
 #### Storing GitHub Token Securely on Windows
 
-You can achieve a similar setup on Windows using the Windows Credential Manager plus a PowerShell wrapper script. Two approaches exist: GUI (simplest) or PowerShell (scriptable). The instructions below assume Docker Desktop is installed and `docker` is on your `PATH`.
+You can achieve a similar setup on Windows (including Windows on ARM) using Windows Credential Manager plus a PowerShell wrapper script and the Podman container runtime. We standardize on **Podman** to avoid Docker Desktop licensing constraints and reduce moving parts. (Rancher Desktop also works on Windows/ARM, but is intentionally omitted for brevity.)
 
 ##### 1. Add a Generic Credential (GUI)
 
@@ -404,11 +404,12 @@ You can achieve a similar setup on Windows using the Windows Credential Manager 
 7. Password: paste your GitHub Personal Access Token.
 8. Click `OK` to save.
 
-##### 2. Confirm it exists (Terminal)
+##### 2. (Optional) Add / Inspect via PowerShell
 
-```
-Confirm it exists:
+To inspect (or if you prefer scripting creation) install the CredentialManager module:
 ```powershell
+Install-Module -Name CredentialManager -Scope CurrentUser -Force
+Import-Module CredentialManager
 Get-StoredCredential -Target "GitHub"
 ```
 
@@ -419,7 +420,7 @@ Create a directory for helper scripts if you don’t already have one:
 New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null
 ```
 
-Create the file `C:\Users\<username>\bin\mcp-github-wrapper.ps1` (replace `<username>`). Contents:
+Create the file `C:\Users\<username>\bin\mcp-github-wrapper.ps1` (replace `<username>`). Contents (Podman version):
 ```powershell
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
 
@@ -441,7 +442,7 @@ if (-not $cred) {
 
 $env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
 
-docker run -i --rm `
+podman run -i --rm `
   -e GITHUB_PERSONAL_ACCESS_TOKEN=$env:GITHUB_PERSONAL_ACCESS_TOKEN `
   ghcr.io/github/github-mcp-server @Args
 ```
@@ -475,26 +476,31 @@ Add or modify the `GitHub` entry:
 }
 ```
 
-##### 5. Verification (Windows)
+##### 5. Install & Initialize Podman (Windows / Windows on ARM)
+
+Install Podman:
+```powershell
+winget install RedHat.Podman
+```
+Initialize the Podman VM (tune CPU/RAM as desired):
+```powershell
+podman machine init --cpus 2 --memory 4096 --disk-size 20
+podman machine start
+```
+Verify basic functionality:
+```powershell
+podman version
+podman info --format json | Select-String -Pattern 'arch'
+```
+
+##### 6. Verification (Wrapper)
 
 Run (outside Claude) to confirm wrapper works:
 ```powershell
 & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help 2>&1 | Select-Object -First 10
 ```
-Expected: Docker help text (or MCP server usage). If you see an error about credentials, re-run step 1 or step 2 to create the Generic Credential named `GitHub`.
+Expected: MCP server usage (or container help output). If you see an error about credentials, re-create the Generic Credential named `GitHub`.
 
-**Note that you need Docker.** To install and launch Docker Desktop:
-```powershell
-winget install Docker.DockerDesktop
-refreshenv
-Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
-```
-
-##### Security Notes (Windows)
-
-- The Generic Credential is stored securely (DPAPI) scoped to the current user profile.
-- The script exports the token only to the container environment; it does not echo it.
-- Avoid embedding the token in the JSON config or scripts directly.
 
 
 
