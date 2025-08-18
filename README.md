@@ -1,6 +1,6 @@
 # Modes & Tools Reference
 
-Centralized documentation for Copilot modes, tool availability, and cross-tool custom instruction usage.
+Reference for Copilot modes, models, MCP servers, and cross-tool custom instruction usage.
 
 ## Table of Contents
 
@@ -17,6 +17,7 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
   - [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
   - [Tool Availability Matrix](#tool-availability-matrix)
+- [Tools Glossary](TOOLS_GLOSSARY.md)
 - [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
@@ -24,13 +25,6 @@ Centralized documentation for Copilot modes, tool availability, and cross-tool c
   - [Warp (User-Level)](#warp-user-level)
   - [Q (Repository-Level)](#q-repository-level)
   - [Claude Code (Repository-Level)](#claude-code-repository-level)
-- [Tool Definitions](#tool-definitions)
-  - [Built-In (VS Code / Core)](#built-in-vs-code--core)
-  - [GitHub Pull Requests Extension (VS Code)](#github-pull-requests-extension-vs-code)
-  - [Context7](#context7)
-  - [Atlassian](#atlassian)
-  - [GitHub](#github)
-  - [Notes](#notes)
 
 ## Repository Structure
 
@@ -203,14 +197,14 @@ On Mac you can use emojis in the file names:
 
 ### Context Window
 
-| Agent             | Claude Sonnet and Opus | GPT-5 and GPT-5 mini | GPT 4.1 | Gemini  |
-|-------------------|------------------------|----------------------|---------|---------|
-| GitHub Copilot    | 111,836                | 108,637              | 111,452	| 108,637 |
-| Claude.ai/Desktop | 200,000                | —                    | —       | —       |
-| Claude Code       | 200,000                | —                    | —       | —       |
-| Rovo              | 200,000                | 400,000              |         | —       |
-| Q                 | 200,000                | —                    |         | —       |
-| Warp              | 200,000                | ?                    | ?       | ?       |
+| Agent             | Claude Sonnet | GPT-5     | GPT 4.1 | Gemini  |
+|-------------------|---------------|-----------|---------|---------|
+| GitHub Copilot    | 111,836       | 108,637   | 111,452	| 108,637 |
+| Claude.ai/Desktop | 200,000       | —         | —       | —       |
+| Claude Code       | 200,000       | —         | —       | —       |
+| Rovo              | 200,000       | 400,000   |         | —       |
+| Q                 | 200,000       | —         |         | —       |
+| Warp              | 200,000       | ?         | ?       | ?       |
 
 - Context windows are measured in tokens.
 - A token is roughly 4 characters long.
@@ -398,133 +392,142 @@ Security rationale: Configuration keeps secrets exclusively in OS-provided secur
 
 Note: "Code" shows toolsets for "Code - GPT-5" and "Code - Sonnet-4" modes.
 
+📚 **For detailed tool descriptions, see the [Tools Glossary](TOOLS_GLOSSARY.md).**
+
 Legend: ✅ available, ❌ unavailable in that mode.
 
 | Tool | QnA | Review | Plan | Code |
 |------|-----|--------|------|------|
 | **Built-In (VS Code / Core)** | | | | |
 | *Code & Project Navigation* | | | | |
-| [codebase](#codebase) | ✅ | ✅ | ✅ | ✅ |
-| [findTestFiles](#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
-| [search](#search) | ✅ | ✅ | ✅ | ✅ |
-| [searchResults](#searchresults) | ✅ | ✅ | ✅ | ✅ |
-| [usages](#usages) | ✅ | ✅ | ✅ | ✅ |
+| [codebase](TOOLS_GLOSSARY.md#codebase) | ✅ | ✅ | ✅ | ✅ |
+| [findTestFiles](TOOLS_GLOSSARY.md#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
+| [search](TOOLS_GLOSSARY.md#search) | ✅ | ✅ | ✅ | ✅ |
+| [searchResults](TOOLS_GLOSSARY.md#searchresults) | ✅ | ✅ | ✅ | ✅ |
+| [usages](TOOLS_GLOSSARY.md#usages) | ✅ | ✅ | ✅ | ✅ |
 | *Quality & Diagnostics* | | | | |
-| [problems](#problems) | ✅ | ✅ | ✅ | ✅ |
-| [testFailure](#testfailure) | ✅ | ✅ | ✅ | ✅ |
+| [problems](TOOLS_GLOSSARY.md#problems) | ✅ | ✅ | ✅ | ✅ |
+| [testFailure](TOOLS_GLOSSARY.md#testfailure) | ✅ | ✅ | ✅ | ✅ |
 | *Version Control & Changes* | | | | |
-| [changes](#changes) | ✅ | ✅ | ✅ | ✅ |
+| [changes](TOOLS_GLOSSARY.md#changes) | ✅ | ✅ | ✅ | ✅ |
 | *Environment & Execution* | | | | |
-| [terminalLastCommand](#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
-| [terminalSelection](#terminalselection) | ❌ | ❌ | ❌ | ✅ |
+| [terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
+| [terminalSelection](TOOLS_GLOSSARY.md#terminalselection) | ❌ | ❌ | ❌ | ✅ |
 | *Web & External Content* | | | | |
-| [fetch](#fetch) | ✅ | ✅ | ✅ | ✅ |
-| [githubRepo](#githubrepo) | ✅ | ✅ | ✅ | ✅ |
+| [fetch](TOOLS_GLOSSARY.md#fetch) | ✅ | ✅ | ✅ | ✅ |
+| [githubRepo](TOOLS_GLOSSARY.md#githubrepo) | ✅ | ✅ | ✅ | ✅ |
 | *Editor & Extensions* | | | | |
-| [extensions](#extensions) | ❌ | ❌ | ❌ | ❌ |
-| [vscodeAPI](#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
+| [extensions](TOOLS_GLOSSARY.md#extensions) | ❌ | ❌ | ❌ | ❌ |
+| [vscodeAPI](TOOLS_GLOSSARY.md#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
 | *Editing & Automation* | | | | |
-| [editFiles](#editfiles) | ❌ | ❌ | ❌ | ✅ |
-| [runCommands](#runcommands) | ❌ | ❌ | ❌ | ✅ |
-| [runTasks](#runtasks) | ❌ | ❌ | ❌ | ✅ |
+| [editFiles](TOOLS_GLOSSARY.md#editfiles) | ❌ | ❌ | ❌ | ✅ |
+| [runCommands](TOOLS_GLOSSARY.md#runcommands) | ❌ | ❌ | ❌ | ✅ |
+| [runTasks](TOOLS_GLOSSARY.md#runtasks) | ❌ | ❌ | ❌ | ✅ |
 | **GitHub Pull Requests Extension (VS Code)** | | | | |
-| [activePullRequest](#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
-| [copilotCodingAgent](#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
+| [activePullRequest](TOOLS_GLOSSARY.md#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
+| [copilotCodingAgent](TOOLS_GLOSSARY.md#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
 | **Context7** | | | | |
-| [resolve-library-id](#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
-| [get-library-docs](#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
+| [resolve-library-id](TOOLS_GLOSSARY.md#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
+| [get-library-docs](TOOLS_GLOSSARY.md#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
 | **Atlassian** | | | | |
 | *Jira Issues & Operations* | | | | |
-| [addCommentToJiraIssue](#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
-| [createJiraIssue](#createjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| [editJiraIssue](#editjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| [getJiraIssue](#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
-| [getJiraIssueRemoteIssueLinks](#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
-| [getTransitionsForJiraIssue](#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
-| [searchJiraIssuesUsingJql](#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
-| [transitionJiraIssue](#transitionjiraissue) | ❌ | ❌ | ✅ | ✅ |
+| [addCommentToJiraIssue](TOOLS_GLOSSARY.md#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
+| [createJiraIssue](TOOLS_GLOSSARY.md#createjiraissue) | ❌ | ❌ | ✅ | ✅ |
+| [editJiraIssue](TOOLS_GLOSSARY.md#editjiraissue) | ❌ | ❌ | ✅ | ✅ |
+| [getJiraIssue](TOOLS_GLOSSARY.md#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
+| [getJiraIssueRemoteIssueLinks](TOOLS_GLOSSARY.md#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
+| [getTransitionsForJiraIssue](TOOLS_GLOSSARY.md#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
+| [searchJiraIssuesUsingJql](TOOLS_GLOSSARY.md#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
+| [transitionJiraIssue](TOOLS_GLOSSARY.md#transitionjiraissue) | ❌ | ❌ | ✅ | ✅ |
 | *Jira Project Metadata* | | | | |
-| [getJiraProjectIssueTypesMetadata](#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
-| [getVisibleJiraProjects](#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
+| [getJiraProjectIssueTypesMetadata](TOOLS_GLOSSARY.md#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
+| [getVisibleJiraProjects](TOOLS_GLOSSARY.md#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Pages & Content* | | | | |
-| [createConfluencePage](#createconfluencepage) | ❌ | ❌ | ✅ | ✅ |
-| [getConfluencePage](#getConfluencePage) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](#getConfluencePageAncestors) | ❌ | ❌ | ❌ | ❌ |
-| [getConfluencePageDescendants](#getConfluencePageDescendants) | ❌ | ❌ | ❌ | ❌ |
-| [getPagesInConfluenceSpace](#getPagesInConfluenceSpace) | ✅ | ✅ | ✅ | ✅ |
-| [updateConfluencePage](#updateConfluencePage) | ❌ | ❌ | ✅ | ✅ |
+| [createConfluencePage](TOOLS_GLOSSARY.md#createconfluencepage) | ❌ | ❌ | ✅ | ✅ |
+| [getConfluencePage](TOOLS_GLOSSARY.md#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageAncestors](TOOLS_GLOSSARY.md#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
+| [getConfluencePageDescendants](TOOLS_GLOSSARY.md#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
+| [getPagesInConfluenceSpace](TOOLS_GLOSSARY.md#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
+| [updateConfluencePage](TOOLS_GLOSSARY.md#updateconfluencepage) | ❌ | ❌ | ✅ | ✅ |
 | *Confluence Comments* | | | | |
-| [createConfluenceFooterComment](#createConfluenceFooterComment) | ❌ | ❌ | ✅ | ✅ |
-| [createConfluenceInlineComment](#createConfluenceInlineComment) | ❌ | ❌ | ✅ | ✅ |
-| [getConfluencePageFooterComments](#getConfluencePageFooterComments) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageInlineComments](#getConfluencePageInlineComments) | ✅ | ✅ | ✅ | ✅ |
+| [createConfluenceFooterComment](TOOLS_GLOSSARY.md#createconfluencefootercomment) | ❌ | ❌ | ✅ | ✅ |
+| [createConfluenceInlineComment](TOOLS_GLOSSARY.md#createconfluenceinlinecomment) | ❌ | ❌ | ✅ | ✅ |
+| [getConfluencePageFooterComments](TOOLS_GLOSSARY.md#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluencePageInlineComments](TOOLS_GLOSSARY.md#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Spaces & Discovery* | | | | |
-| [getConfluenceSpaces](#getConfluenceSpaces) | ✅ | ✅ | ✅ | ✅ |
-| [searchConfluenceUsingCql](#searchConfluenceUsingCql) | ✅ | ✅ | ✅ | ✅ |
+| [getConfluenceSpaces](TOOLS_GLOSSARY.md#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
+| [searchConfluenceUsingCql](TOOLS_GLOSSARY.md#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
 | *User & Identity* | | | | |
-| [atlassianUserInfo](#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
-| [lookupJiraAccountId](#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
+| [atlassianUserInfo](TOOLS_GLOSSARY.md#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
+| [lookupJiraAccountId](TOOLS_GLOSSARY.md#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
 | *Other* | | | | |
-| [getAccessibleAtlassianResources](#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
+| [getAccessibleAtlassianResources](TOOLS_GLOSSARY.md#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
 | **GitHub** | | | | |
 | *Commits & Repository* | | | | |
-| [create_branch](#create_branch) | ❌ | ❌ | ❌ | ✅ |
-| [create_repository](#create_repository) | ❌ | ❌ | ❌ | ✅ |
-| [get_commit](#get_commit) | ✅ | ✅ | ✅ | ✅ |
-| [get_file_contents](#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
-| [get_tag](#get_tag) | ❌ | ❌ | ❌ | ❌ |
-| [list_branches](#list_branches) | ✅ | ✅ | ✅ | ✅ |
-| [list_commits](#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](#list_tags) | ❌ | ❌ | ❌ | ❌ |
-| [push_files](#push_files) | ❌ | ❌ | ❌ | ✅ |
+| [create_branch](TOOLS_GLOSSARY.md#create_branch) | ❌ | ❌ | ❌ | ✅ |
+| [create_repository](TOOLS_GLOSSARY.md#create_repository) | ❌ | ❌ | ❌ | ✅ |
+| [get_commit](TOOLS_GLOSSARY.md#get_commit) | ✅ | ✅ | ✅ | ✅ |
+| [get_file_contents](TOOLS_GLOSSARY.md#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
+| [get_tag](TOOLS_GLOSSARY.md#get_tag) | ❌ | ❌ | ❌ | ❌ |
+| [list_branches](TOOLS_GLOSSARY.md#list_branches) | ✅ | ✅ | ✅ | ✅ |
+| [list_commits](TOOLS_GLOSSARY.md#list_commits) | ✅ | ✅ | ✅ | ✅ |
+| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ❌ | ❌ | ❌ | ❌ |
+| [push_files](TOOLS_GLOSSARY.md#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests  Retrieval* | | | | |
-| [get_pull_request](#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_comments](#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_diff](#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_files](#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_reviews](#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_status](#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
-| [list_pull_requests](#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request](TOOLS_GLOSSARY.md#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_comments](TOOLS_GLOSSARY.md#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_diff](TOOLS_GLOSSARY.md#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_files](TOOLS_GLOSSARY.md#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_reviews](TOOLS_GLOSSARY.md#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
+| [get_pull_request_status](TOOLS_GLOSSARY.md#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
+| [list_pull_requests](TOOLS_GLOSSARY.md#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
 | *Pull Requests  Actions* | | | | |
-| [add_comment_to_pending_review](#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pending_pull_request_review](#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pull_request](#create_pull_request) | ❌ | ❌ | ✅ | ✅ |
-| [create_pull_request_with_copilot](#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
-| [merge_pull_request](#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
-| [request_copilot_review](#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
-| [submit_pending_pull_request_review](#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [update_pull_request](#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
-| [update_pull_request_branch](#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
+| [add_comment_to_pending_review](TOOLS_GLOSSARY.md#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
+| [create_pending_pull_request_review](TOOLS_GLOSSARY.md#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
+| [create_pull_request](TOOLS_GLOSSARY.md#create_pull_request) | ❌ | ❌ | ✅ | ✅ |
+| [create_pull_request_with_copilot](TOOLS_GLOSSARY.md#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
+| [merge_pull_request](TOOLS_GLOSSARY.md#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
+| [request_copilot_review](TOOLS_GLOSSARY.md#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
+| [submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
+| [update_pull_request](TOOLS_GLOSSARY.md#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
+| [update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
 | *Sub-Issues* | | | | |
-| [list_sub_issues](#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |
+| [list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
+| [reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |
 | *Gists* | | | | |
-| [list_gists](#list_gists) | ❌ | ❌ | ❌ | ❌ |
-| [update_gist](#update_gist) | ❌ | ❌ | ❌ | ❌ |
+| [list_gists](TOOLS_GLOSSARY.md#list_gists) | ❌ | ❌ | ❌ | ❌ |
+| [update_gist](TOOLS_GLOSSARY.md#update_gist) | ❌ | ❌ | ❌ | ❌ |
 | *Notifications* | | | | |
-| [list_notifications](#list_notifications) | ✅ | ✅ | ✅ | ✅ |
+| [list_notifications](TOOLS_GLOSSARY.md#list_notifications) | ✅ | ✅ | ✅ | ✅ |
 | *Code Scanning & Security* | | | | |
-| [list_code_scanning_alerts](#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
+| [list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
 | *Workflows (GitHub Actions)* | | | | |
-| [get_workflow_run](#get_workflow_run) | ✅ | ❌ | ✅ | ✅ |
-| [get_workflow_run_logs](#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
-| [get_workflow_run_usage](#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_jobs](#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](#list_workflow_run_artifacts) | ✅ | ❌ | ✅ | ✅ |
-| [list_workflow_runs](#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflows](#list_workflows) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_failed_jobs](#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_workflow_run](#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
+| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ✅ | ❌ | ✅ | ✅ |
+| [get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
+| [get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ✅ | ❌ | ✅ | ✅ |
+| [list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
+| [list_workflows](TOOLS_GLOSSARY.md#list_workflows) | ❌ | ❌ | ❌ | ❌ |
+| [rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
+| [rerun_workflow_run](TOOLS_GLOSSARY.md#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
 | *Search & Discovery* | | | | |
-| [search_code](#search_code) | ✅ | ✅ | ✅ | ✅ |
-| [search_orgs](#search_orgs) | ❌ | ❌ | ❌ | ❌ |
-| [search_pull_requests](#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| [search_repositories](#search_repositories) | ✅ | ✅ | ✅ | ✅ |
-| [search_users](#search_users) | ❌ | ❌ | ❌ | ❌ |
+| [search_code](TOOLS_GLOSSARY.md#search_code) | ✅ | ✅ | ✅ | ✅ |
+| [search_orgs](TOOLS_GLOSSARY.md#search_orgs) | ❌ | ❌ | ❌ | ❌ |
+| [search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
+| [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
+| [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
 | *User & Account* | | | | |
-| [get_me](#get_me) | ✅ | ✅ | ✅ | ✅ |
+| [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
 | *File Operations* | | | | |
-| [create_or_update_file](#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
+| [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
+
+## Notes
+
+- QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
+- This document is the canonical source for tool availability.
+- Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
+
 
 ## Using `code_style_guidelines.txt` Across Tools
 
@@ -577,249 +580,3 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 1. Create or edit `CLAUDE.md` in the repository root
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Save the file.
-
-## Tool Definitions
-
-### Built-In (VS Code / Core)
-
-#### Code & Project Navigation
-
-##### codebase
-Search, read, and analyze project source code.
-##### findTestFiles
-Given a source (or test) file, locate its corresponding test (or source) counterpart.
-##### search
-Search and read files in the workspace.
-##### searchResults
-Access the current search view results programmatically.
-##### usages
-Find references, definitions, implementations, and other symbol usages.
-#### Quality & Diagnostics
-##### problems
-Retrieve diagnostics (errors/warnings) for a file.
-##### testFailure
-Surface details about the most recent unit test failure.
-#### Version Control & Changes
-##### changes
-Get diffs of locally changed files.
-#### Environment & Execution
-##### terminalLastCommand
-Return the last executed command in the active terminal.
-##### terminalSelection
-Return the currently selected text in the terminal (Code mode only).
-#### Web & External Content
-##### fetch
-Fetch main textual content from a web page (provide URL and optional query focus).
-##### githubRepo
-Search a public GitHub repository for relevant code snippets.
-#### Editor & Extensions
-##### extensions
-Discover or inspect installed/available editor extensions.
-##### vscodeAPI
-Query VS Code API references and docs (Code mode only).
-#### Editing & Automation
-##### editFiles
-Edit existing workspace files (Code mode only; mutating).
-##### runCommands
-Execute arbitrary shell/CLI commands in a persistent terminal (Code mode only).
-##### runTasks
-Create/run tasks (build/test/etc.) via tasks configuration (Code mode only).
-
-### GitHub Pull Requests Extension (VS Code)
-#### activePullRequest
-Retrieve context for the currently focused pull request.
-#### copilotCodingAgent
-Completes the provided task using an asynchronous coding agent. Use when the user wants copilot to continue completing a task in the background or asynchronously. Launch an autonomous GitHub Copilot agent to work on coding tasks in the background. The agent will create a new branch, implement the requested changes, and open a pull request with the completed work. 
-
-### Context7
-
-The [Context7 MCP Server](https://github.com/upstash/context7) retrieves up-to-date documentation and code examples for various programming languages and frameworks, from community-contributed sources (e.g., [ggplot2](https://context7.com/tidyverse/ggplot2)).
-
-#### resolve-library-id
-Resolve a package/library name to a Context7-compatible identifier.
-
-#### get-library-docs
-Retrieve up-to-date documentation snippets for a resolved library ID.
-
-### Atlassian
-
-The [Atlassian Remote MCP Server](https://support.atlassian.com/rovo/docs/getting-started-with-the-atlassian-remote-mcp-server/) provides lets an agent read/write from/to Jira and Confluence (but not Bitbucket).
-
-#### Jira Issues & Operations
-##### addCommentToJiraIssue
-Add a comment to a Jira issue.
-##### createJiraIssue
-Create a new Jira issue in a project.
-##### editJiraIssue
-Update fields of an existing Jira issue.
-##### getJiraIssue
-Fetch details for a Jira issue by key or ID.
-##### getJiraIssueRemoteIssueLinks
-Retrieve remote issue links (e.g., Confluence pages) tied to a Jira issue.
-##### getTransitionsForJiraIssue
-List available transitions for a Jira issue.
-##### searchJiraIssuesUsingJql
-Search Jira issues with JQL.
-##### transitionJiraIssue
-Move an issue through a workflow transition.
-#### Jira Project Metadata
-##### getJiraProjectIssueTypesMetadata
-Metadata/details for issue types in a Jira project.
-##### getVisibleJiraProjects
-List Jira projects visible to the user (permission-filtered).
-#### Confluence Pages & Content
-##### createConfluencePage
-Create a Confluence page (regular or live doc).
-##### getConfluencePage
-Fetch a Confluence page (body converted to Markdown).
-##### getConfluencePageAncestors
-List ancestor hierarchy for a page.
-##### getConfluencePageDescendants
-List descendant pages (optionally depth-limited).
-##### getPagesInConfluenceSpace
-List pages within a Confluence space.
-##### updateConfluencePage
-Update an existing Confluence page or live doc.
-#### Confluence Comments
-##### createConfluenceFooterComment
-Add a footer comment to a page/blog post.
-##### createConfluenceInlineComment
-Add an inline (text-anchored) comment to a page.
-##### getConfluencePageFooterComments
-List footer comments for a page.
-##### getConfluencePageInlineComments
-List inline comments for a page.
-#### Confluence Spaces & Discovery
-##### getConfluenceSpaces
-List spaces and related metadata.
-##### searchConfluenceUsingCql
-Query Confluence content using CQL.
-#### User & Identity
-##### atlassianUserInfo
-Get current Atlassian user identity info.
-##### lookupJiraAccountId
-Lookup account IDs by user name/email.
-#### Other
-##### getAccessibleAtlassianResources
-Discover accessible Atlassian cloud resources and obtain cloud IDs.
-
-### GitHub
-
-The [GitHub MCP Server](https://github.com/github/github-mcp-server) lets an agent read/write from/to GitHub.
-
-#### Commits & Repository
-##### create_branch
-Create a branch from a base ref (Code mode only).
-##### create_repository
-Create a new repository (mutation; Code mode only).
-##### get_commit
-Get details for a specific commit.
-##### get_file_contents
-Retrieve file or directory listing content from a repo.
-##### get_tag
-Get details for a tag.
-##### list_branches
-List branches in a repository.
-##### list_commits
-List commits on a branch or up to a commit SHA.
-##### list_tags
-List tags in a repository.
-##### push_files
-Push multiple files in a single commit (Code mode only).
-#### Pull Requests – Retrieval
-##### activePullRequest
-Retrieve context for the currently focused pull request.
-##### get_pull_request
-Retrieve pull request details.
-##### get_pull_request_comments
-List comments on a pull request.
-##### get_pull_request_diff
-Retrieve a diff for a pull request.
-##### get_pull_request_files
-List changed files in a pull request.
-##### get_pull_request_reviews
-List reviews on a pull request.
-##### get_pull_request_status
-Fetch status checks for a pull request.
-##### list_pull_requests
-List pull requests with filters.
-#### Pull Requests – Actions
-##### add_comment_to_pending_review
-Add a comment to an in-progress pending review (Code mode only).
-##### create_pending_pull_request_review
-Start a pending review (Code mode only).
-##### create_pull_request
-Open a new pull request (Code mode only).
-##### create_pull_request_with_copilot
-Delegate implementation task leading to a new PR (Code mode only).
-##### merge_pull_request
-Merge a pull request (Code mode only).
-##### request_copilot_review
-Request automated Copilot code review for a PR (Code mode only).
-##### submit_pending_pull_request_review
-Submit a pending review (Code mode only).
-##### update_pull_request
-Modify title/body/draft state of a pull request (Code mode only).
-##### update_pull_request_branch
-Update PR branch with base (Code mode only).
-
-#### Sub-Issues
-##### list_sub_issues
-List sub-issues for a GitHub issue (Beta feature).
-##### reprioritize_sub_issue
-Reorder sub-issue priority (Code mode only).
-#### Gists
-##### list_gists
-List gists for a user.
-##### update_gist
-Update an existing gist (Code mode only).
-#### Notifications
-##### list_notifications
-List all notifications (filters optional).
-#### Code Scanning & Security
-##### list_code_scanning_alerts
-List code scanning alerts.
-#### Workflows (GitHub Actions)
-##### get_workflow_run
-Get details for a workflow run.
-##### get_workflow_run_logs
-Download logs (ZIP) for a workflow run.
-##### get_workflow_run_usage
-Get billable time/usage metrics for a run.
-##### list_workflow_jobs
-List jobs for a workflow run.
-##### list_workflow_run_artifacts
-List artifacts produced by a workflow run.
-##### list_workflow_runs
-List workflow runs with filtering options.
-##### list_workflows
-List workflows configured in a repository.
-##### rerun_failed_jobs
-Re-run only failed jobs in a run (Code mode only).
-##### rerun_workflow_run
-Re-run an entire workflow run (Code mode only).
-#### Search & Discovery
-##### search_code
-Global code search across GitHub.
-##### search_orgs
-Search for GitHub organizations.
-##### search_pull_requests
-Search pull requests across repositories.
-##### search_repositories
-Search for repositories by criteria.
-##### search_users
-Search for GitHub users.
-
-#### User & Account
-##### get_me
-Get details for the authenticated GitHub user.
-
-#### File Operations
-##### create_or_update_file
-Create or update a single file in a repository (Code mode only).
-
-### Notes
-- Definitions come from the MCP servers
-- QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
-- This document is the canonical source for tool availability.
-- Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
