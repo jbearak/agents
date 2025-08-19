@@ -13,6 +13,7 @@ tools: [
     'get_workflow_run', 'list_workflow_run_artifacts',
   'reprioritize_sub_issue',
   'search_code', 'search_pull_requests', 'search_repositories',
+  'add_issue_comment', 'create_issue', 'get_issue', 'get_issue_comments', 'list_issues', 'search_issues', 'update_issue',
   'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql', 'getJiraProjectIssueTypesMetadata',
     'getVisibleJiraProjects',
   'addCommentToJiraIssue', 'createJiraIssue', 'editJiraIssue', 'transitionJiraIssue',

@@ -9,6 +9,7 @@ tools: [
     'get_pull_request_reviews', 'get_pull_request_status', 'list_pull_requests', 'activePullRequest',
   'add_comment_to_pending_review', 'create_pending_pull_request_review', 'submit_pending_pull_request_review',
   'list_notifications', 'search_code', 'search_pull_requests', 'search_repositories', 'list_sub_issues',
+  'add_issue_comment', 'get_issue', 'get_issue_comments', 'list_issues', 'search_issues',
   'addCommentToJiraIssue', 'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql',
     'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects',
   'getConfluencePage', 'getPagesInConfluenceSpace', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments',
