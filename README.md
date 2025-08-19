@@ -501,6 +501,14 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
 | [update_pull_request](TOOLS_GLOSSARY.md#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
 | [update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
+| *Issues* | | | | |
+| [add_issue_comment](TOOLS_GLOSSARY.md#add_issue_comment) | ❌ | ✅ | ✅ | ✅ |
+| [create_issue](TOOLS_GLOSSARY.md#create_issue) | ❌ | ❌ | ✅ | ✅ |
+| [get_issue](TOOLS_GLOSSARY.md#get_issue) | ✅ | ✅ | ✅ | ✅ |
+| [get_issue_comments](TOOLS_GLOSSARY.md#get_issue_comments) | ✅ | ✅ | ✅ | ✅ |
+| [list_issues](TOOLS_GLOSSARY.md#list_issues) | ✅ | ✅ | ✅ | ✅ |
+| [search_issues](TOOLS_GLOSSARY.md#search_issues) | ✅ | ✅ | ✅ | ✅ |
+| [update_issue](TOOLS_GLOSSARY.md#update_issue) | ❌ | ❌ | ✅ | ✅ |
 | *Sub-Issues* | | | | |
 | [list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
 | [reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |

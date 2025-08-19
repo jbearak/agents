@@ -267,6 +267,29 @@ Modify title/body/draft state of a pull request (Code mode only).
 #### update_pull_request_branch
 Update PR branch with base (Code mode only).
 
+### Issues
+
+#### add_issue_comment
+Add a comment to a GitHub issue.
+
+#### create_issue
+Create a new GitHub issue in a repository.
+
+#### get_issue
+Retrieve details for a specific GitHub issue.
+
+#### get_issue_comments
+List comments on a GitHub issue.
+
+#### list_issues
+List issues in a repository with filtering options.
+
+#### search_issues
+Search for GitHub issues across repositories.
+
+#### update_issue
+Update title, body, state, or other properties of a GitHub issue.
+
 ### Sub-Issues
 
 #### list_sub_issues

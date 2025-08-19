@@ -10,6 +10,7 @@ tools: [
   'list_branches', 'list_commits', 'list_pull_requests', 'list_notifications', 'list_sub_issues',
   'get_workflow_run', 'list_workflow_run_artifacts', 'search_code',
   'search_pull_requests', 'search_repositories',
+  'get_issue', 'get_issue_comments', 'list_issues', 'search_issues',
   'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql',
   'getJiraProjectIssueTypesMetadata', 'getVisibleJiraProjects',
   'getConfluencePage', 'getPagesInConfluenceSpace', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments',

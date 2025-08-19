@@ -14,6 +14,7 @@ tools: [
     'submit_pending_pull_request_review', 'create_pull_request', 'update_pull_request', 'merge_pull_request',
     'update_pull_request_branch', 'create_pull_request_with_copilot', 'create_branch', 'push_files', 'create_repository',
   'search_code', 'search_pull_requests', 'search_repositories',
+  'add_issue_comment', 'create_issue', 'get_issue', 'get_issue_comments', 'list_issues', 'search_issues', 'update_issue',
   'resolve-library-id', 'get-library-docs',
   'getJiraIssue', 'getJiraIssueRemoteIssueLinks', 'searchJiraIssuesUsingJql', 'getJiraProjectIssueTypesMetadata',
     'getVisibleJiraProjects',
