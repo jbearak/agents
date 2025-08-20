@@ -34,9 +34,8 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 │   └── modes/
 │       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
 │       ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
-│       ├── Code-Sonnet4.chatmode.md         # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
 │       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
-│       └── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
 │       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
 └── scripts/
     ├── claude_desktop_config_macos.json
