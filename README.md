@@ -270,13 +270,13 @@ First, create an app password in Bitbucket with the required scopes:
      security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
      ```
 
-2. Copy `scripts/mcp-bitbucket-wrapper_macos.sh` to somewhere on your `$PATH` (or run in place):
+2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
    ```bash
-   cp scripts/mcp-bitbucket-wrapper_macos.sh ~/bin/
+   cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
    ```
 3. Make it executable:
    ```bash
-   chmod +x ~/bin/mcp-bitbucket-wrapper_macos.sh
+   chmod +x ~/bin/mcp-bitbucket-wrapper.sh
    ```
 4. Add to your agent configuration using the provided complete configurations:
    - **VS Code (macOS)**: Use [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json)
@@ -289,7 +289,7 @@ First, create an app password in Bitbucket with the required scopes:
    Customize the paths for your username and merge with your existing configuration.
 5. Test:
    ```bash
-   ATLASSIAN_BITBUCKET_USERNAME="your-username" ~/bin/mcp-bitbucket-wrapper_macos.sh --help | head -5
+   ATLASSIAN_BITBUCKET_USERNAME="your-username" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
    ```
 
 Environment overrides:
@@ -430,11 +430,11 @@ When you connect MCP servers in Claude.ai, they automatically become available i
      - Account: your macOS username (must match `$USER`).
      - Password: your GitHub Personal Access Token.
    - Click Add.
-2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper_macos.sh`](scripts/mcp-github-wrapper_macos.sh) to `~/bin/mcp-github-wrapper_macos.sh`
-3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper_macos.sh`
+2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
+3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
 4. Use the provided configuration: copy [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
 5. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
-6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper_macos.sh --help | head -5`
+6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper.sh --help | head -5`
 
 Notes:
 * If Homebrew bash path differs, change shebang to `#!/bin/bash`.

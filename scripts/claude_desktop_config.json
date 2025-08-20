@@ -7,7 +7,7 @@
       "working_directory": null
     },
     "GitHub": {
-      "command": "/Users/<username>/bin/mcp-github-wrapper_macos.sh",
+      "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
       "args": [],
       "env": {
         "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
@@ -15,7 +15,7 @@
       "working_directory": null
     },
     "Bitbucket": {
-      "command": "/Users/<username>/bin/mcp-bitbucket-wrapper_macos.sh",
+      "command": "/Users/<username>/bin/mcp-bitbucket-wrapper.sh",
       "args": [],
       "env": {
         "ATLASSIAN_BITBUCKET_USERNAME": "your-bitbucket-username"
