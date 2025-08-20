@@ -227,29 +227,53 @@ Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstud
 
 ### Bitbucket MCP (Local Only / Unofficial)
 
-There is currently **no official Bitbucket MCP server**. To use Bitbucket with agents locally, use the **unofficial** server: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket). Only **local MCP server instances** are supported (no remote HTTP endpoint). All agents that interact with Bitbucket MUST launch a local server wrapper.
+There is currently **no official Bitbucket MCP server**. To use Bitbucket with agents locally, use an **unofficial** server: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
 
 Key differences vs. GitHub MCP:
 - GitHub + Atlassian (Jira/Confluence) offer hosted endpoints; Bitbucket does not.
 - Bitbucket integration relies on a Bitbucket **App Password** (scoped minimally as needed) and your Bitbucket **username** (NOT your email address).
 - Security: Store only the app password in secure OS storage (macOS Keychain or Windows Credential Manager); leave username as a plain variable in the wrapper script.
 
+#### Creating a Bitbucket App Password
+
+First, create an app password in Bitbucket with the required scopes:
+
+1. Go to Personal Bitbucket Settings → App Passwords → Create app password (https://bitbucket.org/account/settings/app-passwords/)
+2. Permissions needed (tick these):
+   - **Account**
+     - email
+     - read
+   - **Workspace membership:**
+     - read
+   - **Projects:**
+     - read
+   - **Repositories:**
+     - read
+     - write
+   - **Pull requests:**
+     - read
+     - write
+   - **Pipelines:**
+     - read
+   - **Runners:**
+     - read
+
 #### macOS Wrapper Script
 
-1. Create a Keychain item for the app password (username isn't secret):
+1. Create Keychain items for both username and app password (no script editing needed):
    - GUI: Keychain Access → File → New Password Item…
-     - Name (Keychain Item Name / Service): `bitbucket-mcp`
-     - Account: `app-password`
-     - Password: (your Bitbucket app password)
+     - First item: Name (Service): `bitbucket-mcp`, Account: `username`, Password: (your Bitbucket username)
+     - Second item: Name (Service): `bitbucket-mcp`, Account: `app-password`, Password: (your Bitbucket app password)
    - Or CLI:
      ```bash
+     security add-generic-password -s "bitbucket-mcp" -a "username" -w "<username>"
      security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
      ```
-2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place) and edit the line:
+2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
    ```bash
-   ATLASSIAN_BITBUCKET_USERNAME="<username>"  # <-- CHANGE THIS
+   cp scripts/mcp-bitbucket-wrapper.sh /usr/local/bin/
    ```
-   Find the correct value at https://bitbucket.org/account/settings/ ("Username" field).
+   Find the correct username value at https://bitbucket.org/account/settings/ ("Username" field).
 3. Make it executable:
    ```bash
    chmod +x scripts/mcp-bitbucket-wrapper.sh
@@ -289,32 +313,28 @@ Environment overrides:
 * `ATLASSIAN_BITBUCKET_APP_PASSWORD` (if set, overrides Keychain retrieval).
 
 Security notes (macOS):
-* App password never stored in plaintext; wrapper queries Keychain each launch.
-* Username is safe to hard-code; do not store app passwords in dotfiles.
+* Username and app password never stored in plaintext; wrapper queries Keychain each launch.
+* Both credentials safely stored in macOS Keychain; no secrets in dotfiles or scripts.
 
 #### Windows Wrapper Script (PowerShell)
 
-Create a **Generic Credential** in Windows Credential Manager:
+Create **Generic Credentials** in Windows Credential Manager (no script editing needed):
 1. Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-2. Internet or network address: `bitbucket-mcp`
-3. User name: `app-password`
-4. Password: (your Bitbucket app password)
+   - First credential: Internet or network address: `bitbucket-mcp-username`, User name: `username`, Password: (your Bitbucket username)
+   - Second credential: Internet or network address: `bitbucket-mcp`, User name: `app-password`, Password: (your Bitbucket app password)
 
-Or via command line (sets credential but not retrievable password without module):
+Or via command line:
 ```powershell
+cmd /c "cmdkey /add:bitbucket-mcp-username /user:username /pass:<username>"
 cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
 ```
 
-Then install (if needed) the CredentialManager module to read the secret:
+Then install (if needed) the CredentialManager module to read the secrets:
 ```powershell
 Install-Module CredentialManager -Scope CurrentUser -Force
 ```
 
-Edit `scripts/mcp-bitbucket-wrapper.ps1` and set:
-```powershell
-$env:ATLASSIAN_BITBUCKET_USERNAME = '<username>'
-```
-Confirm username at https://bitbucket.org/account/settings/ (NOT email).
+Find your username at https://bitbucket.org/account/settings/ (NOT email).
 
 Optionally set a workspace:
 ```powershell
@@ -356,25 +376,25 @@ Test:
 ```
 
 Security notes (Windows):
-* Password stored in Windows Credential Manager; wrapper reads at runtime.
-* Username hard-coded is acceptable; avoid embedding secrets in script or JSON configs.
+* Username and password stored in Windows Credential Manager; wrapper reads at runtime.
+* Both credentials safely stored in Windows Credential Manager; no secrets in scripts or JSON configs.
 * Supports overriding password via `ATLASSIAN_BITBUCKET_APP_PASSWORD` env var for ephemeral sessions.
 
 #### Minimal Manual Launch (Any OS)
-If you prefer not to edit scripts, you can export variables then run via `npx` (NOT recommended for daily use):
+If you prefer not to use secure credential storage, you can export variables then run via `npx` (NOT recommended for daily use):
 ```bash
 export ATLASSIAN_BITBUCKET_USERNAME="<username>"
 export ATLASSIAN_BITBUCKET_APP_PASSWORD="<app_password>"
 export BITBUCKET_DEFAULT_WORKSPACE="Guttmacher"
 npx -y @aashari/mcp-server-atlassian-bitbucket
 ```
-Drawbacks: exposes password to shell history / process table.
+Drawbacks: exposes credentials to shell history / process table.
 
 #### Troubleshooting
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| macOS: "Could not retrieve Bitbucket app password" | Keychain item missing / wrong account | Recreate with service `bitbucket-mcp`, account `app-password` |
-| Windows: Credential not found | Generic credential not created | Add credential `bitbucket-mcp` | 
+| macOS: "Could not retrieve Bitbucket username/app password" | Keychain item missing / wrong account | Recreate with service `bitbucket-mcp`, accounts `username` and `app-password` |
+| Windows: Credential not found | Generic credential not created | Add credentials `bitbucket-mcp-username` and `bitbucket-mcp` | 
 | Username rejected | Using email instead of username | Use profile username from settings page | 
 | 401 Unauthorized | Wrong app password scope / value | Regenerate app password with correct scopes | 
 
