@@ -22,7 +22,7 @@
         "C:/Users/<username>/bin/mcp-bitbucket-wrapper.ps1"
       ],
       "env": {
-        "ATLASSIAN_BITBUCKET_USERNAME": "your-bitbucket-username"
+        "ATLASSIAN_BITBUCKET_USERNAME": "<username>"
       }
     }
   }
