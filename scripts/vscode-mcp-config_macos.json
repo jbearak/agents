@@ -16,7 +16,7 @@
       ]
     },
     "bitbucket": {
-      "command": "/Users/<username>/bin/mcp-bitbucket-wrapper.sh",
+      "command": "/Users/<your-os-username>/bin/mcp-bitbucket-wrapper.sh",
       "args": [],
       "env": {
         "ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"

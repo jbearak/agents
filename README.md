@@ -133,7 +133,7 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 | OS        | Folder                                                 |
 |-----------|--------------------------------------------------------|
-| Windows   | C:\Users\<username>\AppData\Roaming\Code\User\prompts\ |
+| Windows   | C:\Users\<your-os-username>\AppData\Roaming\Code\User\prompts\ |
 | Macintosh | ~/Library/Application Support/Code/User/prompts/       |
 
 Here are the files:
@@ -239,7 +239,7 @@ You will need a GitHub Personal Access Token. To create one, follow these steps:
    Import-Module CredentialManager
    Get-StoredCredential -Target GitHub
    ```
-3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<username>\bin\mcp-github-wrapper.ps1`
+3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<your-os-username>\bin\mcp-github-wrapper.ps1`
 4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
 5. Set execution policy (user scope):
    ```powershell
@@ -387,9 +387,6 @@ Scopes: Use the minimal scopes required by your workflows (e.g., repository read
 3. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
-For example:
-- In `C:/Users/<your-os-username>`, the placeholder refers to your **Windows** logon name.
-- In `"ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"`, the placeholder refers to your **Bitbucket** username.
 
 ### Claude.ai
 
@@ -406,10 +403,6 @@ Note: This adds the ability to add files from GitHub, but does not add the [GitH
 4. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
-
-For example:
-- In `C:/Users/<username>`, the placeholder refers to your **Windows** logon name.
-- In `"ATLASSIAN_BITBUCKET_USERNAME": "your-bitbucket-username"`, the placeholder refers to your **Bitbucket** username.
 
 
 ### Coding Style Guidelines

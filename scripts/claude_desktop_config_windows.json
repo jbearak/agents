@@ -10,7 +10,7 @@
       "command": "powershell",
       "args": [
         "-NoProfile","-ExecutionPolicy","Bypass","-File",
-        "C:/Users/<username>/bin/mcp-github-wrapper.ps1"
+        "C:/Users/<your-os-username>/bin/mcp-github-wrapper.ps1"
       ],
       "env": {},
       "working_directory": null
@@ -19,7 +19,7 @@
       "command": "powershell",
       "args": [
         "-NoProfile","-ExecutionPolicy","Bypass","-File",
-        "C:/Users/<username>/bin/mcp-bitbucket-wrapper.ps1"
+        "C:/Users/<your-os-username>/bin/mcp-bitbucket-wrapper.ps1"
       ],
       "env": {
         "ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"
