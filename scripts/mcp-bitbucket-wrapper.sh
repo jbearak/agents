@@ -41,16 +41,14 @@ if [[ -n "${ATLASSIAN_BITBUCKET_APP_PASSWORD:-}" ]]; then
   APP_PASS="$ATLASSIAN_BITBUCKET_APP_PASSWORD"
 else
   if [[ "$(uname)" == "Darwin" ]]; then
-    if APP_PASS=$(get_keychain_password); then
-      :
-    else
+    if ! APP_PASS=$(get_keychain_password); then
       echo "Error: Could not retrieve Bitbucket app password from Keychain (service '$SERVICE_NAME', account '$ACCOUNT_NAME')." >&2
       echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME' -w '<app_password>'" >&2
       echo "Or set environment variable: export ATLASSIAN_BITBUCKET_APP_PASSWORD='<app_password>'" >&2
       exit 1
     fi
   else
-    echo "Error: Environment variable ATLASSIAN_BITBUCKET_APP_PASSWORD is not set and keychain is not available on non-macOS systems." >&2
+    echo "Error: ATLASSIAN_BITBUCKET_APP_PASSWORD is not set and macOS Keychain is unavailable on this platform." >&2
     exit 1
   fi
 fi

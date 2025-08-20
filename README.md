@@ -313,6 +313,8 @@ For enhanced GitHub capabilities beyond the hosted version, use the local GitHub
 Notes:
 * If Homebrew bash path differs, change shebang to `#!/bin/bash`.
 * If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
+* All local wrapper scripts (GitHub, Bitbucket) are referenced from `~/bin` for consistency; adjust paths if you choose a different location.
+* Usernames appearing in JSON configs are not sensitive. Do not commit any file containing secrets (tokens/app passwords) if you temporarily inline them during testing.
 
 Security rationale: Configuration keeps secrets exclusively in OS-provided secure storage; no plaintext tokens in versioned config files or scripts.
 
