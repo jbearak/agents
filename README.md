@@ -260,15 +260,16 @@ First, create an app password in Bitbucket with the required scopes:
 
 #### macOS Wrapper Script
 
-1. Create Keychain items for both username and app password (no script editing needed):
+1. Create a Keychain item with your username and app password:
    - GUI: Keychain Access → File → New Password Item…
-     - First item: Name (Service): `bitbucket-mcp`, Account: `username`, Password: (your Bitbucket username)
-     - Second item: Name (Service): `bitbucket-mcp`, Account: `app-password`, Password: (your Bitbucket app password)
+     - Name (Service): `bitbucket-mcp`
+     - Account: (your Bitbucket username)
+     - Password: (your Bitbucket app password)
    - Or CLI:
      ```bash
-     security add-generic-password -s "bitbucket-mcp" -a "username" -w "<username>"
-     security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
+     security add-generic-password -s "bitbucket-mcp" -a "<username>" -w "<app_password>"
      ```
+
 2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
    ```bash
    cp scripts/mcp-bitbucket-wrapper.sh /usr/local/bin/
@@ -313,23 +314,23 @@ Environment overrides:
 * `ATLASSIAN_BITBUCKET_APP_PASSWORD` (if set, overrides Keychain retrieval).
 
 Security notes (macOS):
-* Username and app password never stored in plaintext; wrapper queries Keychain each launch.
-* Both credentials safely stored in macOS Keychain; no secrets in dotfiles or scripts.
+* Username and app password stored together in a single Keychain entry; wrapper queries Keychain each launch.
+* No secrets stored in scripts or configuration files.
 
 #### Windows Wrapper Script (PowerShell)
 
-Create **Generic Credentials** in Windows Credential Manager (no script editing needed):
+Create a **Generic Credential** in Windows Credential Manager:
 1. Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - First credential: Internet or network address: `bitbucket-mcp-username`, User name: `username`, Password: (your Bitbucket username)
-   - Second credential: Internet or network address: `bitbucket-mcp`, User name: `app-password`, Password: (your Bitbucket app password)
+   - Internet or network address: `bitbucket-mcp`
+   - User name: (your Bitbucket username)  
+   - Password: (your Bitbucket app password)
 
 Or via command line:
 ```powershell
-cmd /c "cmdkey /add:bitbucket-mcp-username /user:username /pass:<username>"
-cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
+cmd /c "cmdkey /add:bitbucket-mcp /user:<username> /pass:<app_password>"
 ```
 
-Then install (if needed) the CredentialManager module to read the secrets:
+Then install (if needed) the CredentialManager module to read the credentials:
 ```powershell
 Install-Module CredentialManager -Scope CurrentUser -Force
 ```
@@ -376,8 +377,8 @@ Test:
 ```
 
 Security notes (Windows):
-* Username and password stored in Windows Credential Manager; wrapper reads at runtime.
-* Both credentials safely stored in Windows Credential Manager; no secrets in scripts or JSON configs.
+* Username and password stored together in a single Credential Manager entry; wrapper reads at runtime.
+* No secrets stored in scripts or configuration files.
 * Supports overriding password via `ATLASSIAN_BITBUCKET_APP_PASSWORD` env var for ephemeral sessions.
 
 #### Minimal Manual Launch (Any OS)
@@ -393,8 +394,8 @@ Drawbacks: exposes credentials to shell history / process table.
 #### Troubleshooting
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| macOS: "Could not retrieve Bitbucket username/app password" | Keychain item missing / wrong account | Recreate with service `bitbucket-mcp`, accounts `username` and `app-password` |
-| Windows: Credential not found | Generic credential not created | Add credentials `bitbucket-mcp-username` and `bitbucket-mcp` | 
+| macOS: "Could not retrieve Bitbucket credentials" | Keychain item missing | Create keychain entry with service `bitbucket-mcp` |
+| Windows: Credential not found | Generic credential not created | Add credential `bitbucket-mcp` in Credential Manager | 
 | Username rejected | Using email instead of username | Use profile username from settings page | 
 | 401 Unauthorized | Wrong app password scope / value | Regenerate app password with correct scopes | 
 

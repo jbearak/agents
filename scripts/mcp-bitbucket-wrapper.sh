@@ -2,13 +2,11 @@
 # Bitbucket MCP Server Wrapper (macOS / Linux)
 # Securely launches the Bitbucket MCP server with credentials from macOS Keychain (macOS) or environment variables (fallback)
 #
-# Recommended: store both username and app password in Keychain; no script editing needed.
 # Keychain setup (macOS):
-#   security add-generic-password -s "bitbucket-mcp" -a "username" -w "<username>"
-#   security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
-#   (Or use Keychain Access GUI: New Password Item... Name: bitbucket-mcp, Account: username/app-password, Password: <value>)
+#   security add-generic-password -s "bitbucket-mcp" -a "<username>" -w "<app_password>"
+#   (Or use Keychain Access GUI: New Password Item... Name: bitbucket-mcp, Account: <username>, Password: <app_password>)
 # Usage:
-#   1. Ensure keychain items exist (see above) OR export ATLASSIAN_BITBUCKET_USERNAME and ATLASSIAN_BITBUCKET_APP_PASSWORD before running.
+#   1. Create keychain entry (see above) OR export ATLASSIAN_BITBUCKET_USERNAME and ATLASSIAN_BITBUCKET_APP_PASSWORD before running.
 #   2. Run: ./mcp-bitbucket-wrapper.sh [args]
 #
 # Environment overrides (optional):
@@ -19,52 +17,46 @@
 set -euo pipefail
 
 SERVICE_NAME="bitbucket-mcp"
-USERNAME_ACCOUNT="username"
-PASSWORD_ACCOUNT="app-password"
 
-get_keychain_value() {
-  local account="$1"
-  if [[ "$(uname)" == "Darwin" ]]; then
-    security find-generic-password -s "$SERVICE_NAME" -a "$account" -w 2>/dev/null || return 1
-  else
+get_keychain_credentials() {
+  if [[ "$(uname)" != "Darwin" ]]; then
     return 1
   fi
+  
+  # Try to find any generic password for the service
+  local keychain_info
+  if keychain_info=$(security find-generic-password -s "$SERVICE_NAME" -g 2>&1); then
+    # Extract username (account) from the output
+    local username
+    username=$(echo "$keychain_info" | grep "acct" | sed 's/.*"\(.*\)".*/\1/')
+    
+    # Get the password
+    local password
+    if password=$(security find-generic-password -s "$SERVICE_NAME" -a "$username" -w 2>/dev/null); then
+      echo "$username:$password"
+      return 0
+    fi
+  fi
+  return 1
 }
 
-# Get username from environment or keychain
-if [[ -n "${ATLASSIAN_BITBUCKET_USERNAME:-}" ]]; then
+# Get credentials from environment or keychain
+if [[ -n "${ATLASSIAN_BITBUCKET_USERNAME:-}" && -n "${ATLASSIAN_BITBUCKET_APP_PASSWORD:-}" ]]; then
   USERNAME="$ATLASSIAN_BITBUCKET_USERNAME"
-else
-  if [[ "$(uname)" == "Darwin" ]]; then
-    if USERNAME=$(get_keychain_value "$USERNAME_ACCOUNT"); then
-      true  # Successfully retrieved username from keychain
-    else
-      echo "Error: Could not retrieve Bitbucket username from Keychain (service '$SERVICE_NAME', account '$USERNAME_ACCOUNT')." >&2
-      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$USERNAME_ACCOUNT' -w '<username>'" >&2
-      echo "Or set environment variable: export ATLASSIAN_BITBUCKET_USERNAME='<username>'" >&2
-      exit 1
-    fi
-  else
-    echo "Error: ATLASSIAN_BITBUCKET_USERNAME environment variable is not set and keychain is not available on non-macOS systems." >&2
-    exit 1
-  fi
-fi
-
-# Get app password from environment or keychain
-if [[ -n "${ATLASSIAN_BITBUCKET_APP_PASSWORD:-}" ]]; then
   APP_PASS="$ATLASSIAN_BITBUCKET_APP_PASSWORD"
 else
   if [[ "$(uname)" == "Darwin" ]]; then
-    if APP_PASS=$(get_keychain_value "$PASSWORD_ACCOUNT"); then
-      true  # Successfully retrieved password from keychain
+    if credentials=$(get_keychain_credentials); then
+      USERNAME="${credentials%%:*}"
+      APP_PASS="${credentials#*:}"
     else
-      echo "Error: Could not retrieve Bitbucket app password from Keychain (service '$SERVICE_NAME', account '$PASSWORD_ACCOUNT')." >&2
-      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$PASSWORD_ACCOUNT' -w '<app_password>'" >&2
-      echo "Or set environment variable: export ATLASSIAN_BITBUCKET_APP_PASSWORD='<app_password>'" >&2
+      echo "Error: Could not retrieve Bitbucket credentials from Keychain (service '$SERVICE_NAME')." >&2
+      echo "Add them with: security add-generic-password -s '$SERVICE_NAME' -a '<username>' -w '<app_password>'" >&2
+      echo "Or set environment variables: export ATLASSIAN_BITBUCKET_USERNAME='<username>' ATLASSIAN_BITBUCKET_APP_PASSWORD='<app_password>'" >&2
       exit 1
     fi
   else
-    echo "Error: ATLASSIAN_BITBUCKET_APP_PASSWORD environment variable is not set and keychain is not available on non-macOS systems." >&2
+    echo "Error: Environment variables ATLASSIAN_BITBUCKET_USERNAME and ATLASSIAN_BITBUCKET_APP_PASSWORD are not set and keychain is not available on non-macOS systems." >&2
     exit 1
   fi
 fi
