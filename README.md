@@ -56,12 +56,6 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
       <th>Mode</th>
       <th>Default Model</th>
       <th>Purpose</th>
-      <th>Local File / Repo Mutation</th>
-      <th>Remote Artifact Mutation (Issues/Pages/Comments)</th>
-      <th>Issue Commenting</th>
-      <th>PR Create/Edit</th>
-      <th>PR Review (comments / batch)</th>
-      <th>PR Merge / Branch Ops</th>
       <th>File</th>
       <th>Contract Summary</th>
     </tr>
@@ -71,25 +65,13 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
       <td>QnA</td>
       <td>GPT-4.1</td>
       <td>Q&amp;A, exploration, explain code, gather context</td>
-      <td>No</td>
-      <td>No (read-only viewing only)</td>
-      <td>No</td>
-      <td>No</td>
-      <td>No</td>
-      <td>No</td>
       <td><code>copilot/modes/QnA.chatmode.md</code></td>
       <td>Strict read-only (no mutations anywhere)</td>
     </tr>
     <tr>
       <td>Plan</td>
       <td>Sonnet 4</td>
-      <td>Plan work, refine scope, shape tickets/pages, organize PR scaffolding</td>
-      <td>No</td>
-      <td>Yes (issues/pages)</td>
-      <td>Yes</td>
-      <td>Yes (no branch create/update)</td>
-      <td>Yes</td>
-      <td>No</td>
+      <td>Plan work, refine scope, shape issues/pages, organize PR scaffolding</td>
       <td><code>copilot/modes/Plan.chatmode.md</code></td>
       <td>Mutate planning artifacts + create/edit/review PRs (no merge/branch ops)</td>
     </tr>
@@ -97,12 +79,6 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
       <td>Review</td>
       <td>GPT-5</td>
       <td>Provide review feedback on PRs / issues</td>
-      <td>No</td>
-      <td>No (except issue comments)</td>
-      <td>Yes (issue comments only)</td>
-      <td>No</td>
-      <td>Yes</td>
-      <td>No</td>
       <td><code>copilot/modes/Review.chatmode.md</code></td>
       <td>PR review + issue comments only; no other mutations</td>
     </tr>
@@ -110,12 +86,6 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
       <td>Code-GPT5</td>
       <td>GPT-5</td>
       <td rowspan="2">Implement changes, run tests/commands</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
       <td><code>copilot/modes/Code-GPT5.chatmode.md</code></td>
       <td rowspan="2">Full implementation, execution, &amp; PR lifecycle</td>
     </tr>
