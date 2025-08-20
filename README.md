@@ -260,34 +260,36 @@ First, create an app password in Bitbucket with the required scopes:
 
 #### macOS Wrapper Script
 
-1. Create a Keychain item with your username and app password:
+1. Create a Keychain item for the app password only:
    - GUI: Keychain Access → File → New Password Item…
      - Name (Service): `bitbucket-mcp`
-     - Account: (your Bitbucket username)
+     - Account: `app-password`
      - Password: (your Bitbucket app password)
    - Or CLI:
      ```bash
-     security add-generic-password -s "bitbucket-mcp" -a "<username>" -w "<app_password>"
+     security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
      ```
 
-2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
+2. Copy `scripts/mcp-bitbucket-wrapper_macos.sh` to somewhere on your `$PATH` (or run in place):
    ```bash
-   cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
+   cp scripts/mcp-bitbucket-wrapper_macos.sh ~/bin/
    ```
-   Find the correct username value at https://bitbucket.org/account/settings/ ("Username" field).
 3. Make it executable:
    ```bash
-   chmod +x ~/bin/mcp-bitbucket-wrapper.sh
+   chmod +x ~/bin/mcp-bitbucket-wrapper_macos.sh
    ```
 4. Add to your agent configuration using the provided complete configurations:
-   - **VS Code**: Use [`scripts/vscode-mcp-config.json`](scripts/vscode-mcp-config.json) (includes all MCP servers)
-   - **Claude Desktop (macOS)**: Use [`scripts/claude_desktop_config.json`](scripts/claude_desktop_config.json) 
+   - **VS Code (macOS)**: Use [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json)
+   - **VS Code (Windows)**: Use [`scripts/vscode-mcp-config_windows.json`](scripts/vscode-mcp-config_windows.json)
+   - **Claude Desktop (macOS)**: Use [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) 
    - **Claude Desktop (Windows)**: Use [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json)
+   
+   **Important**: Replace `your-bitbucket-username` in the configuration with your actual Bitbucket username from https://bitbucket.org/account/settings/ ("Username" field, NOT email).
    
    Customize the paths for your username and merge with your existing configuration.
 5. Test:
    ```bash
-   scripts/mcp-bitbucket-wrapper.sh --help | head -5
+   ATLASSIAN_BITBUCKET_USERNAME="your-username" ~/bin/mcp-bitbucket-wrapper_macos.sh --help | head -5
    ```
 
 Environment overrides:
@@ -295,20 +297,20 @@ Environment overrides:
 * `ATLASSIAN_BITBUCKET_APP_PASSWORD` (if set, overrides Keychain retrieval).
 
 Security notes (macOS):
-* Username and app password stored together in a single Keychain entry; wrapper queries Keychain each launch.
+* Only app password stored in Keychain; username provided via JSON configuration.
 * No secrets stored in scripts or configuration files.
 
 #### Windows Wrapper Script (PowerShell)
 
-Create a **Generic Credential** in Windows Credential Manager:
+Create a **Generic Credential** in Windows Credential Manager for app password only:
 1. Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
    - Internet or network address: `bitbucket-mcp`
-   - User name: (your Bitbucket username)  
+   - User name: `app-password`
    - Password: (your Bitbucket app password)
 
 Or via command line:
 ```powershell
-cmd /c "cmdkey /add:bitbucket-mcp /user:<username> /pass:<app_password>"
+cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
 ```
 
 Then install (if needed) the CredentialManager module to read the credentials:
@@ -316,24 +318,24 @@ Then install (if needed) the CredentialManager module to read the credentials:
 Install-Module CredentialManager -Scope CurrentUser -Force
 ```
 
-Find your username at https://bitbucket.org/account/settings/ (NOT email).
-
 Optionally set a workspace:
 ```powershell
 $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
 ```
 
 Use the provided complete configurations and customize paths:
-* **VS Code**: [`scripts/vscode-mcp-config.json`](scripts/vscode-mcp-config.json)
+* **VS Code (Windows)**: [`scripts/vscode-mcp-config_windows.json`](scripts/vscode-mcp-config_windows.json)
 * **Claude Desktop**: [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json)
+
+**Important**: Replace `your-bitbucket-username` in the configuration with your actual Bitbucket username from https://bitbucket.org/account/settings/ ("Username" field, NOT email).
 
 Test:
 ```powershell
-& C:/path/to/scripts/mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
+$env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & C:/path/to/scripts/mcp-bitbucket-wrapper_windows.ps1 --help | Select-Object -First 5
 ```
 
 Security notes (Windows):
-* Username and password stored together in a single Credential Manager entry; wrapper reads at runtime.
+* Only app password stored in Credential Manager; username provided via JSON configuration.
 * No secrets stored in scripts or configuration files.
 * Supports overriding password via `ATLASSIAN_BITBUCKET_APP_PASSWORD` env var for ephemeral sessions.
 
@@ -366,7 +368,7 @@ Each of these links opens a VS Code window. For each of these MCP servers, press
 If you prefer to install the MCP servers manually:
 
 1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Use the provided configuration: copy [`scripts/vscode-mcp-config.json`](scripts/vscode-mcp-config.json) and customize paths as needed
+2. Use the provided configuration: copy [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json) and customize paths as needed
 
 ### Add MCP Servers to Claude.ai
 
@@ -397,7 +399,7 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    Import-Module CredentialManager
    Get-StoredCredential -Target GitHub
    ```
-3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<username>\bin\mcp-github-wrapper.ps1`
+3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper_windows.ps1`](scripts/mcp-github-wrapper_windows.ps1) to `C:\Users\<username>\bin\mcp-github-wrapper_windows.ps1`
 4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
 5. Set execution policy (user scope):
    ```powershell
@@ -412,7 +414,7 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    ```
 8. Verify wrapper:
    ```powershell
-   & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 10
+   & $Env:UserProfile\bin\mcp-github-wrapper_windows.ps1 --help | Select-Object -First 10
    ```
    If it errors about credentials, re-create the Generic Credential `GitHub`
 
@@ -428,11 +430,11 @@ When you connect MCP servers in Claude.ai, they automatically become available i
      - Account: your macOS username (must match `$USER`).
      - Password: your GitHub Personal Access Token.
    - Click Add.
-2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
-3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Use the provided configuration: copy [`scripts/claude_desktop_config.json`](scripts/claude_desktop_config.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
+2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper_macos.sh`](scripts/mcp-github-wrapper_macos.sh) to `~/bin/mcp-github-wrapper_macos.sh`
+3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper_macos.sh`
+4. Use the provided configuration: copy [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
 5. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
-6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper.sh --help | head -5`
+6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper_macos.sh --help | head -5`
 
 Notes:
 * If Homebrew bash path differs, change shebang to `#!/bin/bash`.

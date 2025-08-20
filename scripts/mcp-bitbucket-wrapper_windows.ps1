@@ -2,20 +2,17 @@
 .SYNOPSIS
   Bitbucket MCP Server Wrapper (Windows PowerShell)
 .DESCRIPTION
-  Securely launches the Bitbucket MCP server using a Generic Credential stored in Windows Credential Manager.
-  Only LOCAL MCP server usage is supported; Bitbucket does not have an official remote MCP server.
+  Securely launches the Bitbucket MCP server using app password from Windows Credential Manager.
+  Username is provided via environment variable (set in JSON config).
 
-  Create Generic Credential:
+  Create Generic Credential for app password only:
     Control Panel > User Accounts > Credential Manager > Windows Credentials > Add a generic credential
       Internet or network address: bitbucket-mcp
-      User name: <your Bitbucket username>
+      User name: app-password
       Password: <your Bitbucket app password>
 
-  Or via PowerShell (run as current user):
-    cmd /c "cmdkey /add:bitbucket-mcp /user:<username> /pass:<app_password>"
-
-  NOTE: Use your Bitbucket username (NOT email address) from:
-    https://bitbucket.org/account/settings/  ("Username" field in profile settings)
+  Or via PowerShell:
+    cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
 
 .PARAMETER Args
   Additional arguments passed through to the MCP server process.
@@ -27,7 +24,7 @@ $ErrorActionPreference = 'Stop'
 # Optional workspace override
 if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) { $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher' }
 
-function Get-StoredCredential {
+function Get-StoredPassword {
   param([string]$Target)
   
   # Check if credential exists
@@ -45,35 +42,33 @@ function Get-StoredCredential {
     if (-not $cred) { 
       throw "Stored credential not accessible via CredentialManager module" 
     }
-    return @{
-      Username = $cred.UserName
-      Password = $cred.Password
-    }
+    return $cred.Password
   } catch {
     throw "Unable to read credential for '$Target'. Install CredentialManager module: Install-Module CredentialManager -Scope CurrentUser"
   }
 }
 
-# Get credentials from environment or credential manager
-if ($env:ATLASSIAN_BITBUCKET_USERNAME -and $env:ATLASSIAN_BITBUCKET_APP_PASSWORD) {
-  $username = $env:ATLASSIAN_BITBUCKET_USERNAME
+# Username is required from environment (set in JSON config)
+if (-not $env:ATLASSIAN_BITBUCKET_USERNAME) {
+  Write-Error "ATLASSIAN_BITBUCKET_USERNAME environment variable is required. This should be set in your agent configuration JSON file."
+  exit 1
+}
+
+# Get app password from environment or credential manager
+if ($env:ATLASSIAN_BITBUCKET_APP_PASSWORD) {
   $appPassword = $env:ATLASSIAN_BITBUCKET_APP_PASSWORD
 } else {
   try {
-    $credential = Get-StoredCredential -Target 'bitbucket-mcp'
-    $username = $credential.Username
-    $appPassword = $credential.Password
+    $appPassword = Get-StoredPassword -Target 'bitbucket-mcp'
   } catch {
-    Write-Error "Could not retrieve Bitbucket credentials. Either set environment variables ATLASSIAN_BITBUCKET_USERNAME and ATLASSIAN_BITBUCKET_APP_PASSWORD or create credential 'bitbucket-mcp' in Windows Credential Manager."
+    Write-Error "Could not retrieve Bitbucket app password. Either set environment variable ATLASSIAN_BITBUCKET_APP_PASSWORD or create credential 'bitbucket-mcp' with user 'app-password' in Windows Credential Manager."
     exit 1
   }
 }
 
-$env:ATLASSIAN_BITBUCKET_USERNAME = $username
 $env:ATLASSIAN_BITBUCKET_APP_PASSWORD = $appPassword
 
 # Launch via npx (ensures latest published version unless cached)
-# Consider pinning a version in highly controlled environments.
 $command = 'npx'
 $fullArgs = @('-y', '@aashari/mcp-server-atlassian-bitbucket') + $Args
 

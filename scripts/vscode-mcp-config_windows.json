@@ -16,8 +16,11 @@
       ]
     },
     "bitbucket": {
-      "command": "/path/to/scripts/mcp-bitbucket-wrapper_macos.sh",
-      "args": [],
+      "command": "powershell",
+      "args": [
+        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "C:/Users/<username>/bin/mcp-bitbucket-wrapper_windows.ps1"
+      ],
       "env": {
         "ATLASSIAN_BITBUCKET_USERNAME": "your-bitbucket-username"
       }
