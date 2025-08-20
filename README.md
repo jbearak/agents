@@ -225,6 +225,165 @@ Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstud
 - [Install Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D)
 - [Install Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
 
+### Bitbucket MCP (Local Only / Unofficial)
+
+There is currently **no official Bitbucket MCP server**. To use Bitbucket with agents locally, use the **unofficial** server: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket). Only **local MCP server instances** are supported (no remote HTTP endpoint). All agents that interact with Bitbucket MUST launch a local server wrapper.
+
+Key differences vs. GitHub MCP:
+- GitHub + Atlassian (Jira/Confluence) offer hosted endpoints; Bitbucket does not.
+- Bitbucket integration relies on a Bitbucket **App Password** (scoped minimally as needed) and your Bitbucket **username** (NOT your email address).
+- Security: Store only the app password in secure OS storage (macOS Keychain or Windows Credential Manager); leave username as a plain variable in the wrapper script.
+
+#### macOS Wrapper Script
+
+1. Create a Keychain item for the app password (username isn't secret):
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Keychain Item Name / Service): `bitbucket-mcp`
+     - Account: `app-password`
+     - Password: (your Bitbucket app password)
+   - Or CLI:
+     ```bash
+     security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
+     ```
+2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place) and edit the line:
+   ```bash
+   ATLASSIAN_BITBUCKET_USERNAME="<username>"  # <-- CHANGE THIS
+   ```
+   Find the correct value at https://bitbucket.org/account/settings/ ("Username" field).
+3. Make it executable:
+   ```bash
+   chmod +x scripts/mcp-bitbucket-wrapper.sh
+   ```
+4. Add to your agent configuration (examples):
+   - VS Code user MCP config (`MCP: Open User Configuration`):
+     ```json
+     {
+       "servers": {
+         "bitbucket": {
+           "command": "/absolute/path/to/scripts/mcp-bitbucket-wrapper.sh",
+           "args": []
+         }
+       }
+     }
+     ```
+   - Claude Desktop `claude_desktop_config.json`:
+     ```json
+     {
+       "mcpServers": {
+         "Bitbucket": {
+           "command": "/absolute/path/to/scripts/mcp-bitbucket-wrapper.sh",
+           "args": [],
+           "env": {},
+           "working_directory": null
+         }
+       }
+     }
+     ```
+5. Test:
+   ```bash
+   scripts/mcp-bitbucket-wrapper.sh --help | head -5
+   ```
+
+Environment overrides:
+* `BITBUCKET_DEFAULT_WORKSPACE` (defaults to `Guttmacher`).
+* `ATLASSIAN_BITBUCKET_APP_PASSWORD` (if set, overrides Keychain retrieval).
+
+Security notes (macOS):
+* App password never stored in plaintext; wrapper queries Keychain each launch.
+* Username is safe to hard-code; do not store app passwords in dotfiles.
+
+#### Windows Wrapper Script (PowerShell)
+
+Create a **Generic Credential** in Windows Credential Manager:
+1. Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+2. Internet or network address: `bitbucket-mcp`
+3. User name: `app-password`
+4. Password: (your Bitbucket app password)
+
+Or via command line (sets credential but not retrievable password without module):
+```powershell
+cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
+```
+
+Then install (if needed) the CredentialManager module to read the secret:
+```powershell
+Install-Module CredentialManager -Scope CurrentUser -Force
+```
+
+Edit `scripts/mcp-bitbucket-wrapper.ps1` and set:
+```powershell
+$env:ATLASSIAN_BITBUCKET_USERNAME = '<username>'
+```
+Confirm username at https://bitbucket.org/account/settings/ (NOT email).
+
+Optionally set a workspace:
+```powershell
+$env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
+```
+
+Add to configuration (examples):
+* VS Code MCP user config:
+  ```json
+  {
+    "servers": {
+      "bitbucket": {
+        "command": "powershell",
+        "args": [
+          "-NoProfile","-ExecutionPolicy","Bypass","-File",
+          "C:/path/to/scripts/mcp-bitbucket-wrapper.ps1"
+        ]
+      }
+    }
+  }
+  ```
+* Claude Desktop:
+  ```json
+  {
+    "mcpServers": {
+      "Bitbucket": {
+        "command": "powershell",
+        "args": ["-NoProfile","-ExecutionPolicy","Bypass","-File","C:/path/to/scripts/mcp-bitbucket-wrapper.ps1"],
+        "env": {},
+        "working_directory": null
+      }
+    }
+  }
+  ```
+
+Test:
+```powershell
+& C:/path/to/scripts/mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
+```
+
+Security notes (Windows):
+* Password stored in Windows Credential Manager; wrapper reads at runtime.
+* Username hard-coded is acceptable; avoid embedding secrets in script or JSON configs.
+* Supports overriding password via `ATLASSIAN_BITBUCKET_APP_PASSWORD` env var for ephemeral sessions.
+
+#### Minimal Manual Launch (Any OS)
+If you prefer not to edit scripts, you can export variables then run via `npx` (NOT recommended for daily use):
+```bash
+export ATLASSIAN_BITBUCKET_USERNAME="<username>"
+export ATLASSIAN_BITBUCKET_APP_PASSWORD="<app_password>"
+export BITBUCKET_DEFAULT_WORKSPACE="Guttmacher"
+npx -y @aashari/mcp-server-atlassian-bitbucket
+```
+Drawbacks: exposes password to shell history / process table.
+
+#### Troubleshooting
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| macOS: "Could not retrieve Bitbucket app password" | Keychain item missing / wrong account | Recreate with service `bitbucket-mcp`, account `app-password` |
+| Windows: Credential not found | Generic credential not created | Add credential `bitbucket-mcp` | 
+| Username rejected | Using email instead of username | Use profile username from settings page | 
+| 401 Unauthorized | Wrong app password scope / value | Regenerate app password with correct scopes | 
+
+Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
+
+---
+
+Below: Original installation instructions for hosted MCP servers.
+
 Each of these links opens a VS Code window. For each of these MCP servers, press the **Install** button in that window. For Atlassian and GitHub, follow the steps to authorize Copilot to connect with them.
 
 If you prefer to install the MCP servers manually:
