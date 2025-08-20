@@ -19,7 +19,7 @@
       "command": "powershell",
       "args": [
         "-NoProfile","-ExecutionPolicy","Bypass","-File",
-        "C:/Users/<username>/bin/mcp-bitbucket-wrapper_windows.ps1"
+        "C:/Users/<username>/bin/mcp-bitbucket-wrapper.ps1"
       ],
       "env": {
         "ATLASSIAN_BITBUCKET_USERNAME": "your-bitbucket-username"

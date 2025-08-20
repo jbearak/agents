@@ -13,11 +13,12 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Simulated Reasoning](#simulated-reasoning)
   - [Context Window](#context-window)
 - [MCP Servers](#mcp-servers)
-  - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
-  - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
-  - [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
+  - [Hosted MCP Servers (Simple Setup)](#hosted-mcp-servers-simple-setup)
+  - [Local MCP Server Configuration](#local-mcp-server-configuration)
+  - [Agent Configuration](#agent-configuration)
   - [Tool Availability Matrix](#tool-availability-matrix)
 - [Tools Glossary](TOOLS_GLOSSARY.md)
+- [Repository Validation](#repository-validation)
 - [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
@@ -218,14 +219,104 @@ On Mac you can use emojis in the file names:
 
 ## MCP Servers
 
-### Add MCP Servers to VS Code
+### Hosted MCP Servers (Simple Setup)
 
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp). From this list, press:
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp). These are the easiest to set up as they require no local configuration:
+
 - [Install GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D)
 - [Install Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D)
 - [Install Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
 
-### Bitbucket MCP (Local Only / Unofficial)
+Each of these links opens a VS Code window. For each MCP server, press the **Install** button in that window. For Atlassian and GitHub, follow the steps to authorize Copilot to connect with them.
+
+If you prefer to install the hosted MCP servers manually:
+
+1. From the Command Palette, choose **MCP: Open User Configuration**
+2. Paste:
+
+```json
+{
+  "servers": {
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v1/sse",
+      "type": "http"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "type": "http"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    }
+  }
+}
+```
+
+### Local MCP Server Configuration
+
+The following MCP servers require local wrapper scripts for enhanced capabilities and secure credential storage. These provide additional functionality beyond the hosted servers.
+
+#### GitHub MCP Server (Local)
+
+For enhanced GitHub capabilities beyond the hosted version, use the local GitHub MCP server with secure credential management.
+
+**Windows (Credential Manager + PowerShell + Podman)**
+
+1. Store token securely:
+   - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+   - Internet or network address: `GitHub`
+   - Username: `token` (placeholder)
+   - Password: (your PAT)
+2. (Optional) Inspect via PowerShell:
+   ```powershell
+   Install-Module -Name CredentialManager -Scope CurrentUser -Force
+   Import-Module CredentialManager
+   Get-StoredCredential -Target GitHub
+   ```
+3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<username>\bin\mcp-github-wrapper.ps1`
+4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
+5. Set execution policy (user scope):
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+   ```
+6. Install & init Podman:
+   ```powershell
+   winget install RedHat.Podman
+   podman machine init --cpus 2 --memory 4096 --disk-size 20
+   podman machine start
+   ```
+7. Verify wrapper:
+   ```powershell
+   & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 10
+   ```
+   If it errors about credentials, re-create the Generic Credential `GitHub`
+
+**macOS (Keychain + Wrapper Script)**
+
+1. Create a keychain item:
+   - Open Keychain Access (⌘ + Space → "Keychain Access").
+   - Select the `login` keychain & `Passwords` category.
+   - File > New Password Item…
+     - Name: `GitHub`
+     - Account: your macOS username (must match `$USER`).
+     - Password: your GitHub Personal Access Token.
+   - Click Add.
+2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
+3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
+4. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
+5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
+
+Notes:
+* If Homebrew bash path differs, change shebang to `#!/bin/bash`.
+* If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
+
+Security rationale: Configuration keeps secrets exclusively in OS-provided secure storage; no plaintext tokens in versioned config files or scripts.
+
+#### Bitbucket MCP Server (Local, Unofficial)
 
 There is currently **no official Bitbucket MCP server**. To use Bitbucket with agents locally, use an **unofficial** server: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
 
@@ -331,7 +422,7 @@ Use the provided complete configurations and customize paths:
 
 Test:
 ```powershell
-$env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & C:/path/to/scripts/mcp-bitbucket-wrapper_windows.ps1 --help | Select-Object -First 5
+$env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & C:/path/to/scripts/mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
 ```
 
 Security notes (Windows):
@@ -359,88 +450,31 @@ Drawbacks: exposes credentials to shell history / process table.
 
 Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
 
----
+### Agent Configuration
 
-Below: Original installation instructions for hosted MCP servers.
+#### VS Code
 
-Each of these links opens a VS Code window. For each of these MCP servers, press the **Install** button in that window. For Atlassian and GitHub, follow the steps to authorize Copilot to connect with them.
+For VS Code, use the complete configuration files that include all MCP servers:
 
-If you prefer to install the MCP servers manually:
-
+**Manual Installation (Alternative):**
 1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Use the provided configuration: copy [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json) and customize paths as needed
+2. Use the provided configuration: copy [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json) (macOS) or [`scripts/vscode-mcp-config_windows.json`](scripts/vscode-mcp-config_windows.json) (Windows) and customize paths as needed
 
-### Add MCP Servers to Claude.ai
+#### Claude.ai
 
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
 2. Press each the **Connect** button (next to Atlassian and GitHub)
 Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
 
-### Local MCP Server Configuration
+#### Claude Desktop
 
-The following sections configure local MCP servers that require secure credential storage and wrapper scripts. These provide additional capabilities beyond the hosted MCP servers.
+When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Only add local servers here. For all MCP servers, always use secure secret retrieval (Keychain on macOS or Windows Credential Manager). Never paste access tokens directly into `claude_desktop_config.json`.
 
-### Add MCP Servers to Claude Desktop
+**Windows Configuration:**
+Use the provided configuration: copy [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
 
-When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Only add local servers here. For the GitHub MCP server, always use secure secret retrieval (Keychain on macOS or Windows Credential Manager). Never paste access tokens directly into `claude_desktop_config.json`.
-
-
-
-#### Windows (Credential Manager + PowerShell + Podman)
-
-1. Store token securely:
-   - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - Internet or network address: `GitHub`
-   - Username: `token` (placeholder)
-   - Password: (your PAT)
-2. (Optional) Inspect via PowerShell:
-   ```powershell
-   Install-Module -Name CredentialManager -Scope CurrentUser -Force
-   Import-Module CredentialManager
-   Get-StoredCredential -Target GitHub
-   ```
-3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper_windows.ps1`](scripts/mcp-github-wrapper_windows.ps1) to `C:\Users\<username>\bin\mcp-github-wrapper_windows.ps1`
-4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
-5. Set execution policy (user scope):
-   ```powershell
-   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-   ```
-6. Use the provided configuration: copy [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
-7. Install & init Podman:
-   ```powershell
-   winget install RedHat.Podman
-   podman machine init --cpus 2 --memory 4096 --disk-size 20
-   podman machine start
-   ```
-8. Verify wrapper:
-   ```powershell
-   & $Env:UserProfile\bin\mcp-github-wrapper_windows.ps1 --help | Select-Object -First 10
-   ```
-   If it errors about credentials, re-create the Generic Credential `GitHub`
-
-
-   
-#### macOS (Keychain + Wrapper Script)
-
-1. Create a keychain item:
-   - Open Keychain Access (⌘ + Space → "Keychain Access").
-   - Select the `login` keychain & `Passwords` category.
-   - File > New Password Item…
-     - Name: `GitHub`
-     - Account: your macOS username (must match `$USER`).
-     - Password: your GitHub Personal Access Token.
-   - Click Add.
-2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
-3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Use the provided configuration: copy [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
-5. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
-6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper.sh --help | head -5`
-
-Notes:
-* If Homebrew bash path differs, change shebang to `#!/bin/bash`.
-* If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
-
-Security rationale: Configuration keeps secrets exclusively in OS-provided secure storage; no plaintext tokens in versioned config files or scripts.
+**macOS Configuration:**
+Use the provided configuration: copy [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
 
 
 ### Tool Availability Matrix
@@ -596,6 +630,16 @@ Legend: ✅ available, ❌ unavailable in that mode.
 - QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
 - This document is the canonical source for tool availability.
 - Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
+
+## Repository Validation
+
+This repository includes a validation script to ensure consistency between the Tool Availability Matrix in this README and the individual chatmode files:
+
+**`validate_tools.R`**: Compares toolsets defined in `copilot/modes/*.chatmode.md` files against the matrix in this README.md. Run this script after making changes to either the matrix or the mode files to verify they remain synchronized.
+
+```bash
+Rscript validate_tools.R
+```
 
 
 ## Using `code_style_guidelines.txt` Across Tools
