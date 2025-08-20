@@ -1,0 +1,23 @@
+{
+  "servers": {
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v1/sse",
+      "type": "http"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "type": "http"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "bitbucket": {
+      "command": "/path/to/scripts/mcp-bitbucket-wrapper.sh",
+      "args": []
+    }
+  }
+}

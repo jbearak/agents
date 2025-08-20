@@ -272,38 +272,19 @@ First, create an app password in Bitbucket with the required scopes:
 
 2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
    ```bash
-   cp scripts/mcp-bitbucket-wrapper.sh /usr/local/bin/
+   cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
    ```
    Find the correct username value at https://bitbucket.org/account/settings/ ("Username" field).
 3. Make it executable:
    ```bash
-   chmod +x scripts/mcp-bitbucket-wrapper.sh
+   chmod +x ~/bin/mcp-bitbucket-wrapper.sh
    ```
-4. Add to your agent configuration (examples):
-   - VS Code user MCP config (`MCP: Open User Configuration`):
-     ```json
-     {
-       "servers": {
-         "bitbucket": {
-           "command": "/absolute/path/to/scripts/mcp-bitbucket-wrapper.sh",
-           "args": []
-         }
-       }
-     }
-     ```
-   - Claude Desktop `claude_desktop_config.json`:
-     ```json
-     {
-       "mcpServers": {
-         "Bitbucket": {
-           "command": "/absolute/path/to/scripts/mcp-bitbucket-wrapper.sh",
-           "args": [],
-           "env": {},
-           "working_directory": null
-         }
-       }
-     }
-     ```
+4. Add to your agent configuration using the provided complete configurations:
+   - **VS Code**: Use [`scripts/vscode-mcp-config.json`](scripts/vscode-mcp-config.json) (includes all MCP servers)
+   - **Claude Desktop (macOS)**: Use [`scripts/claude_desktop_config.json`](scripts/claude_desktop_config.json) 
+   - **Claude Desktop (Windows)**: Use [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json)
+   
+   Customize the paths for your username and merge with your existing configuration.
 5. Test:
    ```bash
    scripts/mcp-bitbucket-wrapper.sh --help | head -5
@@ -342,34 +323,9 @@ Optionally set a workspace:
 $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
 ```
 
-Add to configuration (examples):
-* VS Code MCP user config:
-  ```json
-  {
-    "servers": {
-      "bitbucket": {
-        "command": "powershell",
-        "args": [
-          "-NoProfile","-ExecutionPolicy","Bypass","-File",
-          "C:/path/to/scripts/mcp-bitbucket-wrapper.ps1"
-        ]
-      }
-    }
-  }
-  ```
-* Claude Desktop:
-  ```json
-  {
-    "mcpServers": {
-      "Bitbucket": {
-        "command": "powershell",
-        "args": ["-NoProfile","-ExecutionPolicy","Bypass","-File","C:/path/to/scripts/mcp-bitbucket-wrapper.ps1"],
-        "env": {},
-        "working_directory": null
-      }
-    }
-  }
-  ```
+Use the provided complete configurations and customize paths:
+* **VS Code**: [`scripts/vscode-mcp-config.json`](scripts/vscode-mcp-config.json)
+* **Claude Desktop**: [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json)
 
 Test:
 ```powershell
@@ -410,34 +366,17 @@ Each of these links opens a VS Code window. For each of these MCP servers, press
 If you prefer to install the MCP servers manually:
 
 1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Paste:
-
-```json
-{
-  "servers": {
-    "atlassian": {
-      "url": "https://mcp.atlassian.com/v1/sse",
-      "type": "http"
-    },
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "type": "http"
-    },
-    "context7": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"]
-    }
-  }
-}
-```
+2. Use the provided configuration: copy [`scripts/vscode-mcp-config.json`](scripts/vscode-mcp-config.json) and customize paths as needed
 
 ### Add MCP Servers to Claude.ai
 
 1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
 2. Press each the **Connect** button (next to Atlassian and GitHub)
 Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
+
+### Local MCP Server Configuration
+
+The following sections configure local MCP servers that require secure credential storage and wrapper scripts. These provide additional capabilities beyond the hosted MCP servers.
 
 ### Add MCP Servers to Claude Desktop
 
@@ -458,50 +397,13 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    Import-Module CredentialManager
    Get-StoredCredential -Target GitHub
    ```
-3. Wrapper script `C:\Users\<username>\bin\mcp-github-wrapper.ps1`:
-   ```powershell
-   Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-   Set-StrictMode -Version Latest
-   $ErrorActionPreference = 'Stop'
-   try {
-     Import-Module CredentialManager -ErrorAction Stop
-   } catch {
-     Write-Error 'Install CredentialManager module first'; exit 1
-   }
-   $cred = Get-StoredCredential -Target 'GitHub'
-   if (-not $cred) { Write-Error "Credential 'GitHub' not found"; exit 1 }
-   $env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
-   podman run -i --rm `
-     -e GITHUB_PERSONAL_ACCESS_TOKEN=$env:GITHUB_PERSONAL_ACCESS_TOKEN `
-     ghcr.io/github/github-mcp-server @Args
-   ```
+3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<username>\bin\mcp-github-wrapper.ps1`
 4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
 5. Set execution policy (user scope):
    ```powershell
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
    ```
-6. Add to `claude_desktop_config.json`:
-   ```json
-   {
-     "mcpServers": {
-       "Context7": {
-         "command": "npx",
-         "args": ["-y", "@upstash/context7-mcp"],
-         "env": {},
-         "working_directory": null
-       },
-       "GitHub": {
-         "command": "powershell",
-         "args": [
-           "-NoProfile","-ExecutionPolicy","Bypass","-File",
-           "C:/Users/<username>/bin/mcp-github-wrapper.ps1"
-         ],
-         "env": {},
-         "working_directory": null
-       }
-     }
-   }
-   ```
+6. Use the provided configuration: copy [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
 7. Install & init Podman:
    ```powershell
    winget install RedHat.Podman
@@ -526,42 +428,9 @@ When you connect MCP servers in Claude.ai, they automatically become available i
      - Account: your macOS username (must match `$USER`).
      - Password: your GitHub Personal Access Token.
    - Click Add.
-2. Create wrapper script `~/bin/mcp-github-wrapper.sh`:
-   ```bash
-   #!/opt/homebrew/bin/bash
-   GITHUB_TOKEN=$(security find-generic-password -s "GitHub" -a "$USER" -w 2>/dev/null)
-   if [ -z "$GITHUB_TOKEN" ]; then
-       echo "Error: Could not retrieve GitHub token from keychain" >&2
-       echo "Ensure keychain item 'GitHub' exists and keychain is unlocked" >&2
-       exit 1
-   fi
-   exec /opt/homebrew/bin/docker run -i --rm \
-       -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
-       ghcr.io/github/github-mcp-server "$@"
-   ```
+2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Edit (or create) `claude_desktop_config.json` and add:
-   ```json
-   {
-     "mcpServers": {
-       "Context7": {
-         "command": "npx",
-         "args": ["-y", "@upstash/context7-mcp"],
-         "env": {},
-         "working_directory": null
-       },
-       "GitHub": {
-         "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
-         "args": [],
-         "env": {
-           "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
-         },
-         "working_directory": null
-       }
-     }
-   }
-   ```
-   Replace `<username>` with your macOS user.
+4. Use the provided configuration: copy [`scripts/claude_desktop_config.json`](scripts/claude_desktop_config.json) and customize the username paths, then merge with your existing `claude_desktop_config.json`
 5. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
 6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper.sh --help | head -5`
 

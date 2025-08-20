@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "Context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {},
+      "working_directory": null
+    },
+    "GitHub": {
+      "command": "powershell",
+      "args": [
+        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "C:/Users/<username>/bin/mcp-github-wrapper.ps1"
+      ],
+      "env": {},
+      "working_directory": null
+    },
+    "Bitbucket": {
+      "command": "powershell",
+      "args": [
+        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "C:/Users/<username>/bin/mcp-bitbucket-wrapper.ps1"
+      ],
+      "env": {},
+      "working_directory": null
+    }
+  }
+}
