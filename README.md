@@ -5,27 +5,22 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 ## Table of Contents
 
 - [Repository Structure](#repository-structure)
-- [Modes](#modes)
+- [Modes](#modesMicrosoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D), [Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40context7%2Fmcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
   - [Modes Overview](#modes-overview)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [Models](#models)
   - [Models Available in Each Agent](#models-available-in-each-agent)
   - [Simulated Reasoning](#simulated-reasoning)
   - [Context Window](#context-window)
-- [MCP Servers](#mcp-servers)
-  - [Hosted MCP Servers (Simple Setup)](#hosted-mcp-servers-simple-setup)
-  - [Local MCP Server Configuration](#local-mcp-server-configuration)
-  - [Agent Configuration](#agent-configuration)
-  - [Tool Availability Matrix](#tool-availability-matrix)
-- [Tools Glossary](TOOLS_GLOSSARY.md)
-- [Repository Validation](#repository-validation)
-- [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
-  - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
-  - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
-  - [Warp (Repository-Level)](#warp-repository-level)
-  - [Warp (User-Level)](#warp-user-level)
-  - [Q (Repository-Level)](#q-repository-level)
-  - [Claude Code (Repository-Level)](#claude-code-repository-level)
+- [Installing MCP Servers](#installing-mcp-servers)
+  - [GitHub MCP Server](#github-mcp-server)
+  - [Bitbucket MCP Server](#bitbucket-mcp-server)
+- [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+  - [VS Code](#vs-code)
+  - [Claude.ai](#claudeai)
+  - [Claude Desktop](#claude-desktop)
+- [Tools Available to Each Mode](#tools-available-to-each-mode)
+- [Coding Style Guidelines](#coding-style-guidelines)
 
 ## Repository Structure
 
@@ -33,13 +28,25 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 ./
 ├── code_style_guidelines.txt   # General coding style guidelines
 ├── README.md                   # This document
-└── copilot/
-    └── modes/
-        ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
-        ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
-        ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
-        └── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
-        ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+├── TOOLS_GLOSSARY.md           # Glossary of all available tools
+├── validate_tools.R            # Script for validating tool configurations
+├── copilot/
+│   └── modes/
+│       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
+│       ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+│       ├── Code-Sonnet4.chatmode.md         # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
+│       └── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+└── scripts/
+    ├── claude_desktop_config_macos.json
+    ├── claude_desktop_config_windows.json
+    ├── mcp-bitbucket-wrapper.ps1
+    ├── mcp-bitbucket-wrapper.sh
+    ├── mcp-github-wrapper.ps1
+    ├── mcp-github-wrapper.sh
+    ├── vscode-mcp-config_macos.json
+    └── vscode-mcp-config_windows.json
 ```
 
 ## Modes
@@ -48,7 +55,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 
 We define **four categories** of modes for different use cases, that follow a **privilege gradient:** **QnA < Review** (adds review + issue comments) **< Plan** (adds planning artifact + PR creation/edit) **< Code** (full lifecycle incl. merge & branch ops).
 
-From these four categories, we create **five modes**. **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts. We do this because these models respond differently to prompts and possess different strengths. For reference, see OpenAI's [GPT-5 prompting guide](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide) and Anthropic's [Claude 4 prompt engineering best practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices).
+From these four categories, we create **six modes**. **Code**, **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts. We do this because these models respond differently to prompts and possess different strengths. For reference, see OpenAI's [GPT-5 prompting guide](https://cookbook.openai.com/examples/prompting-guide) and Anthropic's [Claude 4 prompt engineering best practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices).
 
 <table>
   <thead>
@@ -93,6 +100,13 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
       <td>Code-Sonnet4</td>
       <td>Sonnet 4</td>
       <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
+    </tr>
+    <tr>
+      <td>Code</td>
+      <td>Sonnet 4</td>
+      <td>Implement changes, run tests/commands</td>
+      <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
+      <td>Full implementation, execution, &amp; PR lifecycle</td>
     </tr>
   </tbody>
 </table>
@@ -372,10 +386,10 @@ Scopes: Use the minimal scopes required by your workflows (e.g., repository read
 2. Use the provided configuration: copy [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json) (macOS) or [`scripts/vscode-mcp-config_windows.json`](scripts/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the <username> placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
 For example:
-- In `C:/Users/<username>`, the placeholder refers to your **Windows** logon name.
-- In `"ATLASSIAN_BITBUCKET_USERNAME": "your-bitbucket-username"`, the placeholder refers to your **Bitbucket** username.
+- In `C:/Users/<your-os-username>`, the placeholder refers to your **Windows** logon name.
+- In `"ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"`, the placeholder refers to your **Bitbucket** username.
 
 ### Claude.ai
 
@@ -391,7 +405,7 @@ Note: This adds the ability to add files from GitHub, but does not add the [GitH
 3. Use the provided configuration: copy [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json) (Windows) or [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
 4. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the <username> placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
 
 For example:
 - In `C:/Users/<username>`, the placeholder refers to your **Windows** logon name.
