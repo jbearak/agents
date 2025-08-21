@@ -24,15 +24,28 @@ function Invoke-Exec {
 
 # 1) If CLI already available, run it
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  $env:NO_COLOR = '1'
   Invoke-Exec $CLI_BIN $Args
 }
 
-# 2) Try npx as a fallback (no global install)
+# 2) Try npx as a fallback (no global install) as quietly as possible
 if (Get-Command npx -ErrorAction SilentlyContinue) {
-  Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
+  $env:NO_COLOR = '1'
+  $env:NPM_CONFIG_LOGLEVEL = 'silent'
+  $env:NPM_CONFIG_FUND = 'false'
+  $env:NPM_CONFIG_AUDIT = 'false'
+  $env:NO_UPDATE_NOTIFIER = '1'
+  $env:ADBLOCK = '1'
+  $npxArgs = @('-y', $NPM_PKG)
+  # Some npx versions support --quiet; add if present
+  try {
+    $help = & npx --help 2>$null
+    if ($help -and ($help -match '--quiet')) { $npxArgs = @('--quiet') + $npxArgs }
+  } catch {}
+  Invoke-Exec 'npx' $npxArgs + $Args
 }
 
 # 3) Container fallback (prefer podman, else docker)
 $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
 if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
-Invoke-Exec $runtime @('run','-i','--rm','--pull=never','-e',"GITHUB_PERSONAL_ACCESS_TOKEN=$($env:GITHUB_PERSONAL_ACCESS_TOKEN)",$IMG) + $Args
+Invoke-Exec $runtime @('run','-i','--rm','--pull=never','-e','NO_COLOR=1','-e',"GITHUB_PERSONAL_ACCESS_TOKEN=$($env:GITHUB_PERSONAL_ACCESS_TOKEN)",$IMG) + $Args

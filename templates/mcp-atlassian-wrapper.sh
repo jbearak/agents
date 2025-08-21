@@ -15,6 +15,15 @@ AUTH_METHOD="${AUTH_METHOD:-api_token}"
 NPM_PKG_NAME=${MCP_ATLASSIAN_NPM_PKG:-@sooperset/mcp-atlassian}
 CLI_BIN_NAME=${MCP_ATLASSIAN_CLI_BIN:-mcp-atlassian}
 
+# Keep stdout clean when npm/npx is used
+export NO_COLOR=1
+export NPM_CONFIG_LOGLEVEL=silent
+export npm_config_loglevel=silent
+export NPM_CONFIG_FUND=false
+export NPM_CONFIG_AUDIT=false
+export NO_UPDATE_NOTIFIER=1
+export ADBLOCK=1
+
 get_keychain_password() {
   if [[ "$(uname)" != "Darwin" ]]; then
     return 1
@@ -96,7 +105,12 @@ if command -v npx >/dev/null 2>&1; then
   JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
   CONFLUENCE_API_TOKEN="${API_TOKEN}" \
   JIRA_API_TOKEN="${API_TOKEN}" \
-  exec npx -y "${NPM_PKG_NAME}" "$@"
+  # Use quiet flags/env to suppress non-JSON noise
+  NPX_FLAGS=(-y)
+  if npx --help 2>/dev/null | grep -q "--quiet"; then
+    NPX_FLAGS+=(--quiet)
+  fi
+  exec npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@"
 fi
 
 # Fallback to container runtime
@@ -104,6 +118,7 @@ check_docker
 pull_image_if_needed
 
 DOCKER_ENV_ARGS=(
+  -e "NO_COLOR=1"
   -e "CONFLUENCE_URL=https://$ATLASSIAN_DOMAIN/wiki"
   -e "JIRA_URL=https://$ATLASSIAN_DOMAIN"
   -e "CONFLUENCE_USERNAME=${ATLASSIAN_EMAIL}"

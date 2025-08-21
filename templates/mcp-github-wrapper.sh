@@ -18,6 +18,15 @@ NPM_PKG_NAME=${MCP_GITHUB_NPM_PKG:-github-mcp-server}
 CLI_BIN_NAME=${MCP_GITHUB_CLI_BIN:-github-mcp-server}
 DOCKER_IMAGE=${MCP_GITHUB_DOCKER_IMAGE:-ghcr.io/github/github-mcp-server:latest}
 
+# Keep stdout clean: request silent behavior from npm/npx and tools
+export NO_COLOR=1
+export NPM_CONFIG_LOGLEVEL=silent
+export npm_config_loglevel=silent
+export NPM_CONFIG_FUND=false
+export NPM_CONFIG_AUDIT=false
+export NO_UPDATE_NOTIFIER=1
+export ADBLOCK=1
+
 run_cli() {
   GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" exec "${CLI_BIN_NAME}" "$@"
 }
@@ -27,12 +36,18 @@ if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   run_cli "$@"
 fi
 
-# 2) If npx available, try running the package via npx (no global install)
+# 2) If npx available, try running the package via npx (no global install) as quietly as possible
 if command -v npx >/dev/null 2>&1; then
-  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" exec npx -y "${NPM_PKG_NAME}" "$@"
+  # Try to detect --quiet support and add it if available
+  NPX_FLAGS=(-y)
+  if npx --help 2>/dev/null | grep -q "--quiet"; then
+    NPX_FLAGS+=(--quiet)
+  fi
+  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" exec npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@"
 fi
 
 # 3) Fallback to Docker using cached image (no network pulls at runtime)
 exec docker run -i --rm --pull=never \
+  -e "NO_COLOR=1" \
   -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
   "${DOCKER_IMAGE}" "$@"

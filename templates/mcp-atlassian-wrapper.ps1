@@ -22,7 +22,7 @@
      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
      # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
      Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
-     Write-Host "Credential 'atlassian-mcp-local' created." -ForegroundColor Green
+     [Console]::Error.WriteLine("Credential 'atlassian-mcp-local' created.")
    } finally {
      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
    }
@@ -100,11 +100,11 @@ function Get-StoredPassword {
 }
 
 function Update-AtlassianImage {
-  Write-Host "Checking for latest Atlassian MCP server image..." -ForegroundColor Yellow
+  [Console]::Error.WriteLine("Checking for latest Atlassian MCP server image...")
   try {
     & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE 2>$null
   } catch {
-    Write-Warning "Failed to pull latest image. Using local version if available."
+    [Console]::Error.WriteLine("Warning: Failed to pull latest image. Using local version if available.")
   }
 }
 
@@ -139,7 +139,7 @@ Could not retrieve Atlassian API token:
     # Try to derive from current user or domain
     $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.com'
     $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
-    Write-Host "Note: Using derived email '$($env:ATLASSIAN_EMAIL)'. Set ATLASSIAN_EMAIL to override." -ForegroundColor Yellow
+    [Console]::Error.WriteLine("Note: Using derived email '$($env:ATLASSIAN_EMAIL)'. Set ATLASSIAN_EMAIL to override.")
   }
 }
 
@@ -159,19 +159,32 @@ $prefEnv = @(
 )
 
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  $env:NO_COLOR = '1'
   foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
   Invoke-Exec $CLI_BIN $Args
 }
 
-# Try npx as an optional fallback if available (no global install)
+# Try npx as an optional fallback if available (no global install) and keep it quiet
 if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
+  $env:NO_COLOR = '1'
+  $env:NPM_CONFIG_LOGLEVEL = 'silent'
+  $env:NPM_CONFIG_FUND = 'false'
+  $env:NPM_CONFIG_AUDIT = 'false'
+  $env:NO_UPDATE_NOTIFIER = '1'
+  $env:ADBLOCK = '1'
   foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
-  Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
+  $npxArgs = @('-y', $NPM_PKG)
+  try {
+    $help = & npx --help 2>$null
+    if ($help -and ($help -match '--quiet')) { $npxArgs = @('--quiet') + $npxArgs }
+  } catch {}
+  Invoke-Exec 'npx' $npxArgs + $Args
 }
 
 # Fallback to container
 Update-AtlassianImage
 $dockerEnvArgs = @(
+  '-e','NO_COLOR=1',
   '-e', "CONFLUENCE_URL=https://$($env:ATLASSIAN_DOMAIN)/wiki",
   '-e', "JIRA_URL=https://$($env:ATLASSIAN_DOMAIN)",
   '-e', "CONFLUENCE_USERNAME=$($env:ATLASSIAN_EMAIL)",

@@ -79,17 +79,29 @@ $IMG     = $env:MCP_BITBUCKET_DOCKER_IMAGE
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  $env:NO_COLOR = '1'
   Invoke-Exec $CLI_BIN $Args
 }
 
 if (Get-Command npx -ErrorAction SilentlyContinue) {
-  Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
+  $env:NO_COLOR = '1'
+  $env:NPM_CONFIG_LOGLEVEL = 'silent'
+  $env:NPM_CONFIG_FUND = 'false'
+  $env:NPM_CONFIG_AUDIT = 'false'
+  $env:NO_UPDATE_NOTIFIER = '1'
+  $env:ADBLOCK = '1'
+  $npxArgs = @('-y', $NPM_PKG)
+  try {
+    $help = & npx --help 2>$null
+    if ($help -and ($help -match '--quiet')) { $npxArgs = @('--quiet') + $npxArgs }
+  } catch {}
+  Invoke-Exec 'npx' $npxArgs + $Args
 }
 
 if ($IMG) {
   $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
   if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
-  $envArgs = @('-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
+  $envArgs = @('-e','NO_COLOR=1','-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
   Invoke-Exec $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args
 }
 

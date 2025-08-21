@@ -10,6 +10,15 @@ set -euo pipefail
 SERVICE_NAME="bitbucket-mcp"
 ACCOUNT_NAME="app-password"
 
+# Keep stdout clean when npm/npx is used
+export NO_COLOR=1
+export NPM_CONFIG_LOGLEVEL=silent
+export npm_config_loglevel=silent
+export NPM_CONFIG_FUND=false
+export NPM_CONFIG_AUDIT=false
+export NO_UPDATE_NOTIFIER=1
+export ADBLOCK=1
+
 get_keychain_password() {
   if [[ "$(uname)" != "Darwin" ]]; then
     return 1
@@ -59,14 +68,19 @@ if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   run_cli "$@"
 fi
 
-# 2) Try npx as a fallback if available (no global install)
+# 2) Try npx as a fallback if available (no global install) as quietly as possible
 if command -v npx >/dev/null 2>&1; then
-  exec npx -y "${NPM_PKG_NAME}" "$@"
+  NPX_FLAGS=(-y)
+  if npx --help 2>/dev/null | grep -q "--quiet"; then
+    NPX_FLAGS+=(--quiet)
+  fi
+  exec npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@"
 fi
 
 # 3) Optional Docker fallback if image is specified
 if [ -n "${DOCKER_IMAGE}" ] && command -v docker >/dev/null 2>&1; then
   exec docker run -i --rm --pull=never \
+    -e "NO_COLOR=1" \
     -e "ATLASSIAN_BITBUCKET_USERNAME=${ATLASSIAN_BITBUCKET_USERNAME}" \
     -e "ATLASSIAN_BITBUCKET_APP_PASSWORD=${APP_PASS}" \
     -e "BITBUCKET_DEFAULT_WORKSPACE=${BITBUCKET_DEFAULT_WORKSPACE}" \
