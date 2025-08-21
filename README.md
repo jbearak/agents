@@ -639,37 +639,35 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get-library-docs](TOOLS_GLOSSARY.md#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
 | **Atlassian** | | | | |
 | *Jira Issues & Operations* | | | | |
-| [addCommentToJiraIssue](TOOLS_GLOSSARY.md#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
-| [createJiraIssue](TOOLS_GLOSSARY.md#createjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| [editJiraIssue](TOOLS_GLOSSARY.md#editjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| [getJiraIssue](TOOLS_GLOSSARY.md#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
-| [getJiraIssueRemoteIssueLinks](TOOLS_GLOSSARY.md#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
-| [getTransitionsForJiraIssue](TOOLS_GLOSSARY.md#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
-| [searchJiraIssuesUsingJql](TOOLS_GLOSSARY.md#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
-| [transitionJiraIssue](TOOLS_GLOSSARY.md#transitionjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| *Jira Project Metadata* | | | | |
-| [getJiraProjectIssueTypesMetadata](TOOLS_GLOSSARY.md#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
-| [getVisibleJiraProjects](TOOLS_GLOSSARY.md#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
+| [jira_add_comment](TOOLS_GLOSSARY.md#jira_add_comment) | ❌ | ✅ | ✅ | ✅ |
+| [jira_create_issue](TOOLS_GLOSSARY.md#jira_create_issue) | ❌ | ❌ | ✅ | ✅ |
+| [jira_update_issue](TOOLS_GLOSSARY.md#jira_update_issue) | ❌ | ❌ | ✅ | ✅ |
+| [jira_get_issue](TOOLS_GLOSSARY.md#jira_get_issue) | ✅ | ✅ | ✅ | ✅ |
+| [jira_search](TOOLS_GLOSSARY.md#jira_search) | ✅ | ✅ | ✅ | ✅ |
+| [jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue) | ❌ | ❌ | ✅ | ✅ |
+| [jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions) | ✅ | ✅ | ✅ | ✅ |
+| [jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue) | ❌ | ❌ | ❌ | ❌ |
+| *Jira Project & Board Operations* | | | | |
+| [jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_project_issues](TOOLS_GLOSSARY.md#jira_get_project_issues) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_agile_boards](TOOLS_GLOSSARY.md#jira_get_agile_boards) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_board_issues](TOOLS_GLOSSARY.md#jira_get_board_issues) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_sprints_from_board](TOOLS_GLOSSARY.md#jira_get_sprints_from_board) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_sprint_issues](TOOLS_GLOSSARY.md#jira_get_sprint_issues) | ✅ | ✅ | ✅ | ✅ |
+| [jira_search_fields](TOOLS_GLOSSARY.md#jira_search_fields) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_user_profile](TOOLS_GLOSSARY.md#jira_get_user_profile) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Pages & Content* | | | | |
-| [createConfluencePage](TOOLS_GLOSSARY.md#createconfluencepage) | ❌ | ❌ | ✅ | ✅ |
-| [getConfluencePage](TOOLS_GLOSSARY.md#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](TOOLS_GLOSSARY.md#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
-| [getConfluencePageDescendants](TOOLS_GLOSSARY.md#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
-| [getPagesInConfluenceSpace](TOOLS_GLOSSARY.md#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
-| [updateConfluencePage](TOOLS_GLOSSARY.md#updateconfluencepage) | ❌ | ❌ | ✅ | ✅ |
-| *Confluence Comments* | | | | |
-| [createConfluenceFooterComment](TOOLS_GLOSSARY.md#createconfluencefootercomment) | ❌ | ❌ | ✅ | ✅ |
-| [createConfluenceInlineComment](TOOLS_GLOSSARY.md#createconfluenceinlinecomment) | ❌ | ❌ | ✅ | ✅ |
-| [getConfluencePageFooterComments](TOOLS_GLOSSARY.md#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageInlineComments](TOOLS_GLOSSARY.md#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
-| *Confluence Spaces & Discovery* | | | | |
-| [getConfluenceSpaces](TOOLS_GLOSSARY.md#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
-| [searchConfluenceUsingCql](TOOLS_GLOSSARY.md#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
-| *User & Identity* | | | | |
-| [atlassianUserInfo](TOOLS_GLOSSARY.md#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
-| [lookupJiraAccountId](TOOLS_GLOSSARY.md#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
-| *Other* | | | | |
-| [getAccessibleAtlassianResources](TOOLS_GLOSSARY.md#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_create_page](TOOLS_GLOSSARY.md#confluence_create_page) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_get_page](TOOLS_GLOSSARY.md#confluence_get_page) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_update_page](TOOLS_GLOSSARY.md#confluence_update_page) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_delete_page](TOOLS_GLOSSARY.md#confluence_delete_page) | ❌ | ❌ | ❌ | ❌ |
+| [confluence_get_page_children](TOOLS_GLOSSARY.md#confluence_get_page_children) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_search](TOOLS_GLOSSARY.md#confluence_search) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_get_comments](TOOLS_GLOSSARY.md#confluence_get_comments) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_add_comment](TOOLS_GLOSSARY.md#confluence_add_comment) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_get_labels](TOOLS_GLOSSARY.md#confluence_get_labels) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_add_label](TOOLS_GLOSSARY.md#confluence_add_label) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_search_user](TOOLS_GLOSSARY.md#confluence_search_user) | ✅ | ✅ | ✅ | ✅ |
 | **GitHub** | | | | |
 | *Commits & Repository* | | | | |
 | [create_branch](TOOLS_GLOSSARY.md#create_branch) | ❌ | ❌ | ❌ | ✅ |
@@ -679,7 +677,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get_tag](TOOLS_GLOSSARY.md#get_tag) | ❌ | ❌ | ❌ | ❌ |
 | [list_branches](TOOLS_GLOSSARY.md#list_branches) | ✅ | ✅ | ✅ | ✅ |
 | [list_commits](TOOLS_GLOSSARY.md#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ❌ | ❌ | ❌ | ❌ |
+| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ✅ | ✅ | ✅ | ✅ |
 | [push_files](TOOLS_GLOSSARY.md#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests  Retrieval* | | | | |
 | [get_pull_request](TOOLS_GLOSSARY.md#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
@@ -718,11 +716,11 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Code Scanning & Security* | | | | |
 | [list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
 | *Workflows (GitHub Actions)* | | | | |
-| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ✅ | ❌ | ✅ | ✅ |
+| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ❌ | ❌ | ❌ | ❌ |
 | [get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
 | [get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ✅ | ❌ | ✅ | ✅ |
+| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflows](TOOLS_GLOSSARY.md#list_workflows) | ❌ | ❌ | ❌ | ❌ |
 | [rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |

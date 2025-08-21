@@ -91,96 +91,94 @@ Retrieve up-to-date documentation snippets for a resolved library ID.
 
 ## Atlassian
 
-The [Atlassian Remote MCP Server](https://support.atlassian.com/rovo/docs/getting-started-with-the-atlassian-remote-mcp-server/) provides lets an agent read/write from/to Jira and Confluence (but not Bitbucket).
+The [Sooperset local Atlassian MCP Server](https://github.com/sooperset/mcp-atlassian) provides access to both Jira and Confluence through a local containerized server for improved reliability and performance.
 
 ### Jira Issues & Operations
 
-#### addCommentToJiraIssue
+#### jira_add_comment
 Add a comment to a Jira issue.
 
-#### createJiraIssue
+#### jira_create_issue
 Create a new Jira issue in a project.
 
-#### editJiraIssue
+#### jira_update_issue
 Update fields of an existing Jira issue.
 
-#### getJiraIssue
+#### jira_get_issue
 Fetch details for a Jira issue by key or ID.
 
-#### getJiraIssueRemoteIssueLinks
-Retrieve remote issue links (e.g., Confluence pages) tied to a Jira issue.
+#### jira_search
+Search Jira issues with JQL (Jira Query Language).
 
-#### getTransitionsForJiraIssue
-List available transitions for a Jira issue.
-
-#### searchJiraIssuesUsingJql
-Search Jira issues with JQL.
-
-#### transitionJiraIssue
+#### jira_transition_issue
 Move an issue through a workflow transition.
 
-### Jira Project Metadata
+#### jira_get_transitions
+List available transitions for a Jira issue.
 
-#### getJiraProjectIssueTypesMetadata
-Metadata/details for issue types in a Jira project.
+#### jira_delete_issue
+Delete a Jira issue.
 
-#### getVisibleJiraProjects
-List Jira projects visible to the user (permission-filtered).
+### Jira Project & Board Operations
+
+#### jira_get_all_projects
+List all Jira projects visible to the user (permission-filtered).
+
+#### jira_get_project_issues
+Get issues for a specific Jira project.
+
+#### jira_get_agile_boards
+Get Agile/Scrum boards from Jira.
+
+#### jira_get_board_issues
+Get issues from a specific board.
+
+#### jira_get_sprints_from_board
+Get sprints from a specific board.
+
+#### jira_get_sprint_issues
+Get issues from a specific sprint.
+
+#### jira_search_fields
+Search available Jira fields with keyword matching.
+
+#### jira_get_user_profile
+Get user profile information from Jira.
 
 ### Confluence Pages & Content
 
-#### createConfluencePage
+#### confluence_create_page
 Create a Confluence page (regular or live doc).
 
-#### getConfluencePage
+#### confluence_get_page
 Fetch a Confluence page (body converted to Markdown).
 
-#### getConfluencePageAncestors
-List ancestor hierarchy for a page.
-
-#### getConfluencePageDescendants
-List descendant pages (optionally depth-limited).
-
-#### getPagesInConfluenceSpace
-List pages within a Confluence space.
-
-#### updateConfluencePage
+#### confluence_update_page
 Update an existing Confluence page or live doc.
 
-### Confluence Comments
+#### confluence_delete_page
+Delete a Confluence page.
 
-#### createConfluenceFooterComment
-Add a footer comment to a page/blog post.
+#### confluence_get_page_children
+List child pages of a Confluence page.
 
-#### createConfluenceInlineComment
-Add an inline (text-anchored) comment to a page.
+#### confluence_search
+Query Confluence content using CQL (Confluence Query Language).
 
-#### getConfluencePageFooterComments
-List footer comments for a page.
+#### confluence_get_comments
+Get comments on a Confluence page.
 
-#### getConfluencePageInlineComments
-List inline comments for a page.
+#### confluence_add_comment
+Add a comment to a Confluence page.
 
-### Confluence Spaces & Discovery
+#### confluence_get_labels
+Get labels for a Confluence page.
 
-#### getConfluenceSpaces
-List spaces and related metadata.
+#### confluence_add_label
+Add a label to a Confluence page.
 
-#### searchConfluenceUsingCql
-Query Confluence content using CQL.
-
-### User & Identity
-
-#### atlassianUserInfo
-Get current Atlassian user identity info.
-
-#### lookupJiraAccountId
-Lookup account IDs by user name/email.
-
-### Other
-
-#### getAccessibleAtlassianResources
-Discover accessible Atlassian cloud resources and obtain cloud IDs.
+#### confluence_search_user
+Search for Confluence users.
 
 ## GitHub
 
