@@ -23,7 +23,7 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 
 4. **Markdown Quality Check:** Run full markdown linting to ensure documentation quality. The linting will show many existing issues - this is expected and not blocking.
 
-5. **Tools Lists Validation:** Ensure the tools list in README.md accurately reflects the tools lists in the chatmode.md files. Verify with: `Rscript scripts/validation_rules.R`.
+5. **Tools Lists Validation:** Ensure the tools list in README.md accurately reflects the tools lists in the chatmode.md files. Verify with: `Rscript scripts/smoke_rules.R`.
 
 **NEVER CANCEL any validation command.** All validation operations complete in under 1 second.
 
