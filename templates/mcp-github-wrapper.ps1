@@ -1,5 +1,5 @@
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-# Startup order preference (Windows): Docker image -> npx (@latest, no global install) -> local CLI
+# Startup order preference (Windows): local CLI -> npx (@latest, no global install) -> container
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_GITHUB_CLI_BIN, MCP_GITHUB_NPM_PKG, MCP_GITHUB_DOCKER_IMAGE
 # Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
@@ -21,11 +21,11 @@ $IMG     = $env:MCP_GITHUB_DOCKER_IMAGE; if (-not $IMG) { $IMG = 'ghcr.io/github
 
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
-# 1) Prefer container for reliability (stdout cleanliness)
-$runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
-if ($runtime) {
-  [Console]::Error.WriteLine("Using GitHub MCP via container image: $IMG")
-  Invoke-Exec $runtime @('run','-i','--rm','--pull=never','-e','NO_COLOR=1','-e',"GITHUB_PERSONAL_ACCESS_TOKEN=$($env:GITHUB_PERSONAL_ACCESS_TOKEN)",$IMG) + $Args
+# 1) Prefer local CLI for fastest startup
+if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  [Console]::Error.WriteLine("Using GitHub MCP via local CLI on PATH: $CLI_BIN")
+  $env:NO_COLOR = '1'
+  Invoke-Exec $CLI_BIN $Args
 }
 
 # 2) Try npx @latest (no global install)
@@ -41,12 +41,12 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
   Invoke-Exec 'npx' $npxArgs + $Args
 }
 
-# 3) Local CLI as last resort
-if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-  [Console]::Error.WriteLine("Using GitHub MCP via local CLI on PATH: $CLI_BIN")
-  $env:NO_COLOR = '1'
-  Invoke-Exec $CLI_BIN $Args
+# 3) Fallback: container (reliable, stdout-clean)
+$runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
+if ($runtime) {
+  [Console]::Error.WriteLine("Using GitHub MCP via container image: $IMG")
+  Invoke-Exec $runtime @('run','-i','--rm','--pull=never','-e','NO_COLOR=1','-e',"GITHUB_PERSONAL_ACCESS_TOKEN=$($env:GITHUB_PERSONAL_ACCESS_TOKEN)",$IMG) + $Args
 }
 
-Write-Error 'Error: Could not start GitHub MCP server via docker, npx, or local CLI.'
+Write-Error 'Error: Could not start GitHub MCP server via local CLI, npx, or container.'
 exit 1
