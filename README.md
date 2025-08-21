@@ -377,7 +377,7 @@ $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bi
 
 Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
 
-### Atlassian MCP Server (Local)
+### Atlassian MCP Server
 
 We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a container and provides access to both Jira and Confluence.
 
