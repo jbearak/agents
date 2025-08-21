@@ -239,9 +239,6 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 #### Configure GitHub MCP Server on macOS
 
 1. Create a keychain item:
-   - Open Keychain Access (⌘ + Space → "Keychain Access").
-     - Password: your GitHub Personal Access Token.
-   - Click Add.
    - GUI: Keychain Access → File → New Password Item…
      - Name (Service): `github-mcp`
      - Account: your macOS username (must match `$USER`).
