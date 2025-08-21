@@ -81,4 +81,3 @@ fi
 
 echo "Error: Could not start GitHub MCP server. No viable startup path found (Docker, npx, or local CLI)." >&2
 exit 1
-exit 1
