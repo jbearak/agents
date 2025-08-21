@@ -4,6 +4,8 @@
 # Startup order: local CLI on PATH -> npx (no global install) -> container (cached, --pull=never if image set)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG, MCP_BITBUCKET_DOCKER_IMAGE
+# Logging note: All diagnostics/info are sent to stderr intentionally. MCP clients expect
+# stdout to be pure JSON-RPC; human-readable text on stdout can break initialization.
 
 set -euo pipefail
 

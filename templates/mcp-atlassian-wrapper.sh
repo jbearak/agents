@@ -4,6 +4,8 @@
 # Startup order: local CLI on PATH -> npx (no global install, if package available) -> container (cached, --pull=never)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_ATLASSIAN_CLI_BIN, MCP_ATLASSIAN_NPM_PKG, MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
+# Logging note: All diagnostics/info are sent to stderr on purpose. MCP clients require
+# stdout to contain only JSON-RPC (and headers). Any human text on stdout can break init.
 
 set -euo pipefail
 
