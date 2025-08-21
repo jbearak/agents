@@ -16,6 +16,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 - [Installing MCP Servers](#installing-mcp-servers)
   - [GitHub MCP Server](#github-mcp-server)
   - [Bitbucket MCP Server](#bitbucket-mcp-server)
+  - [Atlassian MCP Server](#atlassian-mcp-server)
 - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
   - [VS Code](#vs-code)
   - [Claude Desktop](#claude-desktop)
