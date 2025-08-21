@@ -60,7 +60,9 @@ CLI_BIN_NAME=${MCP_BITBUCKET_CLI_BIN:-mcp-atlassian-bitbucket}
 DOCKER_IMAGE=${MCP_BITBUCKET_DOCKER_IMAGE:-}
 
 run_cli() {
-  exec "${CLI_BIN_NAME}" "$@"
+  "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
+    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 }
 
 # 1) If CLI already available, run it.
@@ -75,18 +77,20 @@ if command -v npx >/dev/null 2>&1; then
     NPX_FLAGS+=(--quiet)
   fi
   npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{flush=1} { if ($0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  exit $?
+    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 fi
 
 # 3) Optional Docker fallback if image is specified
 if [ -n "${DOCKER_IMAGE}" ] && command -v docker >/dev/null 2>&1; then
-  exec docker run -i --rm --pull=never \
+  docker run -i --rm --pull=never \
     -e "NO_COLOR=1" \
     -e "ATLASSIAN_BITBUCKET_USERNAME=${ATLASSIAN_BITBUCKET_USERNAME}" \
     -e "ATLASSIAN_BITBUCKET_APP_PASSWORD=${APP_PASS}" \
     -e "BITBUCKET_DEFAULT_WORKSPACE=${BITBUCKET_DEFAULT_WORKSPACE}" \
-    "${DOCKER_IMAGE}" "$@"
+    "${DOCKER_IMAGE}" "$@" 2> >(cat >&2) | \
+    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 fi
 
 echo "Error: Bitbucket MCP CLI not found and no viable fallback (npm/npx/docker) available." >&2

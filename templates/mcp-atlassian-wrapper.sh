@@ -91,7 +91,9 @@ run_cli() {
   JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
   CONFLUENCE_API_TOKEN="${API_TOKEN}" \
   JIRA_API_TOKEN="${API_TOKEN}" \
-  exec "${CLI_BIN_NAME}" "$@"
+  "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
+  awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 }
 
 # Try npm-based CLI first (only if already installed) or via npx if resolvable
@@ -111,8 +113,8 @@ if command -v npx >/dev/null 2>&1; then
     NPX_FLAGS+=(--quiet)
   fi
   npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{flush=1} { if ($0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  exit $?
+    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 fi
 
 # Fallback to container runtime
@@ -129,7 +131,9 @@ DOCKER_ENV_ARGS=(
   -e "JIRA_API_TOKEN=$API_TOKEN"
 )
 
-exec "$DOCKER_COMMAND" run --rm -i \
+"$DOCKER_COMMAND" run --rm -i \
   "${DOCKER_ENV_ARGS[@]}" \
   "$MCP_ATLASSIAN_IMAGE" \
-  "$@"
+  "$@" 2> >(cat >&2) | \
+  awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+exit ${PIPESTATUS[0]}

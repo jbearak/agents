@@ -28,7 +28,11 @@ export NO_UPDATE_NOTIFIER=1
 export ADBLOCK=1
 
 run_cli() {
-  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" exec "${CLI_BIN_NAME}" "$@"
+  # Stream stdout through a JSON-only filter that forwards only lines starting with '{'
+  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" \
+    "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
+    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 }
 
 # 1) If CLI already available, run it.
@@ -47,12 +51,14 @@ if command -v npx >/dev/null 2>&1; then
   # This is a pragmatic stream filter until upstream guarantees pure JSON on stdout.
   GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" \
     npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{flush=1} { if ($0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  exit $?
+    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
 fi
 
 # 3) Fallback to Docker using cached image (no network pulls at runtime)
-exec docker run -i --rm --pull=never \
+docker run -i --rm --pull=never \
   -e "NO_COLOR=1" \
   -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
-  "${DOCKER_IMAGE}" "$@"
+  "${DOCKER_IMAGE}" "$@" 2> >(cat >&2) | \
+  awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+exit ${PIPESTATUS[0]}
