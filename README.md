@@ -38,7 +38,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 ├── code_style_guidelines.txt   # General coding style guidelines
 ├── README.md                   # This document
 ├── TOOLS_GLOSSARY.md           # Glossary of all available tools
-├── validate_tools.R            # Script for validating tool configurations
+├── scripts/validation_rules.R  # Script for validating tool configurations
 ├── copilot/
 │   └── modes/
 │       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
