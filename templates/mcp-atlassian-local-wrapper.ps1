@@ -160,13 +160,10 @@ if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
   Invoke-Exec $CLI_BIN $Args
 }
 
-if ($NPM_PKG -and (Get-Command npm -ErrorAction SilentlyContinue)) {
-  try { npm -g ls $NPM_PKG *>$null } catch {}
-  if ($LASTEXITCODE -ne 0) { try { npm -g install $NPM_PKG *>$null } catch {} }
-  if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-    foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
-    Invoke-Exec $CLI_BIN $Args
-  }
+# Try npx as an optional fallback if available (no global install)
+if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
+  foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
+  Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
 }
 
 # Fallback to container

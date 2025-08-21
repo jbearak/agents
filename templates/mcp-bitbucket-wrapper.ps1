@@ -79,14 +79,6 @@ if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
   Invoke-Exec $CLI_BIN $Args
 }
 
-if (Get-Command npm -ErrorAction SilentlyContinue) {
-  try { npm -g ls $NPM_PKG *>$null } catch {}
-  if ($LASTEXITCODE -ne 0) { try { npm -g install $NPM_PKG *>$null } catch {} }
-  if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-    Invoke-Exec $CLI_BIN $Args
-  }
-}
-
 if (Get-Command npx -ErrorAction SilentlyContinue) {
   Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
 }

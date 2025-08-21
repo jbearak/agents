@@ -191,6 +191,22 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## Installing MCP Servers
 
+How these wrapper scripts launch servers
+- The wrapper scripts always try methods in this order:
+  1) Use a locally installed CLI, if available on your PATH (fastest, no container runtime)
+  2) Use npx to run the package without installing it globally (no prompts, no global changes)
+  3) Use a cached container image (no network during normal runs when pre-pulled)
+- They do not attempt to install anything for you automatically. This prevents interactive prompts when tools like VS Code or Claude Desktop invoke the script.
+- If you prefer local installs for the lowest startup latency, install the CLI yourself once, and the wrapper will automatically pick it up on the next run.
+
+Quick local installs (optional)
+- GitHub MCP (Node CLI):
+  - npm i -g github-mcp-server
+- Bitbucket MCP (Node CLI):
+  - npm i -g @aashari/mcp-server-atlassian-bitbucket
+- Atlassian MCP (Sooperset):
+  - No public npm package is confirmed. Use container by default, or provide a private package via environment overrides.
+
 Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
 
 **Note:** While Microsoft lists a [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using the local Atlassian server (documented below) for better reliability and performance.

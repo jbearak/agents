@@ -24,21 +24,12 @@ if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
   Invoke-Exec $CLI_BIN $Args
 }
 
-# 2) If npm available, try one-time global install, then run
-if (Get-Command npm -ErrorAction SilentlyContinue) {
-  try { npm -g ls $NPM_PKG *>$null } catch {}
-  if ($LASTEXITCODE -ne 0) { try { npm -g install $NPM_PKG *>$null } catch {} }
-  if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-    Invoke-Exec $CLI_BIN $Args
-  }
-}
-
-# 3) Try npx as a fallback
+# 2) Try npx as a fallback (no global install)
 if (Get-Command npx -ErrorAction SilentlyContinue) {
   Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
 }
 
-# 4) Container fallback (prefer podman, else docker)
+# 3) Container fallback (prefer podman, else docker)
 $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
 if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
 Invoke-Exec $runtime @('run','-i','--rm','--pull=never','-e',"GITHUB_PERSONAL_ACCESS_TOKEN=$($env:GITHUB_PERSONAL_ACCESS_TOKEN)",$IMG) + $Args

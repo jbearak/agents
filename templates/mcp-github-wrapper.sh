@@ -24,14 +24,9 @@ if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   run_cli "$@"
 fi
 
-# 2) If npm available, try one-time global install, then run.
-if command -v npm >/dev/null 2>&1; then
-  if ! npm -g ls "${NPM_PKG_NAME}" >/dev/null 2>&1; then
-    npm -g install "${NPM_PKG_NAME}" >/dev/null 2>&1 || true
-  fi
-  if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
-    run_cli "$@"
-  fi
+# 2) If npx available, try running the package via npx (no global install)
+if command -v npx >/dev/null 2>&1; then
+  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" exec npx -y "${NPM_PKG_NAME}" "$@"
 fi
 
 # 3) Fallback to Docker using cached image (no network pulls at runtime)

@@ -83,17 +83,18 @@ run_cli() {
   exec "${CLI_BIN_NAME}" "$@"
 }
 
-# Try npm-based CLI first (only if resolvable)
+# Try npm-based CLI first (only if already installed) or via npx if resolvable
 if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   run_cli "$@"
 fi
-if command -v npm >/dev/null 2>&1; then
-  if ! npm -g ls "${NPM_PKG_NAME}" >/dev/null 2>&1; then
-    npm -g install "${NPM_PKG_NAME}" >/dev/null 2>&1 || true
-  fi
-  if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
-    run_cli "$@"
-  fi
+if command -v npx >/dev/null 2>&1; then
+  CONFLUENCE_URL="https://${ATLASSIAN_DOMAIN}/wiki" \
+  JIRA_URL="https://${ATLASSIAN_DOMAIN}" \
+  CONFLUENCE_USERNAME="${ATLASSIAN_EMAIL}" \
+  JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
+  CONFLUENCE_API_TOKEN="${API_TOKEN}" \
+  JIRA_API_TOKEN="${API_TOKEN}" \
+  exec npx -y "${NPM_PKG_NAME}" "$@"
 fi
 
 # Fallback to container runtime

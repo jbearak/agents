@@ -57,22 +57,12 @@ if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   run_cli "$@"
 fi
 
-# 2) If npm available, try one-time global install, then run.
-if command -v npm >/dev/null 2>&1; then
-  if ! npm -g ls "${NPM_PKG_NAME}" >/dev/null 2>&1; then
-    npm -g install "${NPM_PKG_NAME}" >/dev/null 2>&1 || true
-  fi
-  if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
-    run_cli "$@"
-  fi
-fi
-
-# 3) Try npx as a fallback if available
+# 2) Try npx as a fallback if available (no global install)
 if command -v npx >/dev/null 2>&1; then
   exec npx -y "${NPM_PKG_NAME}" "$@"
 fi
 
-# 4) Optional Docker fallback if image is specified
+# 3) Optional Docker fallback if image is specified
 if [ -n "${DOCKER_IMAGE}" ] && command -v docker >/dev/null 2>&1; then
   exec docker run -i --rm --pull=never \
     -e "ATLASSIAN_BITBUCKET_USERNAME=${ATLASSIAN_BITBUCKET_USERNAME}" \
