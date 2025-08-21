@@ -40,8 +40,8 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 ├── TOOLS_GLOSSARY.md           # Glossary of all available tools
 ├── scripts/
 │   ├── smoke_mcp_wrappers.sh   # Bash entrypoint for wrapper stdout smoke tests
-│   ├── smoke_mcp_wrappers.py   # Python smoke test runner (filters/validates stdout)
-│   └── validation_rules.R      # Script for validating tool configurations
+│   ├── smoke_mcp_wrappers.py   # Smoke test runner for wrapper stdout (filters/validates stdout)
+│   └── smoke_rules.R           # R script for validating tool lists/matrix consistency
 ├── copilot/
 │   └── modes/
 │       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
