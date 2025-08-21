@@ -202,13 +202,16 @@ How these wrapper scripts launch servers
 - The wrappers never install anything automatically. This avoids interactive prompts when editors launch them.
 - If you want the lowest startup latency and no container runtime, you may install a local CLI — the wrapper will detect and use it automatically.
 
-Recommended: pre‑pull container images
-Pre‑pulling images avoids network access during regular runs and makes startup instant.
-  - docker pull ghcr.io/github/github-mcp-server:latest
+Recommended: pre‑pull container images (Atlassian)
+Pre‑pulling avoids network access during regular runs and makes startup instant when the container path is used.
   - docker pull ghcr.io/sooperset/mcp-atlassian:latest
+
+Optional: pre‑pull GitHub container (only if you plan to use container fallback)
+  - docker pull ghcr.io/github/github-mcp-server:latest
 
 Optional: local CLI installs (advanced)
 - GitHub MCP (Node CLI): Recommended for fastest startup if installed. Our wrapper filters stdout to JSON-only and falls back to Docker if needed.
+  - npm i -g github-mcp-server
 - Bitbucket MCP (Node CLI):
   - npm i -g @aashari/mcp-server-atlassian-bitbucket
 - Atlassian MCP (Sooperset):
