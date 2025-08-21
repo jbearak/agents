@@ -101,7 +101,13 @@ if [[ "$AUTH_METHOD" == "api_token" ]]; then
   # Set email if not provided (required for API token auth)
   if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
     # Try to derive from current user or domain
-    ATLASSIAN_EMAIL="${USER}@$(echo "$ATLASSIAN_DOMAIN" | sed 's/\.atlassian\.net$/\.com/')"
+# Set email if not provided (required for API token auth)
+  if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
+    # Try to derive from current user or domain
+    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.com}"
+    echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
+  fi
+fi
     echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
   fi
 fi
