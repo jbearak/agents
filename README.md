@@ -205,7 +205,7 @@ Quick local installs (optional)
 - Bitbucket MCP (Node CLI):
   - npm i -g @aashari/mcp-server-atlassian-bitbucket
 - Atlassian MCP (Sooperset):
-  - No public npm package is confirmed. Use container by default, or provide a private package via environment overrides.
+  - No public npm package exists.
 
 Pre-pull container images (optional)
 If you plan to rely on containers, pre-pulling images prevents network access during normal runs and makes startup instant.
