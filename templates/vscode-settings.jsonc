@@ -90,8 +90,8 @@
     "python --version": true, // Python version
     "R --version": true,      // R version
     "npm list": true,         // List installed npm packages
-    "docker ps": true,        // List Docker containers
-    "docker images": true,    // List Docker images
+    "docker ps": true,        // List docker containers
+    "docker images": true,    // List docker images
     
     // -------------------------
     // Git Operations - Information Gathering (Read-Only)

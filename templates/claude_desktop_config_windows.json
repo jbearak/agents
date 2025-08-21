@@ -1,5 +1,17 @@
 {
   "mcpServers": {
+    "Atlassian": {
+      "command": "powershell",
+      "args": [
+        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "C:/Users/<your-os-username>/bin/mcp-atlassian-local-wrapper.ps1"
+      ],
+      "env": {
+        "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
+        "AUTH_METHOD": "api_token"
+      },
+      "working_directory": null
+    },
     "Context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],

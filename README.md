@@ -16,9 +16,9 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 - [Installing MCP Servers](#installing-mcp-servers)
   - [GitHub MCP Server](#github-mcp-server)
   - [Bitbucket MCP Server](#bitbucket-mcp-server)
+  - [Atlassian MCP Server](#atlassian-mcp-server)
 - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
   - [VS Code](#vs-code)
-  - [Claude.ai](#claudeai)
   - [Claude Desktop](#claude-desktop)
 - [Coding Style Guidelines](#coding-style-guidelines)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
@@ -26,7 +26,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Warp (Repository-Level)](#warp-repository-level)
   - [Warp (User-Level)](#warp-user-level)
   - [Q (Repository-Level)](#q-repository-level)
-  - [Claude (Repository-Level)](#claude-repository-level)
+  - [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [VS Code Copilot Settings](#vs-code-copilot-settings)
   - [Installation](#installation)
 - [Tool Availability Matrix](#tool-availability-matrix)
@@ -191,7 +191,9 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## Installing MCP Servers
 
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D), [Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
+
+**Note:** While Microsoft lists a [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using the local Atlassian server (documented below) for better reliability and performance.
 
 After you configure these MCP servers, follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
 
@@ -263,6 +265,12 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
 4. Test retrieval (optional): `security find-generic-password -s github-mcp -a "$USER" -w`
 5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
+
+**Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` (macOS default shell) and then `source ~/.zshrc`:
+
+```
+export PATH="$HOME/bin:$PATH"
+```
 
 
 ### Bitbucket MCP Server
@@ -369,6 +377,117 @@ $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bi
 
 Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
 
+### Atlassian MCP Server
+
+We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a container and provides access to both Jira and Confluence.
+
+**You will need an Atlassian API Token. To create one, follow these steps:**
+
+1. Go to [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
+2. Click "Create API token"
+3. Enter a label (e.g., "MCP Server Access")
+4. Copy the generated token immediately (you won't be able to see it again!)
+
+**Prerequisites:**
+- Container runtime installed and running:
+  - macOS: Colima (preferred) -> install via Homebrew: `brew install colima; colima start`
+  - Windows: Podman (preferred) -> install via winget: `winget install RedHat.Podman`
+  - Linux: docker Engine (or Podman)
+- Alternatively set `DOCKER_COMMAND=podman` (or another compatible CLI) if not using the default docker CLI
+
+#### Configure Atlassian MCP Server on macOS
+
+1. Create a keychain item for the API token:
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `atlassian-mcp-local`
+     - Account: `api-token`
+     - Password: (your Atlassian API token)
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+     ```bash
+     ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s atlassian-mcp-local -a api-token -w "$PW"; \
+       unset PW )
+     ```
+
+2. Copy `templates/mcp-atlassian-local-wrapper.sh` to somewhere on your `$PATH`:
+   ```bash
+   cp templates/mcp-atlassian-local-wrapper.sh ~/bin/
+   ```
+3. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-atlassian-local-wrapper.sh
+   ```
+  **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` and then `source ~/.zshrc`:
+  ```
+  export PATH="$HOME/bin:$PATH"
+  ```
+4. Test
+   ```bash
+   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
+   ```
+
+#### Configure Atlassian MCP Server on Windows
+
+1. Create a **Generic Credential** in Windows Credential Manager for the API token:
+   - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+   - Internet or network address: `atlassian-mcp-local`
+   - User name: `api-token`
+   - Password: (your Atlassian API token)
+
+   Secure PowerShell method (avoids storing the token in shell history):
+   ```powershell
+   $secure = Read-Host -AsSecureString "Enter Atlassian API token"
+   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+   try {
+     $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
+     # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Write-Host "Credential 'atlassian-mcp-local' created." -ForegroundColor Green
+   } finally {
+     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+   }
+   ```
+
+2. Install the CredentialManager module (if not already installed):
+   ```powershell
+   Install-Module CredentialManager -Scope CurrentUser -Force
+   ```
+
+  **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
+
+3. Copy `templates/mcp-atlassian-local-wrapper.ps1` to your user bin folder:
+   ```powershell
+   # Create a user bin folder and copy the script there
+   New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
+   Copy-Item -Path templates\mcp-atlassian-local-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1" -Force
+
+   # Optionally add the folder to your user PATH
+   [Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
+   ```
+
+4. Ensure PowerShell can run local scripts:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+   ```
+
+5. Test
+   ```powershell
+   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
+   ```
+
+#### Troubleshooting Atlassian MCP Server
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "docker is not installed" | Container runtime CLI not available | Install Colima (macOS) or Podman/docker and ensure CLI is in PATH |
+| "docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or `podman machine start` (Windows) |
+| "Could not retrieve API token" | Keychain/credential missing | Create credential with correct service name |
+| Container fails to start | Invalid domain/credentials | Verify ATLASSIAN_DOMAIN and API token |
+| 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |
+| Connection timeouts | Network/firewall issues | Check container network settings and firewall |
+
+
 ## Add MCP Servers to Agents
 
 ### VS Code
@@ -378,12 +497,6 @@ Scopes: Use the minimal scopes required by your workflows (e.g., repository read
 3. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
-
-### Claude.ai
-
-1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
-2. Press each the **Connect** button (next to Atlassian and GitHub)
-Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
 
 ### Claude Desktop
 
@@ -522,37 +635,43 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get-library-docs](TOOLS_GLOSSARY.md#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
 | **Atlassian** | | | | |
 | *Jira Issues & Operations* | | | | |
-| [addCommentToJiraIssue](TOOLS_GLOSSARY.md#addcommenttojiraissue) | ❌ | ✅ | ✅ | ✅ |
-| [createJiraIssue](TOOLS_GLOSSARY.md#createjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| [editJiraIssue](TOOLS_GLOSSARY.md#editjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| [getJiraIssue](TOOLS_GLOSSARY.md#getjiraissue) | ✅ | ✅ | ✅ | ✅ |
-| [getJiraIssueRemoteIssueLinks](TOOLS_GLOSSARY.md#getjiraissueremoteissuelinks) | ✅ | ✅ | ✅ | ✅ |
-| [getTransitionsForJiraIssue](TOOLS_GLOSSARY.md#gettransitionsforjiraissue) | ❌ | ❌ | ❌ | ❌ |
-| [searchJiraIssuesUsingJql](TOOLS_GLOSSARY.md#searchjiraissuesusingjql) | ✅ | ✅ | ✅ | ✅ |
-| [transitionJiraIssue](TOOLS_GLOSSARY.md#transitionjiraissue) | ❌ | ❌ | ✅ | ✅ |
-| *Jira Project Metadata* | | | | |
-| [getJiraProjectIssueTypesMetadata](TOOLS_GLOSSARY.md#getjiraprojectissuetypesmetadata) | ✅ | ✅ | ✅ | ✅ |
-| [getVisibleJiraProjects](TOOLS_GLOSSARY.md#getvisiblejiraprojects) | ✅ | ✅ | ✅ | ✅ |
+| [jira_add_comment](TOOLS_GLOSSARY.md#jira_add_comment) | ❌ | ✅ | ✅ | ✅ |
+| [jira_create_issue](TOOLS_GLOSSARY.md#jira_create_issue) | ❌ | ❌ | ✅ | ✅ |
+| [jira_update_issue](TOOLS_GLOSSARY.md#jira_update_issue) | ❌ | ❌ | ✅ | ✅ |
+| [jira_get_issue](TOOLS_GLOSSARY.md#jira_get_issue) | ✅ | ✅ | ✅ | ✅ |
+| [jira_search](TOOLS_GLOSSARY.md#jira_search) | ✅ | ✅ | ✅ | ✅ |
+| [jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue) | ❌ | ❌ | ✅ | ✅ |
+| [jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_link_types](TOOLS_GLOSSARY.md#jira_get_link_types) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_project_versions](TOOLS_GLOSSARY.md#jira_get_project_versions) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_worklog](TOOLS_GLOSSARY.md#jira_get_worklog) | ✅ | ✅ | ✅ | ✅ |
+| [jira_download_attachments](TOOLS_GLOSSARY.md#jira_download_attachments) | ✅ | ✅ | ✅ | ✅ |
+| [jira_add_worklog](TOOLS_GLOSSARY.md#jira_add_worklog) | ❌ | ✅ | ✅ | ✅ |
+| [jira_link_to_epic](TOOLS_GLOSSARY.md#jira_link_to_epic) | ❌ | ❌ | ✅ | ✅ |
+| [jira_create_issue_link](TOOLS_GLOSSARY.md#jira_create_issue_link) | ❌ | ❌ | ✅ | ✅ |
+| [jira_create_remote_issue_link](TOOLS_GLOSSARY.md#jira_create_remote_issue_link) | ❌ | ❌ | ✅ | ✅ |
+| [jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue) | ❌ | ❌ | ❌ | ❌ |
+| *Jira Project & Board Operations* | | | | |
+| [jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_project_issues](TOOLS_GLOSSARY.md#jira_get_project_issues) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_agile_boards](TOOLS_GLOSSARY.md#jira_get_agile_boards) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_board_issues](TOOLS_GLOSSARY.md#jira_get_board_issues) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_sprints_from_board](TOOLS_GLOSSARY.md#jira_get_sprints_from_board) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_sprint_issues](TOOLS_GLOSSARY.md#jira_get_sprint_issues) | ✅ | ✅ | ✅ | ✅ |
+| [jira_search_fields](TOOLS_GLOSSARY.md#jira_search_fields) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_user_profile](TOOLS_GLOSSARY.md#jira_get_user_profile) | ✅ | ✅ | ✅ | ✅ |
 | *Confluence Pages & Content* | | | | |
-| [createConfluencePage](TOOLS_GLOSSARY.md#createconfluencepage) | ❌ | ❌ | ✅ | ✅ |
-| [getConfluencePage](TOOLS_GLOSSARY.md#getconfluencepage) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageAncestors](TOOLS_GLOSSARY.md#getconfluencepageancestors) | ❌ | ❌ | ❌ | ❌ |
-| [getConfluencePageDescendants](TOOLS_GLOSSARY.md#getconfluencepagedescendants) | ❌ | ❌ | ❌ | ❌ |
-| [getPagesInConfluenceSpace](TOOLS_GLOSSARY.md#getpagesinconfluencespace) | ✅ | ✅ | ✅ | ✅ |
-| [updateConfluencePage](TOOLS_GLOSSARY.md#updateconfluencepage) | ❌ | ❌ | ✅ | ✅ |
-| *Confluence Comments* | | | | |
-| [createConfluenceFooterComment](TOOLS_GLOSSARY.md#createconfluencefootercomment) | ❌ | ❌ | ✅ | ✅ |
-| [createConfluenceInlineComment](TOOLS_GLOSSARY.md#createconfluenceinlinecomment) | ❌ | ❌ | ✅ | ✅ |
-| [getConfluencePageFooterComments](TOOLS_GLOSSARY.md#getconfluencepagefootercomments) | ✅ | ✅ | ✅ | ✅ |
-| [getConfluencePageInlineComments](TOOLS_GLOSSARY.md#getconfluencepageinlinecomments) | ✅ | ✅ | ✅ | ✅ |
-| *Confluence Spaces & Discovery* | | | | |
-| [getConfluenceSpaces](TOOLS_GLOSSARY.md#getconfluencespaces) | ✅ | ✅ | ✅ | ✅ |
-| [searchConfluenceUsingCql](TOOLS_GLOSSARY.md#searchconfluenceusingcql) | ✅ | ✅ | ✅ | ✅ |
-| *User & Identity* | | | | |
-| [atlassianUserInfo](TOOLS_GLOSSARY.md#atlassianuserinfo) | ✅ | ✅ | ✅ | ✅ |
-| [lookupJiraAccountId](TOOLS_GLOSSARY.md#lookupjiraaccountid) | ✅ | ✅ | ✅ | ✅ |
-| *Other* | | | | |
-| [getAccessibleAtlassianResources](TOOLS_GLOSSARY.md#getaccessibleatlassianresources) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_create_page](TOOLS_GLOSSARY.md#confluence_create_page) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_get_page](TOOLS_GLOSSARY.md#confluence_get_page) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_update_page](TOOLS_GLOSSARY.md#confluence_update_page) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_delete_page](TOOLS_GLOSSARY.md#confluence_delete_page) | ❌ | ❌ | ❌ | ❌ |
+| [confluence_get_page_children](TOOLS_GLOSSARY.md#confluence_get_page_children) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_search](TOOLS_GLOSSARY.md#confluence_search) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_get_comments](TOOLS_GLOSSARY.md#confluence_get_comments) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_add_comment](TOOLS_GLOSSARY.md#confluence_add_comment) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_get_labels](TOOLS_GLOSSARY.md#confluence_get_labels) | ✅ | ✅ | ✅ | ✅ |
+| [confluence_add_label](TOOLS_GLOSSARY.md#confluence_add_label) | ❌ | ❌ | ✅ | ✅ |
+| [confluence_search_user](TOOLS_GLOSSARY.md#confluence_search_user) | ✅ | ✅ | ✅ | ✅ |
 | **GitHub** | | | | |
 | *Commits & Repository* | | | | |
 | [create_branch](TOOLS_GLOSSARY.md#create_branch) | ❌ | ❌ | ❌ | ✅ |
@@ -562,7 +681,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get_tag](TOOLS_GLOSSARY.md#get_tag) | ❌ | ❌ | ❌ | ❌ |
 | [list_branches](TOOLS_GLOSSARY.md#list_branches) | ✅ | ✅ | ✅ | ✅ |
 | [list_commits](TOOLS_GLOSSARY.md#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ❌ | ❌ | ❌ | ❌ |
+| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ✅ | ✅ | ✅ | ✅ |
 | [push_files](TOOLS_GLOSSARY.md#push_files) | ❌ | ❌ | ❌ | ✅ |
 | *Pull Requests  Retrieval* | | | | |
 | [get_pull_request](TOOLS_GLOSSARY.md#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
@@ -601,11 +720,11 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Code Scanning & Security* | | | | |
 | [list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
 | *Workflows (GitHub Actions)* | | | | |
-| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ✅ | ❌ | ✅ | ✅ |
+| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ❌ | ❌ | ❌ | ❌ |
 | [get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
 | [get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ✅ | ❌ | ✅ | ✅ |
+| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
 | [list_workflows](TOOLS_GLOSSARY.md#list_workflows) | ❌ | ❌ | ❌ | ❌ |
 | [rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
