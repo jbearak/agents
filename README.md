@@ -387,7 +387,7 @@ Note: This adds the ability to add files from GitHub, but does not add the [GitH
 **Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
 
 
-### Coding Style Guidelines
+## Coding Style Guidelines
 
 We maintain concise coding style guidelines for LLMs in `code_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
 
@@ -443,6 +443,23 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 3. Edit as/if needed/desired.
 
 
+## VS Code Copilot Settings
+
+We provide a template for reasonable default settings for GitHub Copilot in VS Code. The template includes:
+- Safe terminal commands that can be auto-approved
+- Disabled telemetry for privacy
+- Extended chat agent limits (100 turns instead of default 25)
+- [Enabled thinking tool for better agent performance](https://github.com/microsoft/vscode-copilot-chat/blob/549d817809926490f97ea449697ad6bc01a391c6/CHANGELOG.md#thinking-tool)
+
+### Installation
+
+1. Copy the template file: [`templates/vscode-settings.jsonc`](templates/vscode-settings.jsonc)
+2. Add it to your VS Code user settings:
+   - On Windows: `%APPDATA%\Code\User\settings.json`
+   - On macOS: `~/Library/Application Support/Code/User/settings.json`
+   - On Linux: `~/.config/Code/User/settings.json`
+
+3. Merge the settings with your existing configuration or use as-is.
 
 
 ## Tool Availability Matrix

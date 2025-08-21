@@ -1,0 +1,172 @@
+{
+  // -------------------------
+  // GitHub Copilot — General
+  // -------------------------
+  // By default, Copilot is enabled for all languages except for
+  // plaintext and markdown. This setting enables it for them.
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": true,
+    "markdown": true,
+    "scminput": false
+  },
+
+  // When this setting is true, Copilot Chat may search your local
+  // workspace and repository to locate relevant code snippets, symbols,
+  // and definitions to use as examples or context.
+  "github.copilot.chat.codesearch.enabled": true,
+  
+  // "Inspired by [Anthropic's
+  // research](https://www.anthropic.com/engineering/claude-think-tool),
+  // we've added support for a thinking tool in agent mode that can be
+  // used to give any model the opportunity to think between tool calls.
+  // This improves our agent's performance on complex tasks in-product
+  // and on the [SWE-bench](https://www.swebench.com/) eval."
+  // https://github.com/microsoft/vscode-copilot-chat/blob/549d817809926490f97ea449697ad6bc01a391c6/CHANGELOG.md#thinking-tool
+  "github.copilot.chat.agent.thinkingTool": true,
+
+  // -------------------------
+  // Chat agent limits & tools
+  // -------------------------
+  // By default, the agent pauses after 25 turns to ask if you want to
+  // continue. This setting increases the limit to 100 turns.
+  "chat.agent.maxRequests": 100,
+  // This setting enables the to-do list tool for the agent
+  "chat.todoListTool.enabled": true,
+  // By default, the agent pauses to ask for approval before using tools
+  // except for editing files within the current workspace. Setting this
+  // to true would allow the agent to execute any command without asking
+  // for approval. We must never set this to true outside a container.
+  // "chat.tools.autoApprove": false,
+  // This setting allows the agent to use certain terminal commands
+  // without pausing to ask for approval. Be careful with this setting.
+  "chat.tools.terminal.autoApprove": {
+    // -------------------------
+    // Navigation & Directory Operations (Read-Only)
+    // -------------------------
+    "pwd": true,              // Print working directory
+    "cd": true,               // Change directory
+    "ls": true,               // List directory contents
+    "tree": true,             // Display directory structure
+    "du": true,               // Disk usage
+    
+    // -------------------------
+    // File Inspection & Reading (Read-Only)
+    // -------------------------
+    "cat": true,              // Display file contents
+    "head": true,             // View first lines of files
+    "tail": true,             // View last lines of files
+    "less": true,             // Page through files
+    "wc": true,               // Word/line/byte count
+    "stat": true,             // File statistics
+    "file": true,             // Determine file type
+    "markdownlint": true,     // Lint Markdown files
+    
+    // -------------------------
+    // Search & Pattern Matching (Read-Only)
+    // -------------------------
+    "grep": true,             // Search text patterns
+    "rg": true,               // Ripgrep - fast search
+    "find": true,             // Find files and directories
+    "fd": true,               // Modern find alternative
+    "fzf": true,              // Fuzzy finder
+    
+    // -------------------------
+    // System Information (Read-Only)
+    // -------------------------
+    "echo": true,             // Print text
+    "date": true,             // Show date/time
+    "whoami": true,           // Current user
+    "env": true,              // Environment variables (careful with secrets)
+    "which": true,            // Locate command path
+    "basename": true,         // Extract filename from path
+    "dirname": true,          // Extract directory from path
+    "uname": true,            // Operating system
+    
+    // -------------------------
+    // Development Tools - Version Info (Read-Only)
+    // -------------------------
+    "node --version": true,   // Node.js version
+    "python --version": true, // Python version
+    "R --version": true,      // R version
+    "npm list": true,         // List installed npm packages
+    "docker ps": true,        // List Docker containers
+    "docker images": true,    // List Docker images
+    
+    // -------------------------
+    // Git Operations - Information Gathering (Read-Only)
+    // -------------------------
+    "git status": true,        // Working tree status
+    "git log": true,           // Commit history
+    "git show": true,          // Show commits/tags/etc
+    "git diff": true,          // Show changes
+    "git branch": true,        // List/create branches
+    "git remote": true,        // Manage remotes
+    "git describe": true,      // Describe commits
+    "git tag": true,           // List tags
+    "git stash list": true,    // View stashes
+    "git rev-list": true,      // List commits in reverse-chronological order
+    "git rev-parse": true,     // Parse git revisions
+    "git config --list": true, // View configuration
+    "git init": true,          // Initialize a new repository
+    
+    // -------------------------
+    // Git Operations - Local Modifications (Use with Caution)
+    // -------------------------
+    "git add": true,              // Stage changes
+    "git commit": true,           // Commit changes
+    "git checkout": true,         // Switch branches/restore files
+    "git switch": true,           // Switch branches (newer command)
+    "git fetch": true,            // Download objects/refs
+    "git pull": true,             // Fetch and merge
+    "git merge": true,            // Merge branches
+    "git cherry-pick": true,      // Apply commits from another branch
+    "git clone": true,            // Clone repository
+    "git submodule init": true,   // Initialize submodules
+    "git submodule update": true, // Update submodules
+    
+    // -------------------------
+    // File Creation (Minimal Risk)
+    // -------------------------
+    "mkdir": true,            // Create directories
+
+    // -----------------------------
+    // Miscellaneous Command (Safe to auto-approve)
+    // -----------------------------
+    "true": true, // Always succeeds
+    "false": true, // Always fails
+
+    
+    // -------------------------
+    // NEVER AUTO-APPROVE (Examples - Keep these as false or omitted)
+    // -------------------------
+    // "rm": false,           // Delete files - DANGEROUS
+    // "mv": false,           // Move/rename - can overwrite
+    // "cp": false,           // Copy - can overwrite
+    // "chmod": false,        // Change permissions
+    // "sudo": false,         // Privilege escalation - NEVER
+    // "npm install": false,  // Install packages - security risk
+    // "pip install": false,  // Install packages - security risk
+    // "curl": false,         // Download from internet
+    // "wget": false,         // Download from internet
+    // "ssh": false,          // Remote connections
+    // "git push": false,     // Push to remote - can't undo
+    // "git rebase": false,   // Rewrite history - destructive
+    // "touch": false,        // Create empty files - cannot overwrite,
+    //                           but can change timestamps
+  },
+
+  // -------------------------
+  // Inline chat
+  // -------------------------
+  // Use second-generation inline chat UI 
+  "inlineChat.enableV2": true,
+  // Whether empty lines show a hint to generate code with inline chat
+  "inlineChat.lineEmptyHint": true,
+
+  // -------------------------
+  // Telemetry & feedback
+  // -------------------------
+  // This setting disables telemetry (usage data collection)
+  "telemetry.feedback.enabled": false,
+}
