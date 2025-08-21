@@ -221,11 +221,11 @@ Once you’ve copied the wrapper scripts to a folder on your PATH and set up cre
 - macOS (zsh/bash):
   - GitHub: ~/bin/mcp-github-wrapper.sh --help | head -5
   - Bitbucket: ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
-  - Atlassian (local): ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
+  - Atlassian: ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
 - Windows (PowerShell):
   - GitHub: & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 5
   - Bitbucket: $env:ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
-  - Atlassian (local): $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
+  - Atlassian: $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
 
 Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
 
@@ -446,13 +446,13 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
        unset PW )
      ```
 
-2. Copy `templates/mcp-atlassian-local-wrapper.sh` to somewhere on your `$PATH`:
+2. Copy `templates/mcp-atlassian-wrapper.sh` to somewhere on your `$PATH`:
    ```bash
-   cp templates/mcp-atlassian-local-wrapper.sh ~/bin/
+   cp templates/mcp-atlassian-wrapper.sh ~/bin/
    ```
 3. Make it executable:
    ```bash
-   chmod +x ~/bin/mcp-atlassian-local-wrapper.sh
+   chmod +x ~/bin/mcp-atlassian-wrapper.sh
    ```
   **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` and then `source ~/.zshrc`:
   ```
@@ -460,7 +460,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
   ```
 4. Test
    ```bash
-   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
+   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
    ```
 
 #### Configure Atlassian MCP Server on Windows
@@ -492,11 +492,11 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
   **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
 
-3. Copy `templates/mcp-atlassian-local-wrapper.ps1` to your user bin folder:
+3. Copy `templates/mcp-atlassian-wrapper.ps1` to your user bin folder:
    ```powershell
    # Create a user bin folder and copy the script there
    New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
-   Copy-Item -Path templates\mcp-atlassian-local-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1" -Force
+   Copy-Item -Path templates\mcp-atlassian-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-wrapper.ps1" -Force
 
    # Optionally add the folder to your user PATH
    [Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
@@ -509,7 +509,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 5. Test
    ```powershell
-   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
+   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
    ```
 
 #### Troubleshooting Atlassian MCP Server

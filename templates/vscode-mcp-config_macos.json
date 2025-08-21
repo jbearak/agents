@@ -1,7 +1,7 @@
 {
   "servers": {
     "atlassian": {
-      "command": "/Users/<your-os-username>/bin/mcp-atlassian-local-wrapper.sh",
+      "command": "/Users/<your-os-username>/bin/mcp-atlassian-wrapper.sh",
       "args": [],
       "env": {
         "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
