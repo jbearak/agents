@@ -140,24 +140,45 @@ Could not retrieve Atlassian API token:
   }
 }
 
-# Pull latest image
-Update-AtlassianImage
+# Prefer npm-installed CLI if available (package may be private); otherwise use container
+$CLI_BIN = $env:MCP_ATLASSIAN_CLI_BIN; if (-not $CLI_BIN) { $CLI_BIN = 'mcp-atlassian' }
+$NPM_PKG = $env:MCP_ATLASSIAN_NPM_PKG; if (-not $NPM_PKG) { $NPM_PKG = '@sooperset/mcp-atlassian' }
 
-# Set up environment variables for the container
-$dockerEnvArgs = @(
-  '-e', "CONFLUENCE_URL=https://$($env:ATLASSIAN_DOMAIN)/wiki"
-  '-e', "JIRA_URL=https://$($env:ATLASSIAN_DOMAIN)"
+function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
+
+$prefEnv = @(
+  "CONFLUENCE_URL=https://$($env:ATLASSIAN_DOMAIN)/wiki",
+  "JIRA_URL=https://$($env:ATLASSIAN_DOMAIN)",
+  "CONFLUENCE_USERNAME=$($env:ATLASSIAN_EMAIL)",
+  "JIRA_USERNAME=$($env:ATLASSIAN_EMAIL)",
+  "CONFLUENCE_API_TOKEN=$apiToken",
+  "JIRA_API_TOKEN=$apiToken"
 )
 
-$dockerEnvArgs += @(
-  '-e', "CONFLUENCE_USERNAME=$($env:ATLASSIAN_EMAIL)"
-  '-e', "CONFLUENCE_API_TOKEN=$apiToken"
-  '-e', "JIRA_USERNAME=$($env:ATLASSIAN_EMAIL)"
+if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
+  Invoke-Exec $CLI_BIN $Args
+}
+
+if ($NPM_PKG -and (Get-Command npm -ErrorAction SilentlyContinue)) {
+  try { npm -g ls $NPM_PKG *>$null } catch {}
+  if ($LASTEXITCODE -ne 0) { try { npm -g install $NPM_PKG *>$null } catch {} }
+  if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+    foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
+    Invoke-Exec $CLI_BIN $Args
+  }
+}
+
+# Fallback to container
+Update-AtlassianImage
+$dockerEnvArgs = @(
+  '-e', "CONFLUENCE_URL=https://$($env:ATLASSIAN_DOMAIN)/wiki",
+  '-e', "JIRA_URL=https://$($env:ATLASSIAN_DOMAIN)",
+  '-e', "CONFLUENCE_USERNAME=$($env:ATLASSIAN_EMAIL)",
+  '-e', "CONFLUENCE_API_TOKEN=$apiToken",
+  '-e', "JIRA_USERNAME=$($env:ATLASSIAN_EMAIL)",
   '-e', "JIRA_API_TOKEN=$apiToken"
 )
-
-# Launch the container in interactive mode with stdin/stdout
 $fullArgs = @('run', '--rm', '-i') + $dockerEnvArgs + @($env:MCP_ATLASSIAN_IMAGE) + $Args
-
 & $env:DOCKER_COMMAND @fullArgs
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

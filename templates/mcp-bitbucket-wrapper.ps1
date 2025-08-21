@@ -68,10 +68,35 @@ if ($env:ATLASSIAN_BITBUCKET_APP_PASSWORD) {
 
 $env:ATLASSIAN_BITBUCKET_APP_PASSWORD = $appPassword
 
-# Launch via npx (ensures latest published version unless cached)
-$command = 'npx'
-$fullArgs = @('-y', '@aashari/mcp-server-atlassian-bitbucket') + $Args
+# Prefer npm-installed CLI; fallback to npx; optional container fallback
+$CLI_BIN = $env:MCP_BITBUCKET_CLI_BIN; if (-not $CLI_BIN) { $CLI_BIN = 'mcp-atlassian-bitbucket' }
+$NPM_PKG = $env:MCP_BITBUCKET_NPM_PKG; if (-not $NPM_PKG) { $NPM_PKG = '@aashari/mcp-server-atlassian-bitbucket' }
+$IMG     = $env:MCP_BITBUCKET_DOCKER_IMAGE
 
-# Exec equivalent in PowerShell
-& $command @fullArgs
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
+
+if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  Invoke-Exec $CLI_BIN $Args
+}
+
+if (Get-Command npm -ErrorAction SilentlyContinue) {
+  try { npm -g ls $NPM_PKG *>$null } catch {}
+  if ($LASTEXITCODE -ne 0) { try { npm -g install $NPM_PKG *>$null } catch {} }
+  if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+    Invoke-Exec $CLI_BIN $Args
+  }
+}
+
+if (Get-Command npx -ErrorAction SilentlyContinue) {
+  Invoke-Exec 'npx' @('-y', $NPM_PKG) + $Args
+}
+
+if ($IMG) {
+  $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
+  if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
+  $envArgs = @('-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
+  Invoke-Exec $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args
+}
+
+Write-Error 'Bitbucket MCP CLI not found and no viable fallback (npm/npx/docker) available.'
+exit 1
