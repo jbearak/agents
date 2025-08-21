@@ -388,8 +388,11 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 4. Copy the generated token immediately (you won't be able to see it again!)
 
 **Prerequisites:**
-- Docker Desktop (Windows/macOS) or Docker Engine (Linux) installed and running
-- Alternatively, Podman can be used instead of Docker
+- Container runtime installed and running:
+  - macOS: Colima (preferred) -> install via Homebrew: `brew install colima; colima start`
+  - Windows: Docker Desktop (or Podman)
+  - Linux: Docker Engine (or Podman)
+- Alternatively set `DOCKER_COMMAND=podman` (or another compatible CLI) if not using the default docker CLI
 
 #### Configure Atlassian MCP Server on macOS
 
@@ -476,8 +479,8 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| "Docker is not installed" | Docker/Podman not available | Install Docker Desktop or Podman |
-| "Docker daemon is not running" | Docker service stopped | Start Docker Desktop or Docker daemon |
+| "Docker is not installed" | Container runtime CLI not available | Install Colima (macOS) or Docker/Podman and ensure `docker` is in PATH |
+| "Docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or start Docker/Podman service |
 | "Could not retrieve API token" | Keychain/credential missing | Create credential with correct service name |
 | Container fails to start | Invalid domain/credentials | Verify ATLASSIAN_DOMAIN and API token |
 | 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |

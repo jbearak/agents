@@ -2,9 +2,10 @@
 # Atlassian (Local) MCP Server Wrapper (macOS / Linux)
 # Securely launches the Sooperset Atlassian MCP server with API token from macOS Keychain or environment variables
 #
-# Docker setup required:
-#   - Install Docker Desktop or Docker Engine
-#   - Or install Podman as a Docker alternative
+# Container runtime setup required (macOS/Linux):
+#   - Preferred (macOS): Install Colima (https://github.com/abiosoft/colima) and run: colima start
+#   - Alternative: Docker Engine / Docker Desktop (optional on macOS) or Podman
+#   - You can override the runtime with DOCKER_COMMAND (docker, podman, nerdctl, etc.)
 #
 # Keychain setup (macOS):
 #   If you prefer the CLI:
@@ -38,8 +39,6 @@
 #   MCP_ATLASSIAN_IMAGE (default: "ghcr.io/sooperset/mcp-atlassian:latest")
 #
 set -euo pipefail
-#
-set -euo pipefail
 
 SERVICE_NAME="atlassian-mcp-local"
 ACCOUNT_NAME="api-token"
@@ -58,14 +57,14 @@ get_keychain_password() {
 check_docker() {
   if ! command -v "$DOCKER_COMMAND" &> /dev/null; then
     echo "Error: $DOCKER_COMMAND is not installed or not in PATH." >&2
-    echo "Please install Docker Desktop or Podman to use the local Atlassian MCP server." >&2
+    echo "Please install Colima (macOS) or Docker / Podman to use the local Atlassian MCP server." >&2
     exit 1
   fi
   
-  # Check if Docker daemon is running
+  # Check if the container runtime daemon is running (Colima exposes docker-compatible CLI once started)
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: $DOCKER_COMMAND daemon is not running." >&2
-    echo "Please start Docker Desktop or the Docker daemon before using this wrapper." >&2
+    echo "Start it with: 'colima start' (macOS) or start your Docker/Podman service before using this wrapper." >&2
     exit 1
   fi
 }
@@ -107,17 +106,10 @@ if [[ "$AUTH_METHOD" == "api_token" ]]; then
       exit 1
     fi
   fi
-  
-  # Set email if not provided (required for API token auth)
+
+  # Derive email if not provided (required for API token auth)
   if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-    # Try to derive from current user or domain
-# Set email if not provided (required for API token auth)
-  if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-    # Try to derive from current user or domain
     ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.com}"
-    echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
-  fi
-fi
     echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
   fi
 fi

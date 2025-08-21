@@ -4,9 +4,9 @@
 .DESCRIPTION
   Securely launches the Sooperset Atlassian MCP server using API token from Windows Credential Manager.
   
-  Docker setup required:
-    - Install Docker Desktop for Windows
-    - Or install Podman as a Docker alternative
+  Container runtime setup required:
+    - Windows: Install Docker Desktop (or Podman as an alternative)
+    - (macOS users typically use Colima; this Windows script still expects a Docker-compatible CLI)
 
   Create Generic Credential for API token:
     Control Panel > User Accounts > Credential Manager > Windows Credentials > Add a generic credential
@@ -49,7 +49,7 @@ function Test-DockerAvailable {
   try {
     $null = Get-Command $env:DOCKER_COMMAND -ErrorAction Stop
   } catch {
-    Write-Error "$($env:DOCKER_COMMAND) is not installed or not in PATH. Please install Docker Desktop or Podman to use the local Atlassian MCP server."
+  Write-Error "$($env:DOCKER_COMMAND) is not installed or not in PATH. Install a Docker-compatible runtime (Docker Desktop or Podman on Windows)."
     exit 1
   }
   
@@ -57,7 +57,7 @@ function Test-DockerAvailable {
   try {
     & $env:DOCKER_COMMAND info *>$null
   } catch {
-    Write-Error "$($env:DOCKER_COMMAND) daemon is not running. Please start Docker Desktop or the Docker daemon before using this wrapper."
+  Write-Error "$($env:DOCKER_COMMAND) daemon is not running. Start Docker Desktop (or your chosen container runtime) before using this wrapper."
     exit 1
   }
 }
