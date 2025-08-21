@@ -1,40 +1,8 @@
 #!/usr/bin/env bash
 # Atlassian (Local) MCP Server Wrapper (macOS / Linux)
 # Securely launches the Sooperset Atlassian MCP server with API token from macOS Keychain or environment variables
-#
-# Container runtime setup required (macOS/Linux):
-#   - Preferred (macOS): Install Colima (https://github.com/abiosoft/colima) and run: colima start
-#   - You can override the runtime with DOCKER_COMMAND (docker, podman, nerdctl, etc.)
-#
-# Keychain setup (macOS):
-#   If you prefer the CLI:
-#       ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
-#         security add-generic-password -s atlassian-mcp-local -a api-token -w "$PW"; \
-#         unset PW )
-#   If you prefer the Keychain Access GUI:
-#       File > New Password Item...
-#       Name: atlassian-mcp-local, Account: api-token, Password: <api_token>
-#
-# API Token creation:
-#   1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
-#   2. Create API token for your Atlassian account
-#   3. Store it securely in keychain or environment variable
-#
-# Usage:
-#   1. Create keychain entry (see above) OR export ATLASSIAN_API_TOKEN before running.
-#   2. Set ATLASSIAN_DOMAIN environment variable (set in JSON config).
-#   3. Run: ./mcp-atlassian-local-wrapper.sh [args]
-#
-# Environment variables required:
-#   ATLASSIAN_DOMAIN (required: e.g., "guttmacher.atlassian.net")
-# Environment variables optional:
-#   ATLASSIAN_API_TOKEN (overrides keychain)
-#   ATLASSIAN_EMAIL (default: derived from current user)
-#   ATLASSIAN_EMAIL (default: derived from current user)
-#   AUTH_METHOD (default: "api_token")
-#   DOCKER_COMMAND (default: "docker", alternative: "podman")
-#   MCP_ATLASSIAN_IMAGE (default: "ghcr.io/sooperset/mcp-atlassian:latest")
-#
+# Prefer npm-installed CLI when available; fallback to container runtime.
+
 set -euo pipefail
 
 SERVICE_NAME="atlassian-mcp-local"
@@ -42,12 +10,13 @@ ACCOUNT_NAME="api-token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 MCP_ATLASSIAN_IMAGE="${MCP_ATLASSIAN_IMAGE:-ghcr.io/sooperset/mcp-atlassian:latest}"
 AUTH_METHOD="${AUTH_METHOD:-api_token}"
+NPM_PKG_NAME=${MCP_ATLASSIAN_NPM_PKG:-@sooperset/mcp-atlassian}
+CLI_BIN_NAME=${MCP_ATLASSIAN_CLI_BIN:-mcp-atlassian}
 
 get_keychain_password() {
   if [[ "$(uname)" != "Darwin" ]]; then
     return 1
   fi
-  
   security find-generic-password -s "$SERVICE_NAME" -a "$ACCOUNT_NAME" -w 2>/dev/null || return 1
 }
 
@@ -57,8 +26,6 @@ check_docker() {
     echo "Please install Colima (macOS) or docker / Podman to use the local Atlassian MCP server." >&2
     exit 1
   fi
-  
-  # Check if the container runtime daemon is running (Colima exposes docker-compatible CLI once started)
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: $DOCKER_COMMAND daemon is not running." >&2
     echo "Start it with: 'colima start' (macOS) or start your docker/Podman service before using this wrapper." >&2
@@ -72,9 +39,6 @@ pull_image_if_needed() {
     echo "Warning: Failed to pull latest image. Using local version if available." >&2
   fi
 }
-
-# Check container runtime availability
-check_docker
 
 # Domain is required from environment (set in JSON config)
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
@@ -109,25 +73,42 @@ if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
   echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
-# Pull latest image
+run_cli() {
+  CONFLUENCE_URL="https://${ATLASSIAN_DOMAIN}/wiki" \
+  JIRA_URL="https://${ATLASSIAN_DOMAIN}" \
+  CONFLUENCE_USERNAME="${ATLASSIAN_EMAIL}" \
+  JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
+  CONFLUENCE_API_TOKEN="${API_TOKEN}" \
+  JIRA_API_TOKEN="${API_TOKEN}" \
+  exec "${CLI_BIN_NAME}" "$@"
+}
+
+# Try npm-based CLI first (only if resolvable)
+if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
+  run_cli "$@"
+fi
+if command -v npm >/dev/null 2>&1; then
+  if ! npm -g ls "${NPM_PKG_NAME}" >/dev/null 2>&1; then
+    npm -g install "${NPM_PKG_NAME}" >/dev/null 2>&1 || true
+  fi
+  if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
+    run_cli "$@"
+  fi
+fi
+
+# Fallback to container runtime
+check_docker
 pull_image_if_needed
 
-# Set up environment variables for the container
 DOCKER_ENV_ARGS=(
   -e "CONFLUENCE_URL=https://$ATLASSIAN_DOMAIN/wiki"
   -e "JIRA_URL=https://$ATLASSIAN_DOMAIN"
+  -e "CONFLUENCE_USERNAME=${ATLASSIAN_EMAIL}"
+  -e "CONFLUENCE_API_TOKEN=$API_TOKEN"
+  -e "JIRA_USERNAME=${ATLASSIAN_EMAIL}"
+  -e "JIRA_API_TOKEN=$API_TOKEN"
 )
 
-if [[ "$AUTH_METHOD" == "api_token" ]]; then
-  DOCKER_ENV_ARGS+=(
-    -e "CONFLUENCE_USERNAME=${ATLASSIAN_EMAIL}"
-    -e "CONFLUENCE_API_TOKEN=$API_TOKEN"
-    -e "JIRA_USERNAME=${ATLASSIAN_EMAIL}"
-    -e "JIRA_API_TOKEN=$API_TOKEN"
-  )
-fi
-
-# Launch the container in interactive mode with stdin/stdout
 exec "$DOCKER_COMMAND" run --rm -i \
   "${DOCKER_ENV_ARGS[@]}" \
   "$MCP_ATLASSIAN_IMAGE" \
