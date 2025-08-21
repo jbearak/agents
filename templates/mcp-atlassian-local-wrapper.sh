@@ -27,7 +27,12 @@
 #   ATLASSIAN_EMAIL (default: derived from current user)
 #   AUTH_METHOD (default: "api_token", alternative: "oauth")
 #   DOCKER_COMMAND (default: "docker", alternative: "podman")
-#   MCP_ATLASSIAN_IMAGE (default: "sooperset/mcp-atlassian:latest")
+#   ATLASSIAN_EMAIL (default: derived from current user)
+#   AUTH_METHOD (default: "api_token", alternative: "oauth")
+#   DOCKER_COMMAND (default: "docker", alternative: "podman")
+#   MCP_ATLASSIAN_IMAGE (default: "ghcr.io/sooperset/mcp-atlassian:latest")
+#
+set -euo pipefail
 #
 set -euo pipefail
 
