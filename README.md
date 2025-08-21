@@ -528,7 +528,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 2. Use the provided configuration: copy [`templates/vscode-mcp-config_macos.json`](templates/vscode-mcp-config_macos.json) (macOS) or [`templates/vscode-mcp-config_windows.json`](templates/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
 
 ### Claude Desktop
 
@@ -538,7 +538,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 3. Use the provided configuration: copy [`templates/claude_desktop_config_windows.json`](templates/claude_desktop_config_windows.json) (Windows) or [`templates/claude_desktop_config_macos.json`](templates/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
 4. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
 
 
 ## Coding Style Guidelines

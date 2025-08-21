@@ -61,29 +61,46 @@ DOCKER_IMAGE=${MCP_BITBUCKET_DOCKER_IMAGE:-}
 
 run_cli() {
   "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+awk 'BEGIN{IGNORECASE=1}
+{
+  if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*\{/ || $0 ~ /^[[:space:]]*\[[[:space:]]*(\"|\{|\[|[0-9-]|t|f|n|\])/) {
+    print; fflush();
+  } else {
+    print $0 > "/dev/stderr"; fflush("/dev/stderr");
+  }
+}'
   exit ${PIPESTATUS[0]}
 }
 
 # 1) If CLI already available, run it.
 if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
+  echo "Using Bitbucket MCP via local CLI on PATH: ${CLI_BIN_NAME}" >&2
   run_cli "$@"
 fi
 
 # 2) Try npx as a fallback if available (no global install) as quietly as possible
 if command -v npx >/dev/null 2>&1; then
+  echo "Using Bitbucket MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
+  # Keep flags minimal to avoid incompatibilities across npx versions
   NPX_FLAGS=(-y)
-  if npx --help 2>/dev/null | grep -q "--quiet"; then
-    NPX_FLAGS+=(--quiet)
-  fi
-  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
-    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
+awk 'BEGIN{IGNORECASE=1; started=0; saw=0}
+{
+  if (started==0) {
+    if ($0 ~ /^[[:space:]]*Content-(Length|Type):/) { print; fflush(); saw=1; next }
+    if (saw && $0 ~ /^[[:space:]]*$/) { print; fflush(); started=1; next }
+    if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); started=1; next }
+    if ($0 ~ /^[[:space:]]*\[[[:space:]]*(\"|\{|\[|[0-9-]|t|f|n|\])/) { print; fflush(); started=1; next }
+    print $0 > "/dev/stderr"; fflush("/dev/stderr"); next
+  }
+  print; fflush();
+}'
   exit ${PIPESTATUS[0]}
 fi
 
 # 3) Optional Docker fallback if image is specified
 if [ -n "${DOCKER_IMAGE}" ] && command -v docker >/dev/null 2>&1; then
+  echo "Using Bitbucket MCP via docker image: ${DOCKER_IMAGE}" >&2
   docker run -i --rm --pull=never \
     -e "NO_COLOR=1" \
     -e "ATLASSIAN_BITBUCKET_USERNAME=${ATLASSIAN_BITBUCKET_USERNAME}" \

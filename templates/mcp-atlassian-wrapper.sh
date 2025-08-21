@@ -92,30 +92,42 @@ run_cli() {
   CONFLUENCE_API_TOKEN="${API_TOKEN}" \
   JIRA_API_TOKEN="${API_TOKEN}" \
   "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
-  awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+awk 'BEGIN{IGNORECASE=1}
+{
+  if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*\{/ || $0 ~ /^[[:space:]]*\[[[:space:]]*(\"|\{|\[|[0-9-]|t|f|n|\])/) {
+    print; fflush();
+  } else {
+    print $0 > "/dev/stderr"; fflush("/dev/stderr");
+  }
+}'
   exit ${PIPESTATUS[0]}
 }
 
 # Try npm-based CLI first (only if already installed) or via npx if resolvable
 if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
+  echo "Using Atlassian MCP via local CLI on PATH: ${CLI_BIN_NAME}" >&2
   run_cli "$@"
 fi
 if command -v npx >/dev/null 2>&1; then
+  # Try to run via npx; on failure, fall back to container
+  set +e
+  echo "Using Atlassian MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
   CONFLUENCE_URL="https://${ATLASSIAN_DOMAIN}/wiki" \
   JIRA_URL="https://${ATLASSIAN_DOMAIN}" \
   CONFLUENCE_USERNAME="${ATLASSIAN_EMAIL}" \
   JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
   CONFLUENCE_API_TOKEN="${API_TOKEN}" \
   JIRA_API_TOKEN="${API_TOKEN}" \
-  # Use quiet flags/env to suppress non-JSON noise and filter stdout
   NPX_FLAGS=(-y)
-  if npx --help 2>/dev/null | grep -q "--quiet"; then
-    NPX_FLAGS+=(--quiet)
-  fi
-  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
+  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
     awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  exit ${PIPESTATUS[0]}
+  rc=${PIPESTATUS[0]}
+  set -e
+  if [ "$rc" -eq 0 ]; then
+    exit 0
+  else
+    echo "Warning: npx ${NPM_PKG_NAME} failed with code $rc; falling back to container." >&2
+  fi
 fi
 
 # Fallback to container runtime
@@ -132,9 +144,20 @@ DOCKER_ENV_ARGS=(
   -e "JIRA_API_TOKEN=$API_TOKEN"
 )
 
+echo "Using Atlassian MCP via container image: ${MCP_ATLASSIAN_IMAGE}" >&2
 "$DOCKER_COMMAND" run --rm -i \
   "${DOCKER_ENV_ARGS[@]}" \
   "$MCP_ATLASSIAN_IMAGE" \
   "$@" 2> >(cat >&2) | \
-  awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+awk 'BEGIN{IGNORECASE=1; started=0; saw=0}
+{
+  if (started==0) {
+    if ($0 ~ /^[[:space:]]*Content-(Length|Type):/) { print; fflush(); saw=1; next }
+    if (saw && $0 ~ /^[[:space:]]*$/) { print; fflush(); started=1; next }
+    if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); started=1; next }
+    if ($0 ~ /^[[:space:]]*\[[[:space:]]*(\"|\{|\[|[0-9-]|t|f|n|\])/) { print; fflush(); started=1; next }
+    print $0 > "/dev/stderr"; fflush("/dev/stderr"); next
+  }
+  print; fflush();
+}'
 exit ${PIPESTATUS[0]}

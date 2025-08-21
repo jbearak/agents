@@ -4,10 +4,11 @@
       "command": "powershell",
       "args": [
         "-NoProfile","-ExecutionPolicy","Bypass","-File",
-        "C:/Users/<your-os-username>/bin/mcp-atlassian-local-wrapper.ps1"
+        "C:/Users/<your-os-username>/bin/mcp-atlassian-wrapper.ps1"
       ],
       "env": {
         "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
+        "ATLASSIAN_EMAIL": "<your-email>@guttmacher.org",
         "AUTH_METHOD": "api_token"
       },
       "working_directory": null
