@@ -9,7 +9,7 @@
 
 set -euo pipefail
 
-SERVICE_NAME="atlassian-mcp-local"
+SERVICE_NAME="atlassian-mcp"
 ACCOUNT_NAME="api-token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 MCP_ATLASSIAN_IMAGE="${MCP_ATLASSIAN_IMAGE:-ghcr.io/sooperset/mcp-atlassian:latest}"

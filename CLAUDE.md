@@ -27,7 +27,7 @@ Credentials
 - GitHub
   - Prefer macOS Keychain item: Service “GitHub”, Account “token”; or set GITHUB_PERSONAL_ACCESS_TOKEN in the environment used by the editor.
 - Atlassian
-  - Keychain item: service “atlassian-mcp-local”, account “api-token”, value is your API token.
+  - Keychain item: service “atlassian-mcp”, account “api-token”, value is your API token.
   - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs.
 - Bitbucket
   - Keychain item: service “bitbucket-mcp”, account “app-password”, value is your app password.

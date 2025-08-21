@@ -7,7 +7,7 @@
 set -euo pipefail
 
 # --- Configurable defaults ---
-SERVICE_NAME="GitHub"
+SERVICE_NAME="github-mcp"
 ACCOUNT_NAME="token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 NPM_PKG_NAME="${MCP_GITHUB_NPM_PKG:-github-mcp-server}"
@@ -23,6 +23,7 @@ check_docker_daemon() {
   fi
 }
 
+
 # --- Main Logic ---
 
 # 1. Obtain GitHub Token (prefer env var, fallback to macOS Keychain)
@@ -34,8 +35,9 @@ if [ -z "${GITHUB_TOKEN}" ]; then
 fi
 if [ -z "${GITHUB_TOKEN}" ]; then
   echo "Error: GitHub token not found." >&2
-  echo "Set GITHUB_PERSONAL_ACCESS_TOKEN, or on macOS, create a Keychain item:" >&2
-  echo "  security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME' -w '<token>'" >&2
+  echo "Set GITHUB_PERSONAL_ACCESS_TOKEN, or add a macOS Keychain item: service 'github-mcp', account 'token'." >&2
+  echo "macOS (secure prompt):" >&2
+  echo "  ( unset HISTFILE; stty -echo; printf 'Enter GitHub PAT: '; read PW; stty echo; printf '\n'; security add-generic-password -s github-mcp -a token -w \"$PW\"; unset PW )" >&2
   exit 1
 fi
 
@@ -59,15 +61,9 @@ if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   exit ${PIPESTATUS[0]}
 fi
 
-# 2) Next, try npx @latest without a global install
-if command -v npx >/dev/null 2>&1; then
-  echo "Using GitHub MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
-  npx -y "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{IGNORECASE=1; started=0; saw=0} { if(started==0){if($0 ~ /^[[:space:]]*Content-(Length|Type):/){print;fflush();saw=1;next}if(saw && $0~/^[[:space:]]*$/){print;fflush();started=1;next}if($0~/^[[:space:]]*\{/ || $0~/^[[:space:]]*\[/){print;fflush();started=1;next}print $0 > "/dev/stderr";fflush("/dev/stderr");next} print;fflush() }'
-  exit ${PIPESTATUS[0]}
 fi
 
-# 3) Fallback: container (reliable, stdout-clean)
+# 2) Try container next for clean stdout and reliability
 if command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
   if check_docker_daemon; then
     echo "Using GitHub MCP via Docker image: ${DOCKER_IMAGE}" >&2
@@ -79,5 +75,13 @@ if command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
   fi
 fi
 
-echo "Error: Could not start GitHub MCP server. No viable startup path found (Docker, npx, or local CLI)." >&2
+# 3) Last resort: npx @latest (no global install)
+if command -v npx >/dev/null 2>&1; then
+  echo "Using GitHub MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
+  npx -y "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
+    awk 'BEGIN{IGNORECASE=1; started=0; saw=0} { if(started==0){if($0 ~ /^[[:space:]]*Content-(Length|Type):/){print;fflush();saw=1;next}if(saw && $0~/^[[:space:]]*$/){print;fflush();started=1;next}if($0~/^[[:space:]]*\{/ || $0~/^[[:space:]]*\[/){print;fflush();started=1;next}print $0 > "/dev/stderr";fflush("/dev/stderr");next} print;fflush() }'
+  exit ${PIPESTATUS[0]}
+fi
+
+echo "Error: Could not start GitHub MCP server. No viable startup path found (local CLI, container, or npx)." >&2
 exit 1

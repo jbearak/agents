@@ -9,8 +9,8 @@ $ErrorActionPreference = 'Stop'
 # Obtain GitHub token (prefer env var, fallback to Windows Credential Manager)
 if (-not $env:GITHUB_PERSONAL_ACCESS_TOKEN) {
   try { Import-Module CredentialManager -ErrorAction Stop } catch { Write-Error 'Install CredentialManager: Install-Module CredentialManager -Scope CurrentUser'; exit 1 }
-  $cred = Get-StoredCredential -Target 'GitHub'
-  if (-not $cred) { Write-Error "Credential 'GitHub' not found and GITHUB_PERSONAL_ACCESS_TOKEN not set"; exit 1 }
+  $cred = Get-StoredCredential -Target 'github-mcp'
+  if (-not $cred) { Write-Error "Credential 'github-mcp' not found and GITHUB_PERSONAL_ACCESS_TOKEN not set"; exit 1 }
   $env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
 }
 

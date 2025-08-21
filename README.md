@@ -436,14 +436,14 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 1. Create a keychain item for the API token:
    - GUI: Keychain Access → File → New Password Item…
-     - Name (Service): `atlassian-mcp-local`
+     - Name (Service): `atlassian-mcp`
      - Account: `api-token`
      - Password: (your Atlassian API token)
    - Or CLI:
      > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
      ```bash
      ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s atlassian-mcp-local -a api-token -w "$PW"; \
+       security add-generic-password -s atlassian-mcp -a api-token -w "$PW"; \
        unset PW )
      ```
 
@@ -468,7 +468,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 1. Create a **Generic Credential** in Windows Credential Manager for the API token:
    - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - Internet or network address: `atlassian-mcp-local`
+   - Internet or network address: `atlassian-mcp`
    - User name: `api-token`
    - Password: (your Atlassian API token)
 
@@ -479,8 +479,8 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    try {
      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
      # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
-     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
-     Write-Host "Credential 'atlassian-mcp-local' created." -ForegroundColor Green
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Write-Host "Credential 'atlassian-mcp' created." -ForegroundColor Green
    } finally {
      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
    }

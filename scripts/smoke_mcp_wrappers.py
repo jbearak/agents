@@ -85,29 +85,41 @@ def smoke_one(wrapper_path: Path, timeout: float) -> tuple[bool, str]:
 
     code, out, err = run_with_timeout([str(wrapper_path)], wrapper_path.parent, env, timeout)
 
-    # Validate stdout lines
+    # Validate stdout lines and detect any JSON-RPC-like output
     bad_lines = []
+    saw_protocol = False
+    header_re = re.compile(r"^\s*Content-(Length|Type):", re.I)
+    obj_re = re.compile(r"^\s*\{")
+    arr_re = re.compile(r"^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])")
     for i, line in enumerate(out.splitlines(), 1):
+        if header_re.search(line) or obj_re.search(line) or arr_re.search(line):
+            saw_protocol = True
         if not looks_allowed(line):
             bad_lines.append((i, line))
             # Only collect first few to keep output readable
             if len(bad_lines) >= 5:
                 break
 
-    ok = len(bad_lines) == 0
-    if ok:
-        status = "PASS"
+    ok_content = len(bad_lines) == 0
+
+    # Define run success: either the process stays running (timeout) OR we saw protocol output
+    if code is None:
+        ok_run = True
     else:
-        status = "FAIL"
+        ok_run = saw_protocol
+
+    ok = ok_content and ok_run
+    status = "PASS" if ok else "FAIL"
 
     details = [f"{status}: {wrapper_path}"]
     if code is None:
-        details.append(f"  note: process timed out after {timeout:.1f}s (this is normal for servers)")
-    elif code is not None and code != 0 and out.strip() == "":
-        # Non-zero exit with only stderr is OK for smoke test; we only care that stdout is clean
-        details.append(f"  note: exited code {code}, stderr length={len(err)} bytes")
+        details.append(f"  note: process timed out after {timeout:.1f}s (server likely running)")
+    else:
+        details.append(f"  note: exited code {code}, stdout lines={len(out.splitlines())}, stderr length={len(err)} bytes")
+        if not saw_protocol:
+            details.append("  reason: no JSON/Content-* output observed before exit (not a running MCP server)")
 
-    if not ok:
+    if not ok_content:
         details.append("  offending stdout lines:")
         for ln, txt in bad_lines:
             snippet = txt if len(txt) < 200 else txt[:200] + "…"

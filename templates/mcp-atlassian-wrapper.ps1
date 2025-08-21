@@ -10,7 +10,7 @@
 
   Create Generic Credential for API token:
     Control Panel > User Accounts > Credential Manager > Windows Credentials > Add a generic credential
-      Internet or network address: atlassian-mcp-local
+      Internet or network address: atlassian-mcp
       User name: api-token
       Password: <your Atlassian API token>
 
@@ -21,8 +21,8 @@
    try {
      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
      # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
-     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
-     [Console]::Error.WriteLine("Credential 'atlassian-mcp-local' created.")
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     [Console]::Error.WriteLine("Credential 'atlassian-mcp' created.")
    } finally {
      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
    }
@@ -124,12 +124,12 @@ if ($env:AUTH_METHOD -eq 'api_token') {
     $apiToken = $env:ATLASSIAN_API_TOKEN
   } else {
     try {
-      $apiToken = Get-StoredPassword -Target 'atlassian-mcp-local'
+      $apiToken = Get-StoredPassword -Target 'atlassian-mcp'
     } catch {
       Write-Error @"
 Could not retrieve Atlassian API token:
 1. Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens
-2. Create credential 'atlassian-mcp-local' with user 'api-token' in Windows Credential Manager
+2. Create credential 'atlassian-mcp' with user 'api-token' in Windows Credential Manager
 "@
       exit 1
     }
