@@ -197,7 +197,7 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 3. Select the scopes/permissions you want to grant this token, including:
 - repo
 - read:org
-- read:email
+- read:user
 - user:email
 - project
 4. Click "Generate token".
