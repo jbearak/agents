@@ -1,8 +1,15 @@
 {
   "servers": {
     "atlassian": {
-      "url": "https://mcp.atlassian.com/v1/sse",
-      "type": "http"
+      "command": "powershell",
+      "args": [
+        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "C:/Users/<your-os-username>/bin/mcp-atlassian-local-wrapper.ps1"
+      ],
+      "env": {
+        "ATLASSIAN_DOMAIN": "your-domain.atlassian.net",
+        "AUTH_METHOD": "api_token"
+      }
     },
     "github": {
       "url": "https://api.githubcopilot.com/mcp/",

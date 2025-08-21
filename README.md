@@ -191,7 +191,9 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## Installing MCP Servers
 
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D), [Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
+
+**Note:** While Microsoft lists a [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using the local Atlassian server (documented below) for better reliability and performance.
 
 After you configure these MCP servers, follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
 
@@ -369,6 +371,103 @@ $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bi
 
 Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
 
+### Atlassian MCP Server (Local)
+
+We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a Docker container and provides access to both Jira and Confluence.
+
+**You will need an Atlassian API Token. To create one, follow these steps:**
+
+1. Go to [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
+2. Click "Create API token"
+3. Enter a label (e.g., "MCP Server Access")
+4. Copy the generated token immediately (you won't be able to see it again!)
+
+**Prerequisites:**
+- Docker Desktop (Windows/macOS) or Docker Engine (Linux) installed and running
+- Alternatively, Podman can be used instead of Docker
+
+#### Configure Atlassian MCP Server on macOS
+
+1. Create a keychain item for the API token:
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `atlassian-mcp-local`
+     - Account: `api-token`
+     - Password: (your Atlassian API token)
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+     ```bash
+     ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s atlassian-mcp-local -a api-token -w "$PW"; \
+       unset PW )
+     ```
+
+2. Copy `templates/mcp-atlassian-local-wrapper.sh` to somewhere on your `$PATH`:
+   ```bash
+   cp templates/mcp-atlassian-local-wrapper.sh ~/bin/
+   ```
+3. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-atlassian-local-wrapper.sh
+   ```
+4. Test (replace `your-domain` with your actual Atlassian domain):
+   ```bash
+   ATLASSIAN_DOMAIN="your-domain.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
+   ```
+
+#### Configure Atlassian MCP Server on Windows
+
+1. Create a **Generic Credential** in Windows Credential Manager for the API token:
+   - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+   - Internet or network address: `atlassian-mcp-local`
+   - User name: `api-token`
+   - Password: (your Atlassian API token)
+
+   Or via command line:
+   ```powershell
+   cmd /c "cmdkey /add:atlassian-mcp-local /user:api-token /pass:<api_token>"
+   ```
+
+2. Install the CredentialManager module (if not already installed):
+   ```powershell
+   Install-Module CredentialManager -Scope CurrentUser -Force
+   ```
+
+3. Copy `templates/mcp-atlassian-local-wrapper.ps1` to your user bin folder:
+   ```powershell
+   # Create a user bin folder and copy the script there
+   New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
+   Copy-Item -Path templates\mcp-atlassian-local-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1" -Force
+
+   # Optionally add the folder to your user PATH
+   [Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
+   ```
+
+4. Ensure PowerShell can run local scripts:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+   ```
+
+5. Test (replace `your-domain` with your actual Atlassian domain):
+   ```powershell
+   $env:ATLASSIAN_DOMAIN="your-domain.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
+   ```
+
+#### Troubleshooting Atlassian MCP Server
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "Docker is not installed" | Docker/Podman not available | Install Docker Desktop or Podman |
+| "Docker daemon is not running" | Docker service stopped | Start Docker Desktop or Docker daemon |
+| "Could not retrieve API token" | Keychain/credential missing | Create credential with correct service name |
+| Container fails to start | Invalid domain/credentials | Verify ATLASSIAN_DOMAIN and API token |
+| 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |
+| Connection timeouts | Network/firewall issues | Check Docker network settings and firewall |
+
+**Advanced Configuration:**
+- Set `AUTH_METHOD=oauth` for OAuth 2.0 authentication (requires additional setup)
+- Set `DOCKER_COMMAND=podman` to use Podman instead of Docker
+- Set `ATLASSIAN_EMAIL` to override the derived email address
+
 ## Add MCP Servers to Agents
 
 ### VS Code
@@ -377,7 +476,7 @@ Scopes: Use the minimal scopes required by your workflows (e.g., repository read
 2. Use the provided configuration: copy [`templates/vscode-mcp-config_macos.json`](templates/vscode-mcp-config_macos.json) (macOS) or [`templates/vscode-mcp-config_windows.json`](templates/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-bitbucket-username>`, and `your-domain.atlassian.net` placeholders.**
 
 ### Claude.ai
 
@@ -393,7 +492,7 @@ Note: This adds the ability to add files from GitHub, but does not add the [GitH
 3. Use the provided configuration: copy [`templates/claude_desktop_config_windows.json`](templates/claude_desktop_config_windows.json) (Windows) or [`templates/claude_desktop_config_macos.json`](templates/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
 4. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-bitbucket-username>`, and `your-domain.atlassian.net` placeholders.**
 
 
 ## Coding Style Guidelines

@@ -1,5 +1,14 @@
 {
   "mcpServers": {
+    "Atlassian": {
+      "command": "/Users/<your-os-username>/bin/mcp-atlassian-local-wrapper.sh",
+      "args": [],
+      "env": {
+        "ATLASSIAN_DOMAIN": "your-domain.atlassian.net",
+        "AUTH_METHOD": "api_token"
+      },
+      "working_directory": null
+    },
     "Context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],
