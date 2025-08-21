@@ -37,7 +37,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 │       ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
 │       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
 │       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
-└── scripts/
+└── templates/
     ├── claude_desktop_config_macos.json
     ├── claude_desktop_config_windows.json
     ├── mcp-bitbucket-wrapper.ps1
@@ -238,7 +238,7 @@ You will need a GitHub Personal Access Token. To create one, follow these steps:
    Import-Module CredentialManager
    Get-StoredCredential -Target GitHub
    ```
-3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<your-os-username>\bin\mcp-github-wrapper.ps1`
+3. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.ps1`](templates/mcp-github-wrapper.ps1) to `C:\Users\<your-os-username>\bin\mcp-github-wrapper.ps1`
 4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
 5. Set execution policy (user scope):
    ```powershell
@@ -266,7 +266,7 @@ You will need a GitHub Personal Access Token. To create one, follow these steps:
      - Account: your macOS username (must match `$USER`).
      - Password: your GitHub Personal Access Token.
    - Click Add.
-2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
+2. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.sh`](templates/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
 4. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
 5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
@@ -314,9 +314,9 @@ You will need a Bitbucket App Password with the required scopes. To create one, 
      security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
      ```
 
-2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
+2. Copy `templates/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
    ```bash
-   cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
+  cp templates/mcp-bitbucket-wrapper.sh ~/bin/
    ```
 3. Make it executable:
    ```bash
@@ -345,7 +345,7 @@ cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
 Install-Module CredentialManager -Scope CurrentUser -Force
 ```
 
-3. Copy `scripts/mcp-bitbucket-wrapper.ps1` to a folder on your PATH (or run in place). Example using a user bin folder:
+3. Copy `templates/mcp-bitbucket-wrapper.ps1` to a folder on your PATH (or run in place). Example using a user bin folder:
 ```powershell
 # create a user bin folder and copy the script there
 New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
@@ -382,7 +382,7 @@ Scopes: Use the minimal scopes required by your workflows (e.g., repository read
 ### VS Code
 
 1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Use the provided configuration: copy [`scripts/vscode-mcp-config_macos.json`](scripts/vscode-mcp-config_macos.json) (macOS) or [`scripts/vscode-mcp-config_windows.json`](scripts/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
+2. Use the provided configuration: copy [`templates/vscode-mcp-config_macos.json`](templates/vscode-mcp-config_macos.json) (macOS) or [`templates/vscode-mcp-config_windows.json`](templates/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
@@ -398,7 +398,7 @@ Note: This adds the ability to add files from GitHub, but does not add the [GitH
 1. Open Settings -> Developer > Edit Config
 - Note: This will open a File Explorer (Windows) or Finder (macOS) window
 2. Double-click the config file
-3. Use the provided configuration: copy [`scripts/claude_desktop_config_windows.json`](scripts/claude_desktop_config_windows.json) (Windows) or [`scripts/claude_desktop_config_macos.json`](scripts/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
+3. Use the provided configuration: copy [`templates/claude_desktop_config_windows.json`](templates/claude_desktop_config_windows.json) (Windows) or [`templates/claude_desktop_config_macos.json`](templates/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
 4. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
