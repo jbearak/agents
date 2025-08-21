@@ -14,16 +14,14 @@ Important: stdout must be JSON-only
 Quick smoke test for wrappers
 - We provide scripts that verify wrapper stdout is clean (JSON-only) and safe for MCP clients.
 - Run from repo root or anywhere:
-  - Bash: scripts/smoke_mcp_wrappers.sh --timeout 6.0
   - Python: python3 scripts/smoke_mcp_wrappers.py --timeout 6.0
 - Options:
   - --include-bin to also test the copies in ~/bin
   - Provide specific paths to test particular wrappers
 
 Examples
-- Test all repo-local wrappers: scripts/smoke_mcp_wrappers.sh
-- Test installed copies in ~/bin: scripts/smoke_mcp_wrappers.sh --include-bin
-- Test only the GitHub wrapper: scripts/smoke_mcp_wrappers.sh templates/mcp-github-wrapper.sh
+- Test installed copies in ~/bin: scripts/smoke_mcp_wrappers.py --include-bin
+- Test only the GitHub wrapper: scripts/smoke_mcp_wrappers.py templates/mcp-github-wrapper.sh
 
 Credentials
 - GitHub
