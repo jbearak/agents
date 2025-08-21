@@ -3,7 +3,7 @@
 These notes help Claude (and you) run and debug local MCP servers consistently.
 
 Key wrappers
-- GitHub: ~/bin/mcp-github-wrapper.sh (Docker-first, then npx @latest, then local CLI)
+- GitHub: ~/bin/mcp-github-wrapper.sh (CLI → npx @latest → Docker)
 - Atlassian: ~/bin/mcp-atlassian-wrapper.sh (CLI → npx @latest → Docker)
 - Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (CLI → npx @latest → Docker if configured)
 

@@ -20,7 +20,6 @@
       "command": "/Users/<your-os-username>/bin/mcp-github-wrapper.sh",
       "args": [],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "<your-github-token-or-use-keychain>",
         "DOCKER_HOST": "unix:///Users/<your-os-username>/.colima/default/docker.sock"
       },
       "working_directory": null
