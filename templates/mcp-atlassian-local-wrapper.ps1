@@ -15,7 +15,18 @@
       Password: <your Atlassian API token>
 
   Or via PowerShell:
-    cmd /c "cmdkey /add:atlassian-mcp-local /user:api-token /pass:<api_token>"
+  ```
+   $secure = Read-Host -AsSecureString "Enter Atlassian API token"
+   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+   try {
+     $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
+     # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Write-Host "Credential 'atlassian-mcp-local' created." -ForegroundColor Green
+   } finally {
+     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+   }
+   ```
 
   API Token creation:
     1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
@@ -112,10 +123,9 @@ if ($env:AUTH_METHOD -eq 'api_token') {
       $apiToken = Get-StoredPassword -Target 'atlassian-mcp-local'
     } catch {
       Write-Error @"
-Could not retrieve Atlassian API token. Either:
-1. Set environment variable: `$env:ATLASSIAN_API_TOKEN='<api_token>'
+Could not retrieve Atlassian API token:
+1. Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens
 2. Create credential 'atlassian-mcp-local' with user 'api-token' in Windows Credential Manager
-3. Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens
 "@
       exit 1
     }
