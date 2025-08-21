@@ -40,6 +40,7 @@ Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
 # Startup order: local CLI on PATH -> npx (no global install, if package available) -> container (podman/docker)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_ATLASSIAN_CLI_BIN, MCP_ATLASSIAN_NPM_PKG, MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
+# Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -159,13 +160,15 @@ $prefEnv = @(
 )
 
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  [Console]::Error.WriteLine("Using Atlassian MCP via local CLI on PATH: $CLI_BIN")
   $env:NO_COLOR = '1'
   foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
   Invoke-Exec $CLI_BIN $Args
 }
 
-# Try npx as an optional fallback if available (no global install) and keep it quiet
+# Try npx as an optional fallback if available (no global install)
 if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
+  [Console]::Error.WriteLine("Using Atlassian MCP via npx package: $NPM_PKG@latest")
   $env:NO_COLOR = '1'
   $env:NPM_CONFIG_LOGLEVEL = 'silent'
   $env:NPM_CONFIG_FUND = 'false'
@@ -173,15 +176,12 @@ if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
   $env:NO_UPDATE_NOTIFIER = '1'
   $env:ADBLOCK = '1'
   foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
-  $npxArgs = @('-y', $NPM_PKG)
-  try {
-    $help = & npx --help 2>$null
-    if ($help -and ($help -match '--quiet')) { $npxArgs = @('--quiet') + $npxArgs }
-  } catch {}
+  $npxArgs = @('-y', "$NPM_PKG@latest")
   Invoke-Exec 'npx' $npxArgs + $Args
 }
 
 # Fallback to container
+[Console]::Error.WriteLine("Using Atlassian MCP via container image: $($env:MCP_ATLASSIAN_IMAGE)")
 Update-AtlassianImage
 $dockerEnvArgs = @(
   '-e','NO_COLOR=1',

@@ -21,6 +21,7 @@ Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
 # Startup order: local CLI on PATH -> npx (no global install) -> container (podman/docker, --pull=never)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG, MCP_BITBUCKET_DOCKER_IMAGE
+# Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -79,28 +80,27 @@ $IMG     = $env:MCP_BITBUCKET_DOCKER_IMAGE
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
+  [Console]::Error.WriteLine("Using Bitbucket MCP via local CLI on PATH: $CLI_BIN")
   $env:NO_COLOR = '1'
   Invoke-Exec $CLI_BIN $Args
 }
 
 if (Get-Command npx -ErrorAction SilentlyContinue) {
+  [Console]::Error.WriteLine("Using Bitbucket MCP via npx package: $NPM_PKG@latest")
   $env:NO_COLOR = '1'
   $env:NPM_CONFIG_LOGLEVEL = 'silent'
   $env:NPM_CONFIG_FUND = 'false'
   $env:NPM_CONFIG_AUDIT = 'false'
   $env:NO_UPDATE_NOTIFIER = '1'
   $env:ADBLOCK = '1'
-  $npxArgs = @('-y', $NPM_PKG)
-  try {
-    $help = & npx --help 2>$null
-    if ($help -and ($help -match '--quiet')) { $npxArgs = @('--quiet') + $npxArgs }
-  } catch {}
+  $npxArgs = @('-y', "$NPM_PKG@latest")
   Invoke-Exec 'npx' $npxArgs + $Args
 }
 
 if ($IMG) {
   $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
   if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
+  [Console]::Error.WriteLine("Using Bitbucket MCP via docker image: $IMG")
   $envArgs = @('-e','NO_COLOR=1','-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
   Invoke-Exec $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args
 }
