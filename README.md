@@ -12,19 +12,15 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Models Available in Each Agent](#models-available-in-each-agent)
   - [Simulated Reasoning](#simulated-reasoning)
   - [Context Window](#context-window)
-- [MCP Servers](#mcp-servers)
-  - [Add MCP Servers to VS Code](#add-mcp-servers-to-vs-code)
-  - [Add MCP Servers to Claude.ai](#add-mcp-servers-to-claudeai)
-  - [Add MCP Servers to Claude Desktop](#add-mcp-servers-to-claude-desktop)
-  - [Tool Availability Matrix](#tool-availability-matrix)
-- [Tools Glossary](TOOLS_GLOSSARY.md)
-- [Using `code_style_guidelines.txt` Across Tools](#using-code_style_guidelinestxt-across-tools)
-  - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
-  - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
-  - [Warp (Repository-Level)](#warp-repository-level)
-  - [Warp (User-Level)](#warp-user-level)
-  - [Q (Repository-Level)](#q-repository-level)
-  - [Claude Code (Repository-Level)](#claude-code-repository-level)
+- [Installing MCP Servers](#installing-mcp-servers)
+  - [GitHub MCP Server](#github-mcp-server)
+  - [Bitbucket MCP Server](#bitbucket-mcp-server)
+- [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+  - [VS Code](#vs-code)
+  - [Claude.ai](#claudeai)
+  - [Claude Desktop](#claude-desktop)
+- [Tool Availability Matrix](#tool-availability-matrix)
+- [Coding Style Guidelines](#coding-style-guidelines)
 
 ## Repository Structure
 
@@ -32,13 +28,24 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 ./
 ├── code_style_guidelines.txt   # General coding style guidelines
 ├── README.md                   # This document
-└── copilot/
-    └── modes/
-        ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
-        ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
-        ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
-        └── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
-        ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+├── TOOLS_GLOSSARY.md           # Glossary of all available tools
+├── validate_tools.R            # Script for validating tool configurations
+├── copilot/
+│   └── modes/
+│       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
+│       ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+│       ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
+│       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+└── templates/
+    ├── claude_desktop_config_macos.json
+    ├── claude_desktop_config_windows.json
+    ├── mcp-bitbucket-wrapper.ps1
+    ├── mcp-bitbucket-wrapper.sh
+    ├── mcp-github-wrapper.ps1
+    ├── mcp-github-wrapper.sh
+    ├── vscode-mcp-config_macos.json
+    └── vscode-mcp-config_windows.json
 ```
 
 ## Modes
@@ -47,7 +54,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 
 We define **four categories** of modes for different use cases, that follow a **privilege gradient:** **QnA < Review** (adds review + issue comments) **< Plan** (adds planning artifact + PR creation/edit) **< Code** (full lifecycle incl. merge & branch ops).
 
-From these four categories, we create **five modes**. **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts. We do this because these models respond differently to prompts and possess different strengths. For reference, see OpenAI's [GPT-5 prompting guide](https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide) and Anthropic's [Claude 4 prompt engineering best practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices).
+From these four categories, we create **six modes**. **Code**, **Code-GPT5** and **Code-Sonnet4** modes provide the same toolsets with different prompts. We do this because these models respond differently to prompts and possess different strengths. For reference, see OpenAI's [GPT-5 prompting guide](https://cookbook.openai.com/examples/prompting-guide) and Anthropic's [Claude 4 prompt engineering best practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices).
 
 <table>
   <thead>
@@ -55,73 +62,37 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
       <th>Mode</th>
       <th>Default Model</th>
       <th>Purpose</th>
-      <th>Local File / Repo Mutation</th>
-      <th>Remote Artifact Mutation (Issues/Pages/Comments)</th>
-      <th>Issue Commenting</th>
-      <th>PR Create/Edit</th>
-      <th>PR Review (comments / batch)</th>
-      <th>PR Merge / Branch Ops</th>
-      <th>File</th>
       <th>Contract Summary</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>QnA</td>
+      <td><a href="copilot/modes/QnA.chatmode.md">📚 QnA</a></td>
       <td>GPT-4.1</td>
       <td>Q&amp;A, exploration, explain code, gather context</td>
-      <td>No</td>
-      <td>No (read-only viewing only)</td>
-      <td>No</td>
-      <td>No</td>
-      <td>No</td>
-      <td>No</td>
-      <td><code>copilot/modes/QnA.chatmode.md</code></td>
       <td>Strict read-only (no mutations anywhere)</td>
     </tr>
     <tr>
-      <td>Plan</td>
+      <td><a href="copilot/modes/Plan.chatmode.md">🔭 Plan</a></td>
       <td>Sonnet 4</td>
-      <td>Plan work, refine scope, shape tickets/pages, organize PR scaffolding</td>
-      <td>No</td>
-      <td>Yes (issues/pages)</td>
-      <td>Yes</td>
-      <td>Yes (no branch create/update)</td>
-      <td>Yes</td>
-      <td>No</td>
-      <td><code>copilot/modes/Plan.chatmode.md</code></td>
+      <td>Plan work, refine scope, shape issues/pages, organize PR scaffolding</td>
       <td>Mutate planning artifacts + create/edit/review PRs (no merge/branch ops)</td>
     </tr>
     <tr>
-      <td>Review</td>
+      <td><a href="copilot/modes/Review.chatmode.md">🔬 Review</a></td>
       <td>GPT-5</td>
       <td>Provide review feedback on PRs / issues</td>
-      <td>No</td>
-      <td>No (except issue comments)</td>
-      <td>Yes (issue comments only)</td>
-      <td>No</td>
-      <td>Yes</td>
-      <td>No</td>
-      <td><code>copilot/modes/Review.chatmode.md</code></td>
       <td>PR review + issue comments only; no other mutations</td>
     </tr>
     <tr>
-      <td>Code-GPT5</td>
+      <td><a href="copilot/modes/Code-GPT5.chatmode.md">🚀 Code-GPT5</a></td>
       <td>GPT-5</td>
       <td rowspan="2">Implement changes, run tests/commands</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td rowspan="2">Yes</td>
-      <td><code>copilot/modes/Code-GPT5.chatmode.md</code></td>
       <td rowspan="2">Full implementation, execution, &amp; PR lifecycle</td>
     </tr>
     <tr>
-      <td>Code-Sonnet4</td>
+      <td><a href="copilot/modes/Code-Sonnet4.chatmode.md">☄️ Code-Sonnet4</a></td>
       <td>Sonnet 4</td>
-      <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
     </tr>
   </tbody>
 </table>
@@ -144,30 +115,23 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
 
 ### Add Modes to VS Code
 
-1. Choose **Configure Modes...** from the Mode menu in the Chat pane
-2. From the "Select the chat mode file to open" menu, press **Create new custom mode chat file...**
-3. From the "Select a location to create the mode file in..." menu, press **User Data Folder**
+**Save the files from [copilot/modes/](copilot/modes) to:**
+
+| OS        | Folder                                                 |
+|-----------|--------------------------------------------------------|
+| Windows   | C:\Users\<your-os-username>\AppData\Roaming\Code\User\prompts\ |
+| Macintosh | ~/Library/Application Support/Code/User/prompts/       |
+
+
+**Alternatively,** you can create create these files using the VS Code menus:
+
+1. Choose "Configure Modes..." from the Mode menu in the Chat pane
+2. From the "Select the chat mode file to open" menu, press "Create new custom mode chat file..."
+3. From the "Select a location to create the mode file in..." menu, press "User Data Folder"
 4. From the "Enter the name of the custom chat mode file..." menu, type the mode name as you want it to appear in your modes menu
-5. Paste the file
-
-Repeat these steps for:
-- [QnA](copilot/modes/QnA.chatmode.md)
-- [Plan](copilot/modes/Plan.chatmode.md)
-- [Code-Sonnet4](copilot/modes/Code-Sonnet4.chatmode.md)
-- [Code-GPT5](copilot/modes/Code-GPT5.chatmode.md)
-- [Review](copilot/modes/Review.chatmode.md)
+5. Paste the file contents into the new file (repeating steps 1 to 5 for each mode)
 
 
-You can also download the files directly to the folder:
-- Windows: C:\Users\<username>\AppData\Roaming\Code\User\prompts\
-- Mac: ~/Library/Application Support/Code/User/prompts/
-
-On Mac you can use emojis in the file names:
-  - 📚 QnA
-  - 🔭 Plan
-  - 🚀 Code-GPT5
-  - ☄️ Code-Sonnet4
-  - 🔬 Review
 
 ## Models
 
@@ -189,13 +153,13 @@ On Mac you can use emojis in the file names:
 | Agent             | SR Available | Notes |
 |-------------------|--------------|-----------------------------------------------------------|
 | Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu |
-| Claude Code       | ✅           | Use keywords: ["think" < "think hard" < "think harder" < "ultrathink"](https://www.anthropic.com/engineering/claude-code-best-practices)       |
+| Claude Code       | ✅           | Use [keywords](https://www.anthropic.com/engineering/claude-code-best-practices): _think_ < _think hard_ < _think harder_ < _ultrathink_                                         |
 | GitHub Copilot    | —            | Has Sonnet 3.7 Thinking and o4 mini                       |
 | Q                 | —            |                                                           |
 | Warp              | —            | Has o3 and o4 mini                                        |
 
 
-**Note:** [GPT-5 adds reasoning_effort and verbosity parameters ranging from minimal/low to high](https://openai.com/index/introducing-gpt-5-for-developers/), but providers do not transparently communicate how they configure it. One can access high/high settings for planning tasks via the OpenAI API–agents that one can configure with API keys include [Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started) and [Roo](https://github.com/RooCodeInc/Roo-Code). (GitHub does not [yet](https://www.reddit.com/r/GithubCopilot/comments/1leq2q3/bring_your_own_keys_for_business_plan/) support BYOK on Copilot Business, and [seems](https://github.com/microsoft/vscode/issues/260460) to be refactoring their custom providers API.)
+**Note:** [GPT-5 adds _reasoning_effort_ and _verbosity_ parameters ranging from minimal/low to high](https://openai.com/index/introducing-gpt-5-for-developers/), but providers do not transparently communicate how they configure it. One can access high/high settings for planning tasks via the OpenAI API.
 
 ### Context Window
 
@@ -211,61 +175,37 @@ On Mac you can use emojis in the file names:
 
 - Context windows are measured in tokens.
 - A token is roughly 4 characters long.
-- For example, 'unbreakable' consists of 'un' - 'break' - 'able'.
+- For example, _unbreakable_ consists of _un_ - _break_ - _able_.
 
-**Note:** Agents will generally compress/prune context windows to fit within their limits in multi-turn chats. However, Claude.ai/Desktop will not; if after several turns you exceed the context window, you cannot continue the chat.
-
-
-## MCP Servers
-
-### Add MCP Servers to VS Code
-
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp). From this list, press:
-- [Install GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D)
-- [Install Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D)
-- [Install Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
-
-Each of these links opens a VS Code window. For each of these MCP servers, press the **Install** button in that window. For Atlassian and GitHub, follow the steps to authorize Copilot to connect with them.
-
-If you prefer to install the MCP servers manually:
-
-1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Paste:
-
-```json
-{
-  "servers": {
-    "atlassian": {
-      "url": "https://mcp.atlassian.com/v1/sse",
-      "type": "http"
-    },
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "type": "http"
-    },
-    "context7": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"]
-    }
-  }
-}
-```
-
-### Add MCP Servers to Claude.ai
-
-1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
-2. Press each the **Connect** button (next to Atlassian and GitHub)
-Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
-
-### Add MCP Servers to Claude Desktop
-
-When you connect MCP servers in Claude.ai, they automatically become available in Claude Desktop. Only add local servers here. For the GitHub MCP server, always use secure secret retrieval (Keychain on macOS or Windows Credential Manager). Never paste access tokens directly into `claude_desktop_config.json`.
+**Note:** Agents will generally compress and prune prompts to fit within their context windows in multi-turn chats. However, Claude.ai/Desktop will not; if after several turns you exceed the context window, you cannot continue the chat.
 
 
+## Installing MCP Servers
 
-#### Windows (Credential Manager + PowerShell + Podman)
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D), [Atlassian](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
+
+After you configure these MCP servers, follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+
+### GitHub MCP Server
+
+GitHub makes a **local** MCP server that provides the **same functionality** as GitHub's remote MCP server (linked above) **and** works in more apps (such as Claude Desktop). Also, while the remote MCP server has worked well in my experience, it is still technically ["in preview"](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/).
+
+**You will need a GitHub Personal Access Token. To create one, follow these steps:**
+
+1. Go to [GitHub Settings](https://github.com/settings/tokens).
+2. Click on "Generate new token" > "Generate new token (classic)".
+3. Select the scopes/permissions you want to grant this token, including:
+- repo
+- read:org
+- read:user
+- user:email
+- project
+4. Click "Generate token".
+5. Copy your new personal access token. You won’t be able to see it again!
+
+**Note:** We use a wrapper script to store secrets safely in OS-provided secure storage.
+
+#### Configure GitHub MCP Server on Windows
 
 1. Store token securely:
    - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
@@ -278,121 +218,236 @@ When you connect MCP servers in Claude.ai, they automatically become available i
    Import-Module CredentialManager
    Get-StoredCredential -Target GitHub
    ```
-3. Wrapper script `C:\Users\<username>\bin\mcp-github-wrapper.ps1`:
-   ```powershell
-   Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-   Set-StrictMode -Version Latest
-   $ErrorActionPreference = 'Stop'
-   try {
-     Import-Module CredentialManager -ErrorAction Stop
-   } catch {
-     Write-Error 'Install CredentialManager module first'; exit 1
-   }
-   $cred = Get-StoredCredential -Target 'GitHub'
-   if (-not $cred) { Write-Error "Credential 'GitHub' not found"; exit 1 }
-   $env:GITHUB_PERSONAL_ACCESS_TOKEN = $cred.Password
-   podman run -i --rm `
-     -e GITHUB_PERSONAL_ACCESS_TOKEN=$env:GITHUB_PERSONAL_ACCESS_TOKEN `
-     ghcr.io/github/github-mcp-server @Args
-   ```
+3. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.ps1`](templates/mcp-github-wrapper.ps1) to `C:\Users\<your-os-username>\bin\mcp-github-wrapper.ps1`
 4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
 5. Set execution policy (user scope):
    ```powershell
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
    ```
-6. Add to `claude_desktop_config.json`:
-   ```json
-   {
-     "mcpServers": {
-       "Context7": {
-         "command": "npx",
-         "args": ["-y", "@upstash/context7-mcp"],
-         "env": {},
-         "working_directory": null
-       },
-       "GitHub": {
-         "command": "powershell",
-         "args": [
-           "-NoProfile","-ExecutionPolicy","Bypass","-File",
-           "C:/Users/<username>/bin/mcp-github-wrapper.ps1"
-         ],
-         "env": {},
-         "working_directory": null
-       }
-     }
-   }
-   ```
-7. Install & init Podman:
+6. Install & init Podman:
    ```powershell
    winget install RedHat.Podman
    podman machine init --cpus 2 --memory 4096 --disk-size 20
    podman machine start
    ```
-8. Verify wrapper:
+7. Verify wrapper:
    ```powershell
    & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 10
    ```
    If it errors about credentials, re-create the Generic Credential `GitHub`
 
-
-   
-#### macOS (Keychain + Wrapper Script)
+#### Configure GitHub MCP Server on macOS
 
 1. Create a keychain item:
-   - Open Keychain Access (⌘ + Space → "Keychain Access").
-   - Select the `login` keychain & `Passwords` category.
-   - File > New Password Item…
-     - Name: `GitHub`
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `github-mcp`
      - Account: your macOS username (must match `$USER`).
-     - Password: your GitHub Personal Access Token.
-   - Click Add.
-2. Create wrapper script `~/bin/mcp-github-wrapper.sh`:
-   ```bash
-   #!/opt/homebrew/bin/bash
-   GITHUB_TOKEN=$(security find-generic-password -s "GitHub" -a "$USER" -w 2>/dev/null)
-   if [ -z "$GITHUB_TOKEN" ]; then
-       echo "Error: Could not retrieve GitHub token from keychain" >&2
-       echo "Ensure keychain item 'GitHub' exists and keychain is unlocked" >&2
-       exit 1
-   fi
-   exec /opt/homebrew/bin/docker run -i --rm \
-       -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
-       ghcr.io/github/github-mcp-server "$@"
-   ```
+     - Password: (your GitHub Personal Access Token)
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password -s "github-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
+     ```bash
+     ( unset HISTFILE; stty -echo; printf "Enter GitHub Personal Access Token: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s github-mcp -a app-password -w "$PW"; \
+       unset PW )
+     ```
+2. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.sh`](templates/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Edit (or create) `claude_desktop_config.json` and add:
-   ```json
-   {
-     "mcpServers": {
-       "Context7": {
-         "command": "npx",
-         "args": ["-y", "@upstash/context7-mcp"],
-         "env": {},
-         "working_directory": null
-       },
-       "GitHub": {
-         "command": "/Users/<username>/bin/mcp-github-wrapper.sh",
-         "args": [],
-         "env": {
-           "DOCKER_HOST": "unix:///Users/<username>/.colima/default/docker.sock"
-         },
-         "working_directory": null
-       }
-     }
-   }
+4. Test retrieval (optional): `security find-generic-password -s github-mcp -a "$USER" -w`
+5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
+
+
+### Bitbucket MCP Server
+
+Although Atlassian does not provide one yet, Bitbucket MCP servers made by others exist: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
+
+**You will need a Bitbucket App Password with the required scopes. To create one, follow these steps:**
+
+1. Go to Personal Bitbucket Settings → App Passwords → Create app password (https://bitbucket.org/account/settings/app-passwords/)
+2. Permissions needed (tick these):
+   - **Account**
+     - email
+     - read
+   - **Workspace membership:**
+     - read
+   - **Projects:**
+     - read
+   - **Repositories:**
+     - read
+     - write
+   - **Pull requests:**
+     - read
+     - write
+   - **Pipelines:**
+     - read
+   - **Runners:**
+     - read
+
+#### Configure Bitbucket MCP Server on macOS
+
+1. Create a Keychain item for the app password only:
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `bitbucket-mcp`
+     - Account: `app-password`
+     - Password: (your Bitbucket app password)
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
+     ```bash
+     ( unset HISTFILE; stty -echo; printf "Enter Bitbucket app password: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s bitbucket-mcp -a app-password -w "$PW"; \
+       unset PW )
+     ```
+
+2. Copy `templates/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH`:
+   ```bash
+  cp templates/mcp-bitbucket-wrapper.sh ~/bin/
    ```
-   Replace `<username>` with your macOS user.
-5. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
-6. Restart Claude Desktop and verify: `~/bin/mcp-github-wrapper.sh --help | head -5`
+3. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-bitbucket-wrapper.sh
+   ```
+4. Test:
+   ```bash
+   ATLASSIAN_BITBUCKET_USERNAME="your-username" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
+   ```
 
-Notes:
-* If Homebrew bash path differs, change shebang to `#!/bin/bash`.
-* If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
+#### Configure Bitbucket MCP Server on Windows
 
-Security rationale: Configuration keeps secrets exclusively in OS-provided secure storage; no plaintext tokens in versioned config files or scripts.
+Create a **Generic Credential** in Windows Credential Manager for app password only:
+1. Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+   - Internet or network address: `bitbucket-mcp`
+   - User name: `app-password`
+   - Password: (your Bitbucket app password)
+
+Or via command line:
+```powershell
+cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
+```
+
+2. Then install (if needed) the CredentialManager module to read the credentials:
+```powershell
+Install-Module CredentialManager -Scope CurrentUser -Force
+```
+
+3. Copy `templates/mcp-bitbucket-wrapper.ps1` to a folder on your PATH (or run in place). Example using a user bin folder:
+```powershell
+# create a user bin folder and copy the script there
+New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
+Copy-Item -Path scripts\mcp-bitbucket-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1" -Force
+
+# optionally add the folder to your user PATH (persists for the current user)
+[Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
+
+# run the script (example)
+& "$Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1" --help | Select-Object -First 5
+```
+4. Ensure PowerShell can run local scripts (set execution policy for the current user):
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+```
+5. Test:
+```powershell
+$env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
+$env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
+```
+
+#### Troubleshooting
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| macOS: "Could not retrieve Bitbucket credentials" | Keychain item missing | Create keychain entry with service `bitbucket-mcp` |
+| Windows: Credential not found | Generic credential not created | Add credential `bitbucket-mcp` in Credential Manager | 
+| Username rejected | Using email instead of username | Use profile username from settings page | 
+| 401 Unauthorized | Wrong app password scope / value | Regenerate app password with correct scopes | 
+
+Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
+
+## Add MCP Servers to Agents
+
+### VS Code
+
+1. From the Command Palette, choose **MCP: Open User Configuration**
+2. Use the provided configuration: copy [`templates/vscode-mcp-config_macos.json`](templates/vscode-mcp-config_macos.json) (macOS) or [`templates/vscode-mcp-config_windows.json`](templates/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
+3. Update placeholders
+
+**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+
+### Claude.ai
+
+1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
+2. Press each the **Connect** button (next to Atlassian and GitHub)
+Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
+
+### Claude Desktop
+
+1. Open Settings -> Developer > Edit Config
+- Note: This will open a File Explorer (Windows) or Finder (macOS) window
+2. Double-click the config file
+3. Use the provided configuration: copy [`templates/claude_desktop_config_windows.json`](templates/claude_desktop_config_windows.json) (Windows) or [`templates/claude_desktop_config_macos.json`](templates/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
+4. Update placeholders
+
+**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
 
 
-### Tool Availability Matrix
+### Coding Style Guidelines
+
+We maintain concise coding style guidelines for LLMs in `code_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
+
+### GitHub Copilot (Repository-Level)
+1. Create or edit `.github/copilot-instructions.md`
+2. Paste `code_style_guidelines.txt`.
+3. Edit as/if needed/desired.
+
+Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
+
+### GitHub Copilot (GitHub.com Chats)
+
+#### Organization-Level Instructions
+**Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
+
+1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
+2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
+3. Save; changes propagate to organization members (may require editor reload).
+4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
+
+Reference: [Adding organization custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-organization-instructions)
+
+#### Personal Instructions
+**Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
+
+Since the organization-level instructions equal `code_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
+
+1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
+2. Open Custom Instructions editor and paste your personal instructions.
+3. Save; changes apply to your personal GitHub.com chats.
+
+Reference: [Adding personal custom instructions for GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-personal-instructions)
+
+### Warp (Repository-Level)
+1. Create `WARP.md`
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+3. Edit as/if needed/desired.
+
+### Warp (User-Level)
+1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
+2. Paste your personal instructions.
+3. Edit as/if needed/desired.
+
+
+### Q (Repository-Level)
+1. Create `.amazonq/rules/code_style_guidelines.txt` in the repository root
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+3. Edit as/if needed/desired.
+
+### Claude Code (Repository-Level)
+1. Create or edit `CLAUDE.md` in the repository root
+2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+3. Edit as/if needed/desired.
+
+
+
+
+## Tool Availability Matrix
+
+This table summarizes the tools available in each mode. For a more concise overview, see [Modes](#modes).
 
 - Modes organized left-to-right from least to most privileges
 - Review mode adds PR review + issue commenting over QnA, without broader planning artifact mutation.
@@ -539,62 +594,29 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
 | *File Operations* | | | | |
 | [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
-
-## Notes
-
-- QnA mode excludes all mutating / execution capabilities. Plan mode excludes code / repo / execution capabilities but permits planning artifact mutations. Code mode includes full capabilities.
-- This document is the canonical source for tool availability.
-- Update the table and definitions together, and test that you made corresponding edits across this file and the chatmode.md files with `Rscript validate_tools.R`
-
-
-## Using `code_style_guidelines.txt` Across Tools
-
-### GitHub Copilot (Repository-Level)
-1. Create or edit `.github/copilot-instructions.md`
-2. Paste `code_style_guidelines.txt` content.
-
-Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
-
-### GitHub Copilot (GitHub.com Chats)
-
-#### Organization-Level Instructions
-**Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
-
-1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
-3. Save; changes propagate to organization members (may require editor reload).
-4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
-
-Reference: [Adding organization custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-organization-instructions)
-
-#### Personal Instructions
-**Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
-
-Since the organization-level instructions equal `code_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
-
-1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
-2. Open Custom Instructions editor and paste your personal instructions.
-3. Save; changes apply to your personal GitHub.com chats.
-
-Reference: [Adding personal custom instructions for GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-personal-instructions)
-
-### Warp (Repository-Level)
-1. Create `WARP.md`
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
-3. Save the file.
-
-### Warp (User-Level)
-1. Open `Warp Drive` (the left sidebar) > `Rules` > `+ Add`
-2. Paste your personal instructions.
-3. Save the new rule.
-
-
-### Q (Repository-Level)
-1. Create `.amazonq/rules/code_style_guidelines.txt` in the repository root
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
-3. Save the file.
-
-### Claude Code (Repository-Level)
-1. Create or edit `CLAUDE.md` in the repository root
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
-3. Save the file.
+| **Bitbucket** | | | | |
+| *Workspaces* | | | | |
+| [bb_ls_workspaces](TOOLS_GLOSSARY.md#bb_ls_workspaces) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_workspace](TOOLS_GLOSSARY.md#bb_get_workspace) | ✅ | ✅ | ✅ | ✅ |
+| *Repositories* | | | | |
+| [bb_ls_repos](TOOLS_GLOSSARY.md#bb_ls_repos) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_repo](TOOLS_GLOSSARY.md#bb_get_repo) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_commit_history](TOOLS_GLOSSARY.md#bb_get_commit_history) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_file](TOOLS_GLOSSARY.md#bb_get_file) | ✅ | ✅ | ✅ | ✅ |
+| [bb_list_branches](TOOLS_GLOSSARY.md#bb_list_branches) | ✅ | ✅ | ✅ | ✅ |
+| [bb_add_branch](TOOLS_GLOSSARY.md#bb_add_branch) | ❌ | ❌ | ❌ | ✅ |
+| [bb_clone_repo](TOOLS_GLOSSARY.md#bb_clone_repo) | ❌ | ❌ | ❌ | ✅ |
+| *Pull Requests* | | | | |
+| [bb_ls_prs](TOOLS_GLOSSARY.md#bb_ls_prs) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_pr](TOOLS_GLOSSARY.md#bb_get_pr) | ✅ | ✅ | ✅ | ✅ |
+| [bb_ls_pr_comments](TOOLS_GLOSSARY.md#bb_ls_pr_comments) | ✅ | ✅ | ✅ | ✅ |
+| [bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment) | ❌ | ✅ | ✅ | ✅ |
+| [bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr) | ❌ | ❌ | ✅ | ✅ |
+| [bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr) | ❌ | ❌ | ✅ | ✅ |
+| [bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr) | ❌ | ❌ | ❌ | ✅ |
+| [bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr) | ❌ | ❌ | ❌ | ✅ |
+| *Search* | | | | |
+| [bb_search](TOOLS_GLOSSARY.md#bb_search) | ✅ | ✅ | ✅ | ✅ |
+| *Diff* | | | | |
+| [bb_diff_branches](TOOLS_GLOSSARY.md#bb_diff_branches) | ✅ | ✅ | ✅ | ✅ |
+| [bb_diff_commits](TOOLS_GLOSSARY.md#bb_diff_commits) | ✅ | ✅ | ✅ | ✅ |

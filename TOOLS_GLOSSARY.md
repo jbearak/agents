@@ -371,3 +371,75 @@ Get details for the authenticated GitHub user.
 
 #### create_or_update_file
 Create or update a single file in a repository (Code mode only).
+
+## Bitbucket
+
+### Workspaces
+
+#### bb_ls_workspaces
+Lists workspaces within your Bitbucket account. Returns workspace slugs, names, and membership role.
+
+#### bb_get_workspace
+Retrieves detailed information for a workspace, including membership, projects, and key metadata.
+
+### Repositories
+
+#### bb_ls_repos
+Lists repositories within a workspace with optional filtering by role, project key, or query string.
+
+#### bb_get_repo
+Retrieves detailed information for a specific repository including owner, main branch, and recent pull requests.
+
+#### bb_get_commit_history
+Retrieves commit history for a repository with optional filtering by revision or file path.
+
+#### bb_get_file
+Retrieves the content of a file from a Bitbucket repository at a specific revision.
+
+#### bb_list_branches
+Lists branches in a repository with optional filtering and pagination.
+
+#### bb_add_branch
+Creates a new branch in a specified Bitbucket repository (Code mode only).
+
+#### bb_clone_repo
+Clones a Bitbucket repository to your local filesystem using SSH or HTTPS (Code mode only).
+
+### Pull Requests
+
+#### bb_ls_prs
+Lists pull requests within a repository with filtering by state and text search.
+
+#### bb_get_pr
+Retrieves detailed information about a specific pull request including diff statistics and optionally comments.
+
+#### bb_ls_pr_comments
+Lists comments on a specific pull request, including both general and inline code comments.
+
+#### bb_add_pr_comment
+Adds a comment to a specific pull request with support for inline code comments (Review+ modes).
+
+#### bb_add_pr
+Creates a new pull request in a repository (Plan+ modes).
+
+#### bb_update_pr
+Updates an existing pull request's title and/or description (Plan+ modes).
+
+#### bb_approve_pr
+Approves a pull request, marking it as ready for merge (Code mode only).
+
+#### bb_reject_pr
+Requests changes on a pull request, marking it as requiring changes (Code mode only).
+
+### Search
+
+#### bb_search
+Searches Bitbucket for content matching a query. Supports searching code, repositories, pull requests, or other content.
+
+### Diff
+
+#### bb_diff_branches
+Shows changes between branches in a repository, comparing source branch relative to destination branch.
+
+#### bb_diff_commits
+Shows changes between specific commits in a repository.
