@@ -26,7 +26,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Warp (Repository-Level)](#warp-repository-level)
   - [Warp (User-Level)](#warp-user-level)
   - [Q (Repository-Level)](#q-repository-level)
-  - [Claude Code (Repository-Level)](#claude-code-repository-level)
+  - [Claude (Repository-Level)](#claude-repository-level)
 - [VS Code Copilot Settings](#vs-code-copilot-settings)
   - [Installation](#installation)
 - [Tool Availability Matrix](#tool-availability-matrix)
@@ -446,7 +446,7 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
-### Claude Code (Repository-Level)
+## Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
