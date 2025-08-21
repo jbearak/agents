@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Atlassian (Local) MCP Server Wrapper (macOS / Linux)
 # Securely launches the Sooperset Atlassian MCP server with API token from macOS Keychain or environment variables
-# Prefer npm-installed CLI when available; fallback to container runtime.
+# Startup order: local CLI on PATH -> npx (no global install, if package available) -> container (cached, --pull=never)
+# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
+# Env overrides: MCP_ATLASSIAN_CLI_BIN, MCP_ATLASSIAN_NPM_PKG, MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
 
 set -euo pipefail
 

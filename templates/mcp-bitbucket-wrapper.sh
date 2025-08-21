@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Bitbucket MCP Server Wrapper (macOS / Linux)
 # Securely launches the Bitbucket MCP server with app password from macOS Keychain (macOS) or environment variables (fallback)
-# Prefer npm-installed CLI for fastest startup, with optional Docker fallback.
+# Startup order: local CLI on PATH -> npx (no global install) -> container (cached, --pull=never if image set)
+# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
+# Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG, MCP_BITBUCKET_DOCKER_IMAGE
 
 set -euo pipefail
 

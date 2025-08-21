@@ -18,6 +18,9 @@
   Additional arguments passed through to the MCP server process.
 #>
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
+# Startup order: local CLI on PATH -> npx (no global install) -> container (podman/docker, --pull=never)
+# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
+# Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG, MCP_BITBUCKET_DOCKER_IMAGE
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 

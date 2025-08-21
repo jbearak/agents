@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Startup order: local CLI on PATH -> npx (no global install) -> container (cached, --pull=never)
+# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
+# Env overrides: MCP_GITHUB_CLI_BIN, MCP_GITHUB_NPM_PKG, MCP_GITHUB_DOCKER_IMAGE
 set -euo pipefail
 
 # Retrieve GitHub token from macOS Keychain (template uses 'GitHub' service)

@@ -37,6 +37,9 @@
   Additional arguments passed through to the MCP server process.
 #>
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
+# Startup order: local CLI on PATH -> npx (no global install, if package available) -> container (podman/docker)
+# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
+# Env overrides: MCP_ATLASSIAN_CLI_BIN, MCP_ATLASSIAN_NPM_PKG, MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
