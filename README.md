@@ -209,12 +209,8 @@ Quick local installs (optional)
 
 Pre-pull container images (optional)
 If you plan to rely on containers, pre-pulling images prevents network access during normal runs and makes startup instant.
-- Docker (macOS/Linux/Windows):
   - docker pull ghcr.io/github/github-mcp-server:latest
   - docker pull ghcr.io/sooperset/mcp-atlassian:latest
-- Podman (Windows/macOS/Linux):
-  - podman pull ghcr.io/github/github-mcp-server:latest
-  - podman pull ghcr.io/sooperset/mcp-atlassian:latest
 
 Quick verification commands
 Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
