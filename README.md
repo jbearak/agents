@@ -190,7 +190,7 @@ After you configure these MCP servers, follow the instructions in [Add MCP Serve
 
 GitHub makes a **local** MCP server that provides the **same functionality** as GitHub's remote MCP server (linked above) **and** works in more apps (such as Claude Desktop). Also, while the remote MCP server has worked well in my experience, it is still technically ["in preview"](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/).
 
-You will need a GitHub Personal Access Token. To create one, follow these steps:
+**You will need a GitHub Personal Access Token. To create one, follow these steps:**
 
 1. Go to [GitHub Settings](https://github.com/settings/tokens).
 2. Click on "Generate new token" > "Generate new token (classic)".
