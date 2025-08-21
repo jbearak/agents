@@ -240,27 +240,30 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 
 1. Create a keychain item:
    - Open Keychain Access (⌘ + Space → "Keychain Access").
-   - Select the `login` keychain & `Passwords` category.
-   - File > New Password Item…
-     - Name: `GitHub`
-     - Account: your macOS username (must match `$USER`).
      - Password: your GitHub Personal Access Token.
    - Click Add.
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `github-mcp`
+     - Account: your macOS username (must match `$USER`).
+     - Password: (your GitHub Personal Access Token)
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password -s "github-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
+     ```bash
+     ( unset HISTFILE; stty -echo; printf "Enter GitHub Personal Access Token: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s github-mcp -a app-password -w "$PW"; \
+       unset PW )
+     ```
 2. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.sh`](templates/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
+4. Test retrieval (optional): `security find-generic-password -s github-mcp -a "$USER" -w`
 5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
-
-Notes:
-* If keychain auto-locks after reboot: `security unlock-keychain login.keychain-db`.
-* All local wrapper scripts (GitHub, Bitbucket) are referenced from `~/bin` for consistency; adjust paths if you choose a different location.
 
 
 ### Bitbucket MCP Server
 
-To use Bitbucket with agents, we use an unofficial server: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
+Although Atlassian does not provide one yet, Bitbucket MCP servers made by others exist: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
 
-You will need a Bitbucket App Password with the required scopes. To create one, follow these steps:
+**You will need a Bitbucket App Password with the required scopes. To create one, follow these steps:**
 
 1. Go to Personal Bitbucket Settings → App Passwords → Create app password (https://bitbucket.org/account/settings/app-passwords/)
 2. Permissions needed (tick these):
@@ -297,7 +300,7 @@ You will need a Bitbucket App Password with the required scopes. To create one, 
        unset PW )
      ```
 
-2. Copy `templates/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
+2. Copy `templates/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH`:
    ```bash
   cp templates/mcp-bitbucket-wrapper.sh ~/bin/
    ```
