@@ -26,7 +26,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Warp (Repository-Level)](#warp-repository-level)
   - [Warp (User-Level)](#warp-user-level)
   - [Q (Repository-Level)](#q-repository-level)
-  - [Claude (Repository-Level)](#claude-repository-level)
+  - [Claude Code (Repository-Level)](#claude-code-repository-level)
 - [VS Code Copilot Settings](#vs-code-copilot-settings)
   - [Installation](#installation)
 - [Tool Availability Matrix](#tool-availability-matrix)
@@ -642,6 +642,14 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [jira_search](TOOLS_GLOSSARY.md#jira_search) | ✅ | ✅ | ✅ | ✅ |
 | [jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue) | ❌ | ❌ | ✅ | ✅ |
 | [jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_link_types](TOOLS_GLOSSARY.md#jira_get_link_types) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_project_versions](TOOLS_GLOSSARY.md#jira_get_project_versions) | ✅ | ✅ | ✅ | ✅ |
+| [jira_get_worklog](TOOLS_GLOSSARY.md#jira_get_worklog) | ✅ | ✅ | ✅ | ✅ |
+| [jira_download_attachments](TOOLS_GLOSSARY.md#jira_download_attachments) | ✅ | ✅ | ✅ | ✅ |
+| [jira_add_worklog](TOOLS_GLOSSARY.md#jira_add_worklog) | ❌ | ✅ | ✅ | ✅ |
+| [jira_link_to_epic](TOOLS_GLOSSARY.md#jira_link_to_epic) | ❌ | ❌ | ✅ | ✅ |
+| [jira_create_issue_link](TOOLS_GLOSSARY.md#jira_create_issue_link) | ❌ | ❌ | ✅ | ✅ |
+| [jira_create_remote_issue_link](TOOLS_GLOSSARY.md#jira_create_remote_issue_link) | ❌ | ❌ | ✅ | ✅ |
 | [jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue) | ❌ | ❌ | ❌ | ❌ |
 | *Jira Project & Board Operations* | | | | |
 | [jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects) | ✅ | ✅ | ✅ | ✅ |

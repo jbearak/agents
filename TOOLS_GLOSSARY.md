@@ -119,6 +119,30 @@ List available transitions for a Jira issue.
 #### jira_delete_issue
 Delete a Jira issue.
 
+#### jira_get_link_types
+Retrieve available issue link types (e.g., blocks, relates to) in Jira.
+
+#### jira_get_project_versions
+List versions/releases for a given Jira project.
+
+#### jira_get_worklog
+Retrieve worklog entries for a specified Jira issue.
+
+#### jira_download_attachments
+Download or retrieve metadata for attachments associated with a Jira issue.
+
+#### jira_add_worklog
+Add a worklog entry (time spent) to a Jira issue.
+
+#### jira_link_to_epic
+Associate / link an issue to an Epic (set Epic relationship) in Jira.
+
+#### jira_create_issue_link
+Create a link between two Jira issues using a given link type.
+
+#### jira_create_remote_issue_link
+Create a remote issue link (e.g., external resource reference) for a Jira issue.
+
 ### Jira Project & Board Operations
 
 #### jira_get_all_projects

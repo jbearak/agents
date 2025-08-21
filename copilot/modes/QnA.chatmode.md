@@ -14,6 +14,7 @@ tools: [
   'jira_get_issue', 'jira_search', 'jira_get_all_projects', 'jira_get_project_issues',
   'jira_get_agile_boards', 'jira_get_board_issues', 'jira_get_sprints_from_board', 'jira_get_sprint_issues',
   'jira_search_fields', 'jira_get_user_profile', 'jira_get_transitions',
+  'jira_get_link_types', 'jira_get_project_versions', 'jira_get_worklog', 'jira_download_attachments',
   'confluence_get_page', 'confluence_get_page_children', 'confluence_get_comments', 'confluence_search',
   'confluence_get_labels', 'confluence_search_user',
   'bb_ls_workspaces', 'bb_get_workspace',
