@@ -44,6 +44,20 @@ Return the last executed command in the active terminal.
 #### terminalSelection
 Return the currently selected text in the terminal (Code mode only).
 
+#### think
+Use this tool to think deeply about the user's request and organize your thoughts. This tool helps improve response quality by allowing the model to consider the request carefully, brainstorm solutions, and plan complex tasks. It's particularly useful for:
+
+1. Exploring repository issues and brainstorming bug fixes
+2. Analyzing test results and planning fixes
+3. Planning complex refactoring approaches
+4. Designing new features and architecture
+5. Organizing debugging hypotheses
+
+The tool logs a summarized thought process for transparency but doesn't execute any code or make changes.
+
+#### todos
+Scan the workspace (or specified files) for TODO / FIXME / NOTE style comments and aggregate them into a structured list (file, line, tag, description). Useful for backlog grooming, debt triage, and planning follow-up tasks. Read-only and non-mutating.
+
 ### Web & External Content
 
 #### fetch

@@ -2,6 +2,7 @@
 description: 'Review Mode'
 tools: [
   'codebase', 'usages', 'problems', 'changes', 'testFailure', 'terminalLastCommand',
+  'think', 'todos',
   'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
   'resolve-library-id', 'get-library-docs',
   'get_commit', 'get_file_contents', 'get_me', 'list_branches', 'list_commits', 'list_tags',

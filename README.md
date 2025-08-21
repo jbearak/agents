@@ -617,6 +617,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | *Environment & Execution* | | | | |
 | [terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
 | [terminalSelection](TOOLS_GLOSSARY.md#terminalselection) | ❌ | ❌ | ❌ | ✅ |
+| [think](TOOLS_GLOSSARY.md#think) | ✅ | ✅ | ✅ | ✅ |
+| [todos](TOOLS_GLOSSARY.md#todos) | ✅ | ✅ | ✅ | ✅ |
 | *Web & External Content* | | | | |
 | [fetch](TOOLS_GLOSSARY.md#fetch) | ✅ | ✅ | ✅ | ✅ |
 | [githubRepo](TOOLS_GLOSSARY.md#githubrepo) | ✅ | ✅ | ✅ | ✅ |
