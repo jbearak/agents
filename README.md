@@ -290,8 +290,11 @@ You will need a Bitbucket App Password with the required scopes. To create one, 
      - Account: `app-password`
      - Password: (your Bitbucket app password)
    - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
      ```bash
-     security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"
+     ( unset HISTFILE; stty -echo; printf "Enter Bitbucket app password: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s bitbucket-mcp -a app-password -w "$PW"; \
+       unset PW )
      ```
 
 2. Copy `templates/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH` (or run in place):
