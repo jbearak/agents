@@ -7,6 +7,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 - [Repository Structure](#repository-structure)
 - [Modes](#modes)
   - [Modes Overview](#modes-overview)
+  - [Why custom modes?](#why-custom-modes)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [Models](#models)
   - [Models Available in Each Agent](#models-available-in-each-agent)
@@ -19,8 +20,16 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [VS Code](#vs-code)
   - [Claude.ai](#claudeai)
   - [Claude Desktop](#claude-desktop)
-- [Tool Availability Matrix](#tool-availability-matrix)
 - [Coding Style Guidelines](#coding-style-guidelines)
+  - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
+  - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
+  - [Warp (Repository-Level)](#warp-repository-level)
+  - [Warp (User-Level)](#warp-user-level)
+  - [Q (Repository-Level)](#q-repository-level)
+  - [Claude (Repository-Level)](#claude-repository-level)
+- [VS Code Copilot Settings](#vs-code-copilot-settings)
+  - [Installation](#installation)
+- [Tool Availability Matrix](#tool-availability-matrix)
 
 ## Repository Structure
 
@@ -437,7 +446,7 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
-### Claude Code (Repository-Level)
+## Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
 2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
