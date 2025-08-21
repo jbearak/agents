@@ -51,7 +51,23 @@ export GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_TOKEN"
 
 # --- Startup Paths ---
 
-# 1) Prefer Docker for reliability if available
+# 1) Prefer local CLI for fastest startup
+if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
+  echo "Using GitHub MCP via local CLI on PATH: ${CLI_BIN_NAME}" >&2
+  "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
+    awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit ${PIPESTATUS[0]}
+fi
+
+# 2) Next, try npx @latest without a global install
+if command -v npx >/dev/null 2>&1; then
+  echo "Using GitHub MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
+  npx -y "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
+    awk 'BEGIN{IGNORECASE=1; started=0; saw=0} { if(started==0){if($0 ~ /^[[:space:]]*Content-(Length|Type):/){print;fflush();saw=1;next}if(saw && $0~/^[[:space:]]*$/){print;fflush();started=1;next}if($0~/^[[:space:]]*\{/ || $0~/^[[:space:]]*\[/){print;fflush();started=1;next}print $0 > "/dev/stderr";fflush("/dev/stderr");next} print;fflush() }'
+  exit ${PIPESTATUS[0]}
+fi
+
+# 3) Fallback: container (reliable, stdout-clean)
 if command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
   if check_docker_daemon; then
     echo "Using GitHub MCP via Docker image: ${DOCKER_IMAGE}" >&2
@@ -61,22 +77,6 @@ if command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
       awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
     exit ${PIPESTATUS[0]}
   fi
-fi
-
-# 2) Fallback to npx
-if command -v npx >/dev/null 2>&1; then
-  echo "Using GitHub MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
-  npx -y "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{IGNORECASE=1; started=0; saw=0} { if(started==0){if($0 ~ /^[[:space:]]*Content-(Length|Type):/){print;fflush();saw=1;next}if(saw && $0~/^[[:space:]]*$/){print;fflush();started=1;next}if($0~/^[[:space:]]*\{/ || $0~/^[[:space:]]*\[/){print;fflush();started=1;next}print $0 > "/dev/stderr";fflush("/dev/stderr");next} print;fflush() }'
-  exit ${PIPESTATUS[0]}
-fi
-
-# 3) Last resort: local CLI
-if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
-  echo "Using GitHub MCP via local CLI on PATH: ${CLI_BIN_NAME}" >&2
-  "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  exit ${PIPESTATUS[0]}
 fi
 
 echo "Error: Could not start GitHub MCP server. No viable startup path found (Docker, npx, or local CLI)." >&2
