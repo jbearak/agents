@@ -46,12 +46,6 @@ check_docker() {
   fi
 }
 
-pull_image_if_needed() {
-  echo "Checking for latest Atlassian MCP server image..." >&2
-  if ! "$DOCKER_COMMAND" pull "$MCP_ATLASSIAN_IMAGE" >&2; then
-    echo "Warning: Failed to pull latest image. Using local version if available." >&2
-  fi
-}
 
 # Domain is required from environment (set in JSON config)
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
@@ -134,7 +128,6 @@ fi
 
 # Fallback to container runtime
 check_docker
-pull_image_if_needed
 
 DOCKER_ENV_ARGS=(
   -e "NO_COLOR=1"
@@ -147,7 +140,7 @@ DOCKER_ENV_ARGS=(
 )
 
 echo "Using Atlassian MCP via container image: ${MCP_ATLASSIAN_IMAGE}" >&2
-"$DOCKER_COMMAND" run --rm -i \
+"$DOCKER_COMMAND" run --rm -i --pull=never \
   "${DOCKER_ENV_ARGS[@]}" \
   "$MCP_ATLASSIAN_IMAGE" \
   "$@" 2> >(cat >&2) | \

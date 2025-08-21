@@ -7,7 +7,7 @@
 set -euo pipefail
 
 # --- Configurable defaults ---
-SERVICE_NAME="github-mcp"
+SERVICE_NAME="GitHub"
 ACCOUNT_NAME="$USER"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 NPM_PKG_NAME="${MCP_GITHUB_NPM_PKG:-github-mcp-server}"
@@ -18,7 +18,7 @@ DOCKER_IMAGE="${MCP_GITHUB_DOCKER_IMAGE:-ghcr.io/github/github-mcp-server:latest
 check_docker_daemon() {
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: Docker daemon ('$DOCKER_COMMAND') is not running." >&2
-    echo "Please start your container runtime (e.g., colima start, podman machine start, or Docker Desktop)." >&2
+    echo "Please start your container runtime (e.g., 'colima start')." >&2
     return 1
   fi
 }

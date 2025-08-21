@@ -285,19 +285,19 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 
 1. Create a keychain item:
    - GUI: Keychain Access → File → New Password Item…
-     - Name (Service): `github-mcp`
+     - Name (Service): `GitHub`
      - Account: your macOS username (must match `$USER`).
      - Password: (your GitHub Personal Access Token)
    - Or CLI:
-     > ⚠️ **Security Warning:** Running `security add-generic-password -s "github-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
+     > ⚠️ **Security Warning:** Running `security add-generic-password -s "GitHub" -a "$USER" -w "<token>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
      ```bash
      ( unset HISTFILE; stty -echo; printf "Enter GitHub Personal Access Token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s github-mcp -a app-password -w "$PW"; \
+       security add-generic-password -s GitHub -a "$USER" -w "$PW"; \
        unset PW )
      ```
 2. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.sh`](templates/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Test retrieval (optional): `security find-generic-password -s github-mcp -a "$USER" -w`
+4. Test retrieval (optional): `security find-generic-password -s GitHub -a "$USER" -w`
 5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
 
 **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` (macOS default shell) and then `source ~/.zshrc`:
