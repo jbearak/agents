@@ -30,8 +30,6 @@
 # Environment variables optional:
 #   ATLASSIAN_API_TOKEN (overrides keychain)
 #   ATLASSIAN_EMAIL (default: derived from current user)
-#   AUTH_METHOD (default: "api_token", alternative: "oauth")
-#   DOCKER_COMMAND (default: "docker", alternative: "podman")
 #   ATLASSIAN_EMAIL (default: derived from current user)
 #   AUTH_METHOD (default: "api_token", alternative: "oauth")
 #   DOCKER_COMMAND (default: "docker", alternative: "podman")
