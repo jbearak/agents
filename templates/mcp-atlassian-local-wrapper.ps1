@@ -149,31 +149,12 @@ $dockerEnvArgs = @(
   '-e', "JIRA_URL=https://$($env:ATLASSIAN_DOMAIN)"
 )
 
-if ($env:AUTH_METHOD -eq 'api_token') {
-  $dockerEnvArgs += @(
-    '-e', "CONFLUENCE_USERNAME=$($env:ATLASSIAN_EMAIL)"
-    '-e', "CONFLUENCE_API_TOKEN=$apiToken"
-    '-e', "JIRA_USERNAME=$($env:ATLASSIAN_EMAIL)"
-    '-e', "JIRA_API_TOKEN=$apiToken"
-  )
-} elseif ($env:AUTH_METHOD -eq 'oauth') {
-  # OAuth setup - user must provide these externally
-  if ($env:ATLASSIAN_OAUTH_CLIENT_ID) {
-    $dockerEnvArgs += @('-e', "ATLASSIAN_OAUTH_CLIENT_ID=$($env:ATLASSIAN_OAUTH_CLIENT_ID)")
-  }
-  if ($env:ATLASSIAN_OAUTH_CLIENT_SECRET) {
-    $dockerEnvArgs += @('-e', "ATLASSIAN_OAUTH_CLIENT_SECRET=$($env:ATLASSIAN_OAUTH_CLIENT_SECRET)")
-  }
-  if ($env:ATLASSIAN_OAUTH_REDIRECT_URI) {
-    $dockerEnvArgs += @('-e', "ATLASSIAN_OAUTH_REDIRECT_URI=$($env:ATLASSIAN_OAUTH_REDIRECT_URI)")
-  }
-  if ($env:ATLASSIAN_OAUTH_SCOPE) {
-    $dockerEnvArgs += @('-e', "ATLASSIAN_OAUTH_SCOPE=$($env:ATLASSIAN_OAUTH_SCOPE)")
-  }
-  if ($env:ATLASSIAN_OAUTH_CLOUD_ID) {
-    $dockerEnvArgs += @('-e', "ATLASSIAN_OAUTH_CLOUD_ID=$($env:ATLASSIAN_OAUTH_CLOUD_ID)")
-  }
-}
+$dockerEnvArgs += @(
+  '-e', "CONFLUENCE_USERNAME=$($env:ATLASSIAN_EMAIL)"
+  '-e', "CONFLUENCE_API_TOKEN=$apiToken"
+  '-e', "JIRA_USERNAME=$($env:ATLASSIAN_EMAIL)"
+  '-e', "JIRA_API_TOKEN=$apiToken"
+)
 
 # Launch the container in interactive mode with stdin/stdout
 $fullArgs = @('run', '--rm', '-i') + $dockerEnvArgs + @($env:MCP_ATLASSIAN_IMAGE) + $Args

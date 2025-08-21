@@ -31,7 +31,7 @@
 #   ATLASSIAN_API_TOKEN (overrides keychain)
 #   ATLASSIAN_EMAIL (default: derived from current user)
 #   ATLASSIAN_EMAIL (default: derived from current user)
-#   AUTH_METHOD (default: "api_token", alternative: "oauth")
+#   AUTH_METHOD (default: "api_token")
 #   DOCKER_COMMAND (default: "docker", alternative: "podman")
 #   MCP_ATLASSIAN_IMAGE (default: "ghcr.io/sooperset/mcp-atlassian:latest")
 #
@@ -84,31 +84,29 @@ if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
 fi
 
 # Get API token from environment or keychain (for api_token auth method)
-if [[ "$AUTH_METHOD" == "api_token" ]]; then
-  if [[ -n "${ATLASSIAN_API_TOKEN:-}" ]]; then
-    API_TOKEN="$ATLASSIAN_API_TOKEN"
-  else
-    if [[ "$(uname)" == "Darwin" ]]; then
-      if ! API_TOKEN=$(get_keychain_password); then
-        echo "Error: Could not retrieve Atlassian API token from Keychain (service '$SERVICE_NAME', account '$ACCOUNT_NAME')." >&2
-        echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME' -w '<api_token>'" >&2
-        echo "Or set environment variable: export ATLASSIAN_API_TOKEN='<api_token>'" >&2
-        echo "Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens" >&2
-        exit 1
-      fi
-    else
-      echo "Error: ATLASSIAN_API_TOKEN is not set and macOS Keychain is unavailable on this platform." >&2
-      echo "Set environment variable: export ATLASSIAN_API_TOKEN='<api_token>'" >&2
+if [[ -n "${ATLASSIAN_API_TOKEN:-}" ]]; then
+  API_TOKEN="$ATLASSIAN_API_TOKEN"
+else
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if ! API_TOKEN=$(get_keychain_password); then
+      echo "Error: Could not retrieve Atlassian API token from Keychain (service '$SERVICE_NAME', account '$ACCOUNT_NAME')." >&2
+      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME' -w '<api_token>'" >&2
+      echo "Or set environment variable: export ATLASSIAN_API_TOKEN='<api_token>'" >&2
       echo "Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens" >&2
       exit 1
     fi
+  else
+    echo "Error: ATLASSIAN_API_TOKEN is not set and macOS Keychain is unavailable on this platform." >&2
+    echo "Set environment variable: export ATLASSIAN_API_TOKEN='<api_token>'" >&2
+    echo "Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens" >&2
+    exit 1
   fi
+fi
 
-  # Derive email if not provided (required for API token auth)
-  if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.com}"
-    echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
-  fi
+# Derive email if not provided (required for API token auth)
+if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
+  ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.com}"
+  echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
 # Pull latest image
@@ -127,23 +125,6 @@ if [[ "$AUTH_METHOD" == "api_token" ]]; then
     -e "JIRA_USERNAME=${ATLASSIAN_EMAIL}"
     -e "JIRA_API_TOKEN=$API_TOKEN"
   )
-elif [[ "$AUTH_METHOD" == "oauth" ]]; then
-  # OAuth setup - user must provide these externally
-  if [[ -n "${ATLASSIAN_OAUTH_CLIENT_ID:-}" ]]; then
-    DOCKER_ENV_ARGS+=(-e "ATLASSIAN_OAUTH_CLIENT_ID=$ATLASSIAN_OAUTH_CLIENT_ID")
-  fi
-  if [[ -n "${ATLASSIAN_OAUTH_CLIENT_SECRET:-}" ]]; then
-    DOCKER_ENV_ARGS+=(-e "ATLASSIAN_OAUTH_CLIENT_SECRET=$ATLASSIAN_OAUTH_CLIENT_SECRET")
-  fi
-  if [[ -n "${ATLASSIAN_OAUTH_REDIRECT_URI:-}" ]]; then
-    DOCKER_ENV_ARGS+=(-e "ATLASSIAN_OAUTH_REDIRECT_URI=$ATLASSIAN_OAUTH_REDIRECT_URI")
-  fi
-  if [[ -n "${ATLASSIAN_OAUTH_SCOPE:-}" ]]; then
-    DOCKER_ENV_ARGS+=(-e "ATLASSIAN_OAUTH_SCOPE=$ATLASSIAN_OAUTH_SCOPE")
-  fi
-  if [[ -n "${ATLASSIAN_OAUTH_CLOUD_ID:-}" ]]; then
-    DOCKER_ENV_ARGS+=(-e "ATLASSIAN_OAUTH_CLOUD_ID=$ATLASSIAN_OAUTH_CLOUD_ID")
-  fi
 fi
 
 # Launch the container in interactive mode with stdin/stdout

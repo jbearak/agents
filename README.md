@@ -487,10 +487,6 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 | 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |
 | Connection timeouts | Network/firewall issues | Check container network settings and firewall |
 
-**Advanced Configuration:**
-- Set `AUTH_METHOD=oauth` for OAuth 2.0 authentication (requires additional setup)
-- Set `DOCKER_COMMAND=podman` to use Podman instead of docker
-- Set `ATLASSIAN_EMAIL` to override the derived email address
 
 ## Add MCP Servers to Agents
 
