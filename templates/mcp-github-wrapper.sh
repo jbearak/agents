@@ -8,7 +8,7 @@ set -euo pipefail
 
 # --- Configurable defaults ---
 SERVICE_NAME="GitHub"
-ACCOUNT_NAME="$USER"
+ACCOUNT_NAME="token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 NPM_PKG_NAME="${MCP_GITHUB_NPM_PKG:-github-mcp-server}"
 CLI_BIN_NAME="${MCP_GITHUB_CLI_BIN:-github-mcp-server}"
