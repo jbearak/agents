@@ -7,8 +7,13 @@
 #   - Or install Podman as a Docker alternative
 #
 # Keychain setup (macOS):
-#   security add-generic-password -s "atlassian-mcp-local" -a "api-token" -w "<api_token>"
-#   (Or use Keychain Access GUI: New Password Item... Name: atlassian-mcp-local, Account: api-token, Password: <api_token>)
+#   If you prefer the CLI:
+#       ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
+#         security add-generic-password -s atlassian-mcp-local -a api-token -w "$PW"; \
+#         unset PW )
+#   If you prefer the Keychain Access GUI:
+#       File > New Password Item...
+#       Name: atlassian-mcp-local, Account: api-token, Password: <api_token>
 #
 # API Token creation:
 #   1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
