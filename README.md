@@ -62,43 +62,37 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
       <th>Mode</th>
       <th>Default Model</th>
       <th>Purpose</th>
-      <th>File</th>
       <th>Contract Summary</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>QnA</td>
+      <td><a href="copilot/modes/QnA.chatmode.md">📚 QnA</a></td>
       <td>GPT-4.1</td>
       <td>Q&amp;A, exploration, explain code, gather context</td>
-      <td><code>copilot/modes/QnA.chatmode.md</code></td>
       <td>Strict read-only (no mutations anywhere)</td>
     </tr>
     <tr>
-      <td>Plan</td>
+      <td><a href="copilot/modes/Plan.chatmode.md">🔭 Plan</a></td>
       <td>Sonnet 4</td>
       <td>Plan work, refine scope, shape issues/pages, organize PR scaffolding</td>
-      <td><code>copilot/modes/Plan.chatmode.md</code></td>
       <td>Mutate planning artifacts + create/edit/review PRs (no merge/branch ops)</td>
     </tr>
     <tr>
-      <td>Review</td>
+      <td><a href="copilot/modes/Review.chatmode.md">🔬 Review</a></td>
       <td>GPT-5</td>
       <td>Provide review feedback on PRs / issues</td>
-      <td><code>copilot/modes/Review.chatmode.md</code></td>
       <td>PR review + issue comments only; no other mutations</td>
     </tr>
     <tr>
-      <td>Code-GPT5</td>
+      <td><a href="copilot/modes/Code-GPT5.chatmode.md">🚀 Code-GPT5</a></td>
       <td>GPT-5</td>
       <td rowspan="2">Implement changes, run tests/commands</td>
-      <td><code>copilot/modes/Code-GPT5.chatmode.md</code></td>
       <td rowspan="2">Full implementation, execution, &amp; PR lifecycle</td>
     </tr>
     <tr>
-      <td>Code-Sonnet4</td>
+      <td><a href="copilot/modes/Code-Sonnet4.chatmode.md">☄️ Code-Sonnet4</a></td>
       <td>Sonnet 4</td>
-      <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
     </tr>
   </tbody>
 </table>
@@ -598,6 +592,12 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [search_code](TOOLS_GLOSSARY.md#search_code) | ✅ | ✅ | ✅ | ✅ |
 | [search_orgs](TOOLS_GLOSSARY.md#search_orgs) | ❌ | ❌ | ❌ | ❌ |
 | [search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
+| [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
+| [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
+| *User & Account* | | | | |
+| [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
+| *File Operations* | | | | |
+| [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
 | [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
 | [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
 | *User & Account* | | | | |
