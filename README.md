@@ -122,13 +122,6 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 | Windows   | C:\Users\<your-os-username>\AppData\Roaming\Code\User\prompts\ |
 | Macintosh | ~/Library/Application Support/Code/User/prompts/       |
 
-Here are the files:
-
-  - [📚 QnA](copilot/modes/QnA.chatmode.md)
-  - [🔭 Plan](copilot/modes/Plan.chatmode.md)
-  - [🚀 Code-GPT5](copilot/modes/Code-GPT5.chatmode.md)
-  - [☄️ Code-Sonnet4](copilot/modes/Code-Sonnet4.chatmode.md)
-  - [🔬 Review](copilot/modes/Review.chatmode.md)
 
 **Alternatively,** you can create custom modes directly in VS Code:
 
