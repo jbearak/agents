@@ -61,7 +61,6 @@ if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
   exit ${PIPESTATUS[0]}
 fi
 
-fi
 
 # 2) Try container next for clean stdout and reliability
 if command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
