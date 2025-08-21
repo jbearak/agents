@@ -18,7 +18,6 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Bitbucket MCP Server](#bitbucket-mcp-server)
 - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
   - [VS Code](#vs-code)
-  - [Claude.ai](#claudeai)
   - [Claude Desktop](#claude-desktop)
 - [Coding Style Guidelines](#coding-style-guidelines)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
@@ -477,12 +476,6 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 3. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-bitbucket-username>`, and `your-domain.atlassian.net` placeholders.**
-
-### Claude.ai
-
-1. Open [Settings > Connectors](https://claude.ai/settings/connectors)
-2. Press each the **Connect** button (next to Atlassian and GitHub)
-Note: This adds the ability to add files from GitHub, but does not add the [GitHub MCP Server](https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md).
 
 ### Claude Desktop
 
