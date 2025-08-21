@@ -2,6 +2,7 @@
 description: 'Plan Mode'
 tools: [
   'codebase', 'usages', 'problems', 'changes', 'testFailure',
+  'think', 'todos',
   'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
   'resolve-library-id', 'get-library-docs',
   'get_commit', 'get_file_contents', 'get_me',

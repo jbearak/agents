@@ -4,6 +4,7 @@ tools: [
   'codebase', 'usages', 'problems', 'changes', 'testFailure',
   'terminalSelection', 'terminalLastCommand',
   'runCommands', 'runTasks',
+  'think', 'todos',
   'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
   'activePullRequest', 
   'copilotCodingAgent',
