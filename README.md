@@ -265,6 +265,12 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 4. Test retrieval (optional): `security find-generic-password -s github-mcp -a "$USER" -w`
 5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
 
+**Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` (macOS default shell) and then `source ~/.zshrc`:
+
+```
+export PATH="$HOME/bin:$PATH"
+```
+
 
 ### Bitbucket MCP Server
 
@@ -408,6 +414,10 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    ```bash
    chmod +x ~/bin/mcp-atlassian-local-wrapper.sh
    ```
+  **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` and then `source ~/.zshrc`:
+  ```
+  export PATH="$HOME/bin:$PATH"
+  ```
 4. Test (replace `your-domain` with your actual Atlassian domain):
    ```bash
    ATLASSIAN_DOMAIN="your-domain.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
@@ -421,15 +431,26 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    - User name: `api-token`
    - Password: (your Atlassian API token)
 
-   Or via command line:
+   Secure PowerShell method (avoids storing the token in shell history):
    ```powershell
-   cmd /c "cmdkey /add:atlassian-mcp-local /user:api-token /pass:<api_token>"
+   $secure = Read-Host -AsSecureString "Enter Atlassian API token"
+   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+   try {
+     $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
+     # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Write-Host "Credential 'atlassian-mcp-local' created." -ForegroundColor Green
+   } finally {
+     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+   }
    ```
 
 2. Install the CredentialManager module (if not already installed):
    ```powershell
    Install-Module CredentialManager -Scope CurrentUser -Force
    ```
+
+  **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
 
 3. Copy `templates/mcp-atlassian-local-wrapper.ps1` to your user bin folder:
    ```powershell

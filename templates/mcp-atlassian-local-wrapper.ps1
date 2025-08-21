@@ -53,25 +53,35 @@ function Test-DockerAvailable {
 
 function Get-StoredPassword {
   param([string]$Target)
-  
+
   # Check if credential exists
   $listing = cmd /c "cmdkey /list" 2>$null
   if (-not $listing -or $listing -notmatch $Target) {
     throw "Credential '$Target' not found in Windows Credential Manager."
   }
-  
+
+  $needAdminHint = $false
+  $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
   # Need CredentialManager module to read the credential
   try {
-    if (-not (Get-Module -ListAvailable -Name CredentialManager)) { 
-      Import-Module CredentialManager -ErrorAction Stop 
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
     }
+  } catch {
+    $needAdminHint = -not $isAdmin
+    throw ("Unable to import CredentialManager module. Install it first: Install-Module CredentialManager -Scope CurrentUser -Force" + `
+      ($(if($needAdminHint){" (If you encounter policy/permission errors, reopen PowerShell as Administrator and retry the install)"})))
+  }
+
+  try {
     $cred = Get-StoredCredential -Target $Target
-    if (-not $cred) { 
-      throw "Stored credential not accessible via CredentialManager module" 
+    if (-not $cred) {
+      throw "Stored credential not accessible via CredentialManager module"
     }
     return $cred.Password
   } catch {
-    throw "Unable to read credential for '$Target'. Install CredentialManager module: Install-Module CredentialManager -Scope CurrentUser"
+    throw "Unable to read credential for '$Target'. Ensure the module installed correctly and credential was created."
   }
 }
 
