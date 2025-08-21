@@ -112,10 +112,10 @@ function Update-AtlassianImage {
 # Check container runtime availability
 Test-DockerAvailable
 
-# Domain is required from environment (set in JSON config)
+# Domain default if unset (can be overridden by env/config)
 if (-not $env:ATLASSIAN_DOMAIN) {
-  Write-Error "ATLASSIAN_DOMAIN environment variable is required. This should be set in your agent configuration JSON file (e.g., 'guttmacher.atlassian.net')."
-  exit 1
+  [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set; defaulting to 'guttmacher.atlassian.net'.")
+  $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
 }
 
 # Get API token from environment or credential manager (for api_token auth method)
@@ -135,11 +135,20 @@ Could not retrieve Atlassian API token:
     }
   }
   
-  # Set email if not provided (required for API token auth)
+  # Set email if not provided (env -> git -> username@derived .org)
   if (-not $env:ATLASSIAN_EMAIL) {
-    # Try to derive from current user or domain
-    $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.com'
-    $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
+    $gitEmail = $null
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+      try {
+        $gitEmail = (git config --get user.email 2>$null).Trim()
+      } catch {}
+    }
+    if ($gitEmail) {
+      $env:ATLASSIAN_EMAIL = $gitEmail
+    } else {
+      $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.org'
+      $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
+    }
     [Console]::Error.WriteLine("Note: Using derived email '$($env:ATLASSIAN_EMAIL)'. Set ATLASSIAN_EMAIL to override.")
   }
 }

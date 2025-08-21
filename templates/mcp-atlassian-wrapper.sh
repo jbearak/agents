@@ -47,11 +47,10 @@ check_docker() {
 }
 
 
-# Domain is required from environment (set in JSON config)
+# Domain default if unset
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-  echo "Error: ATLASSIAN_DOMAIN environment variable is required." >&2
-  echo "This should be set in your agent configuration JSON file (e.g., 'guttmacher.atlassian.net')." >&2
-  exit 1
+  ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
+  echo "Note: ATLASSIAN_DOMAIN was not set; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
 fi
 
 # Get API token from environment or keychain (for api_token auth method)
@@ -74,9 +73,17 @@ else
   fi
 fi
 
-# Derive email if not provided (required for API token auth)
+# Derive email if not provided (prefer env var -> git -> username@derived .org)
 if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-  ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.com}"
+  GIT_EMAIL=""
+  if command -v git >/dev/null 2>&1; then
+    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+  fi
+  if [[ -n "$GIT_EMAIL" ]]; then
+    ATLASSIAN_EMAIL="$GIT_EMAIL"
+  else
+    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
+  fi
   echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
