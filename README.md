@@ -639,8 +639,8 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment) | ❌ | ✅ | ✅ | ✅ |
 | [bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr) | ❌ | ❌ | ✅ | ✅ |
 | [bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr) | ❌ | ❌ | ✅ | ✅ |
-| [bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr) | ❌ | ❌ | ❌ | ✅ |
-| [bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr) | ❌ | ❌ | ❌ | ✅ |
+| [bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr) | ❌ | ❌ | ❌ | ❌ |
+| [bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr) | ❌ | ❌ | ❌ | ❌ |
 | *Search* | | | | |
 | [bb_search](TOOLS_GLOSSARY.md#bb_search) | ✅ | ✅ | ✅ | ✅ |
 | *Diff* | | | | |
