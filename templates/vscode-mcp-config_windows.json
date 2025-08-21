@@ -8,6 +8,7 @@
       ],
       "env": {
         "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
+        "ATLASSIAN_EMAIL": "<your-email>@guttmacher.org",
         "AUTH_METHOD": "api_token"
       }
     },
