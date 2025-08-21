@@ -110,7 +110,7 @@ Test-DockerAvailable
 
 # Domain is required from environment (set in JSON config)
 if (-not $env:ATLASSIAN_DOMAIN) {
-  Write-Error "ATLASSIAN_DOMAIN environment variable is required. This should be set in your agent configuration JSON file (e.g., 'your-domain.atlassian.net')."
+  Write-Error "ATLASSIAN_DOMAIN environment variable is required. This should be set in your agent configuration JSON file (e.g., 'guttmacher.atlassian.net')."
   exit 1
 }
 

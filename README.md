@@ -422,9 +422,9 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
   ```
   export PATH="$HOME/bin:$PATH"
   ```
-4. Test (replace `your-domain` with your actual Atlassian domain):
+4. Test
    ```bash
-   ATLASSIAN_DOMAIN="your-domain.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
+   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
    ```
 
 #### Configure Atlassian MCP Server on Windows
@@ -471,9 +471,9 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
    ```
 
-5. Test (replace `your-domain` with your actual Atlassian domain):
+5. Test
    ```powershell
-   $env:ATLASSIAN_DOMAIN="your-domain.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
+   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
    ```
 
 #### Troubleshooting Atlassian MCP Server
@@ -500,7 +500,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 2. Use the provided configuration: copy [`templates/vscode-mcp-config_macos.json`](templates/vscode-mcp-config_macos.json) (macOS) or [`templates/vscode-mcp-config_windows.json`](templates/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-bitbucket-username>`, and `your-domain.atlassian.net` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
 
 ### Claude Desktop
 
@@ -510,7 +510,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 3. Use the provided configuration: copy [`templates/claude_desktop_config_windows.json`](templates/claude_desktop_config_windows.json) (Windows) or [`templates/claude_desktop_config_macos.json`](templates/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
 4. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-bitbucket-username>`, and `your-domain.atlassian.net` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
 
 
 ## Coding Style Guidelines

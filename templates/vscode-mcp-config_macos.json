@@ -4,7 +4,7 @@
       "command": "/Users/<your-os-username>/bin/mcp-atlassian-local-wrapper.sh",
       "args": [],
       "env": {
-        "ATLASSIAN_DOMAIN": "your-domain.atlassian.net",
+        "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
         "AUTH_METHOD": "api_token"
       }
     },

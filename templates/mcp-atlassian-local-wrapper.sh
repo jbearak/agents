@@ -26,7 +26,7 @@
 #   3. Run: ./mcp-atlassian-local-wrapper.sh [args]
 #
 # Environment variables required:
-#   ATLASSIAN_DOMAIN (required: e.g., "your-domain.atlassian.net")
+#   ATLASSIAN_DOMAIN (required: e.g., "guttmacher.atlassian.net")
 # Environment variables optional:
 #   ATLASSIAN_API_TOKEN (overrides keychain)
 #   ATLASSIAN_EMAIL (default: derived from current user)
@@ -79,7 +79,7 @@ check_docker
 # Domain is required from environment (set in JSON config)
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
   echo "Error: ATLASSIAN_DOMAIN environment variable is required." >&2
-  echo "This should be set in your agent configuration JSON file (e.g., 'your-domain.atlassian.net')." >&2
+  echo "This should be set in your agent configuration JSON file (e.g., 'guttmacher.atlassian.net')." >&2
   exit 1
 fi
 
