@@ -193,7 +193,7 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 How these wrapper scripts launch servers
 - Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
-  - GitHub: Docker image first → npx @latest → local CLI (if present)
+  - GitHub: Docker image first → npx @latest → local CLI (if present). In practice, several npm builds print human‑readable banners on stdout which can break JSON‑RPC initialization in some MCP clients; Docker has been more reliable.
   - Atlassian (Sooperset): local CLI (if present) → npx @latest → Docker fallback
   - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
 - The wrappers never install anything automatically. This avoids interactive prompts when editors launch them.
@@ -204,9 +204,8 @@ Pre‑pulling images avoids network access during regular runs and makes startup
   - docker pull ghcr.io/github/github-mcp-server:latest
   - docker pull ghcr.io/sooperset/mcp-atlassian:latest
 
-Optional: local CLI installs (only if you prefer CLI over Docker)
-- GitHub MCP (Node CLI):
-  - npm i -g github-mcp-server
+Optional: local CLI installs (advanced)
+- GitHub MCP: Not recommended. Use the Docker image. Some npm builds emit non‑JSON banners on stdout that disrupt MCP clients.
 - Bitbucket MCP (Node CLI):
   - npm i -g @aashari/mcp-server-atlassian-bitbucket
 - Atlassian MCP (Sooperset):
