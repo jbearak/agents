@@ -100,13 +100,6 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
       <td>Sonnet 4</td>
       <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
     </tr>
-    <tr>
-      <td>Code</td>
-      <td>Sonnet 4</td>
-      <td>Implement changes, run tests/commands</td>
-      <td><code>copilot/modes/Code-Sonnet4.chatmode.md</code></td>
-      <td>Full implementation, execution, &amp; PR lifecycle</td>
-    </tr>
   </tbody>
 </table>
 
