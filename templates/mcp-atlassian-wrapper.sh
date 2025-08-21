@@ -105,12 +105,14 @@ if command -v npx >/dev/null 2>&1; then
   JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
   CONFLUENCE_API_TOKEN="${API_TOKEN}" \
   JIRA_API_TOKEN="${API_TOKEN}" \
-  # Use quiet flags/env to suppress non-JSON noise
+  # Use quiet flags/env to suppress non-JSON noise and filter stdout
   NPX_FLAGS=(-y)
   if npx --help 2>/dev/null | grep -q "--quiet"; then
     NPX_FLAGS+=(--quiet)
   fi
-  exec npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@"
+  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
+    awk 'BEGIN{flush=1} { if ($0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit $?
 fi
 
 # Fallback to container runtime

@@ -74,7 +74,9 @@ if command -v npx >/dev/null 2>&1; then
   if npx --help 2>/dev/null | grep -q "--quiet"; then
     NPX_FLAGS+=(--quiet)
   fi
-  exec npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@"
+  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
+    awk 'BEGIN{flush=1} { if ($0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit $?
 fi
 
 # 3) Optional Docker fallback if image is specified

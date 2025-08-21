@@ -43,7 +43,12 @@ if command -v npx >/dev/null 2>&1; then
   if npx --help 2>/dev/null | grep -q "--quiet"; then
     NPX_FLAGS+=(--quiet)
   fi
-  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" exec npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@"
+  # Route any non-JSON npx preamble to stderr and pass only JSON-looking lines to stdout
+  # This is a pragmatic stream filter until upstream guarantees pure JSON on stdout.
+  GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" \
+    npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}" "$@" 2> >(cat >&2) | \
+    awk 'BEGIN{flush=1} { if ($0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  exit $?
 fi
 
 # 3) Fallback to Docker using cached image (no network pulls at runtime)
