@@ -8,7 +8,7 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 
 **Bootstrap and validate the repository:**
 - `cd /home/runner/work/agents/agents` (or repository root)
-- **Lint markdown files:** Install markdownlint first with `mkdir -p /tmp/validation && cd /tmp/validation && npm init -y && npm install markdownlint-cli`, then run `./node_modules/.bin/markdownlint /path/to/repo/README.md /path/to/repo/copilot/modes/*.md` -- takes < 1 second. NEVER CANCEL.
+- **Lint markdown files:** Run `markdownlint /path/to/repo/README.md /path/to/repo/copilot/modes/*.md` -- takes < 1 second. NEVER CANCEL.
 - **Verify git status:** `git --no-pager status && git --no-pager log --oneline -5` -- takes < 0.1 seconds. NEVER CANCEL.
 
 ## Validation
