@@ -192,25 +192,25 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 ## Installing MCP Servers
 
 How these wrapper scripts launch servers
-- The wrapper scripts always try methods in this order:
-  1) Use a locally installed CLI, if available on your PATH (fastest, no container runtime)
-  2) Use npx to run the package without installing it globally (no prompts, no global changes)
-  3) Use a cached container image (no network during normal runs when pre-pulled)
-- They do not attempt to install anything for you automatically. This prevents interactive prompts when tools like VS Code or Claude Desktop invoke the script.
-- If you prefer local installs for the lowest startup latency, install the CLI yourself once, and the wrapper will automatically pick it up on the next run.
+- Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
+  - GitHub: Docker image first → npx @latest → local CLI (if present)
+  - Atlassian (Sooperset): local CLI (if present) → npx @latest → Docker fallback
+  - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
+- The wrappers never install anything automatically. This avoids interactive prompts when editors launch them.
+- If you want the lowest startup latency and no container runtime, you may install a local CLI — the wrapper will detect and use it automatically.
 
-Quick local installs (optional)
+Recommended: pre‑pull container images
+Pre‑pulling images avoids network access during regular runs and makes startup instant.
+  - docker pull ghcr.io/github/github-mcp-server:latest
+  - docker pull ghcr.io/sooperset/mcp-atlassian:latest
+
+Optional: local CLI installs (only if you prefer CLI over Docker)
 - GitHub MCP (Node CLI):
   - npm i -g github-mcp-server
 - Bitbucket MCP (Node CLI):
   - npm i -g @aashari/mcp-server-atlassian-bitbucket
 - Atlassian MCP (Sooperset):
   - No public npm package exists.
-
-Pre-pull container images (optional)
-If you plan to rely on containers, pre-pulling images prevents network access during normal runs and makes startup instant.
-  - docker pull ghcr.io/github/github-mcp-server:latest
-  - docker pull ghcr.io/sooperset/mcp-atlassian:latest
 
 Quick verification commands
 Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
