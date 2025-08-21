@@ -19,7 +19,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [VS Code](#vs-code)
   - [Claude.ai](#claudeai)
   - [Claude Desktop](#claude-desktop)
-- [Tools Available to Each Mode](#tools-available-to-each-mode)
+- [Tool Availability Matrix](#tool-availability-matrix)
 - [Coding Style Guidelines](#coding-style-guidelines)
 
 ## Repository Structure
@@ -445,7 +445,7 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 
 
-## Tools Available to Each Mode
+## Tool Availability Matrix
 
 This table summarizes the tools available in each mode. For a more concise overview, see [Modes](#modes).
 
@@ -594,9 +594,29 @@ Legend: ✅ available, ❌ unavailable in that mode.
 | [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
 | *File Operations* | | | | |
 | [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
-| [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
-| [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
-| *User & Account* | | | | |
-| [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
-| *File Operations* | | | | |
-| [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
+| **Bitbucket** | | | | |
+| *Workspaces* | | | | |
+| [bb_ls_workspaces](TOOLS_GLOSSARY.md#bb_ls_workspaces) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_workspace](TOOLS_GLOSSARY.md#bb_get_workspace) | ✅ | ✅ | ✅ | ✅ |
+| *Repositories* | | | | |
+| [bb_ls_repos](TOOLS_GLOSSARY.md#bb_ls_repos) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_repo](TOOLS_GLOSSARY.md#bb_get_repo) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_commit_history](TOOLS_GLOSSARY.md#bb_get_commit_history) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_file](TOOLS_GLOSSARY.md#bb_get_file) | ✅ | ✅ | ✅ | ✅ |
+| [bb_list_branches](TOOLS_GLOSSARY.md#bb_list_branches) | ✅ | ✅ | ✅ | ✅ |
+| [bb_add_branch](TOOLS_GLOSSARY.md#bb_add_branch) | ❌ | ❌ | ❌ | ✅ |
+| [bb_clone_repo](TOOLS_GLOSSARY.md#bb_clone_repo) | ❌ | ❌ | ❌ | ✅ |
+| *Pull Requests* | | | | |
+| [bb_ls_prs](TOOLS_GLOSSARY.md#bb_ls_prs) | ✅ | ✅ | ✅ | ✅ |
+| [bb_get_pr](TOOLS_GLOSSARY.md#bb_get_pr) | ✅ | ✅ | ✅ | ✅ |
+| [bb_ls_pr_comments](TOOLS_GLOSSARY.md#bb_ls_pr_comments) | ✅ | ✅ | ✅ | ✅ |
+| [bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment) | ❌ | ✅ | ✅ | ✅ |
+| [bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr) | ❌ | ❌ | ✅ | ✅ |
+| [bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr) | ❌ | ❌ | ✅ | ✅ |
+| [bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr) | ❌ | ❌ | ❌ | ✅ |
+| [bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr) | ❌ | ❌ | ❌ | ✅ |
+| *Search* | | | | |
+| [bb_search](TOOLS_GLOSSARY.md#bb_search) | ✅ | ✅ | ✅ | ✅ |
+| *Diff* | | | | |
+| [bb_diff_branches](TOOLS_GLOSSARY.md#bb_diff_branches) | ✅ | ✅ | ✅ | ✅ |
+| [bb_diff_commits](TOOLS_GLOSSARY.md#bb_diff_commits) | ✅ | ✅ | ✅ | ✅ |

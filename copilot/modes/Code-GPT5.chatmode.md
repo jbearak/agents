@@ -22,7 +22,12 @@ tools: [
   'getConfluencePage', 'getPagesInConfluenceSpace', 'getConfluencePageFooterComments', 'getConfluencePageInlineComments',
     'getConfluenceSpaces', 'searchConfluenceUsingCql',
   'createConfluencePage', 'updateConfluencePage', 'createConfluenceFooterComment', 'createConfluenceInlineComment',
-  'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources'
+  'atlassianUserInfo', 'lookupJiraAccountId', 'getAccessibleAtlassianResources',
+  'bb_ls_workspaces', 'bb_get_workspace',
+  'bb_ls_repos', 'bb_get_repo', 'bb_get_commit_history', 'bb_get_file', 'bb_list_branches', 'bb_add_branch', 'bb_clone_repo',
+  'bb_ls_prs', 'bb_get_pr', 'bb_ls_pr_comments', 'bb_add_pr_comment', 'bb_add_pr', 'bb_update_pr', 'bb_approve_pr', 'bb_reject_pr',
+  'bb_search',
+  'bb_diff_branches', 'bb_diff_commits'
 ]
 model: GPT-5 (Preview)
 ---
