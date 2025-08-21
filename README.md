@@ -378,7 +378,7 @@ Scopes: Use the minimal scopes required by your workflows (e.g., repository read
 
 ### Atlassian MCP Server (Local)
 
-We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a Docker container and provides access to both Jira and Confluence.
+We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a container and provides access to both Jira and Confluence.
 
 **You will need an Atlassian API Token. To create one, follow these steps:**
 
@@ -390,8 +390,8 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 **Prerequisites:**
 - Container runtime installed and running:
   - macOS: Colima (preferred) -> install via Homebrew: `brew install colima; colima start`
-  - Windows: Docker Desktop (or Podman)
-  - Linux: Docker Engine (or Podman)
+  - Windows: Podman (preferred) -> install via winget: `winget install RedHat.Podman`
+  - Linux: docker Engine (or Podman)
 - Alternatively set `DOCKER_COMMAND=podman` (or another compatible CLI) if not using the default docker CLI
 
 #### Configure Atlassian MCP Server on macOS
@@ -479,16 +479,16 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| "Docker is not installed" | Container runtime CLI not available | Install Colima (macOS) or Docker/Podman and ensure `docker` is in PATH |
-| "Docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or start Docker/Podman service |
+| "docker is not installed" | Container runtime CLI not available | Install Colima (macOS) or Podman/docker and ensure CLI is in PATH |
+| "docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or `podman machine start` (Windows) |
 | "Could not retrieve API token" | Keychain/credential missing | Create credential with correct service name |
 | Container fails to start | Invalid domain/credentials | Verify ATLASSIAN_DOMAIN and API token |
 | 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |
-| Connection timeouts | Network/firewall issues | Check Docker network settings and firewall |
+| Connection timeouts | Network/firewall issues | Check container network settings and firewall |
 
 **Advanced Configuration:**
 - Set `AUTH_METHOD=oauth` for OAuth 2.0 authentication (requires additional setup)
-- Set `DOCKER_COMMAND=podman` to use Podman instead of Docker
+- Set `DOCKER_COMMAND=podman` to use Podman instead of docker
 - Set `ATLASSIAN_EMAIL` to override the derived email address
 
 ## Add MCP Servers to Agents

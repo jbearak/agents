@@ -4,7 +4,6 @@
 #
 # Container runtime setup required (macOS/Linux):
 #   - Preferred (macOS): Install Colima (https://github.com/abiosoft/colima) and run: colima start
-#   - Alternative: Docker Engine / Docker Desktop (optional on macOS) or Podman
 #   - You can override the runtime with DOCKER_COMMAND (docker, podman, nerdctl, etc.)
 #
 # Keychain setup (macOS):
@@ -57,14 +56,14 @@ get_keychain_password() {
 check_docker() {
   if ! command -v "$DOCKER_COMMAND" &> /dev/null; then
     echo "Error: $DOCKER_COMMAND is not installed or not in PATH." >&2
-    echo "Please install Colima (macOS) or Docker / Podman to use the local Atlassian MCP server." >&2
+    echo "Please install Colima (macOS) or docker / Podman to use the local Atlassian MCP server." >&2
     exit 1
   fi
   
   # Check if the container runtime daemon is running (Colima exposes docker-compatible CLI once started)
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: $DOCKER_COMMAND daemon is not running." >&2
-    echo "Start it with: 'colima start' (macOS) or start your Docker/Podman service before using this wrapper." >&2
+    echo "Start it with: 'colima start' (macOS) or start your docker/Podman service before using this wrapper." >&2
     exit 1
   fi
 }
@@ -76,7 +75,7 @@ pull_image_if_needed() {
   fi
 }
 
-# Check Docker availability
+# Check container runtime availability
 check_docker
 
 # Domain is required from environment (set in JSON config)
@@ -149,7 +148,7 @@ elif [[ "$AUTH_METHOD" == "oauth" ]]; then
   fi
 fi
 
-# Launch the Docker container in interactive mode with stdin/stdout
+# Launch the container in interactive mode with stdin/stdout
 exec "$DOCKER_COMMAND" run --rm -i \
   "${DOCKER_ENV_ARGS[@]}" \
   "$MCP_ATLASSIAN_IMAGE" \

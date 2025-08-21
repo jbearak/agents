@@ -5,8 +5,8 @@
   Securely launches the Sooperset Atlassian MCP server using API token from Windows Credential Manager.
   
   Container runtime setup required:
-    - Windows: Install Docker Desktop (or Podman as an alternative)
-    - (macOS users typically use Colima; this Windows script still expects a Docker-compatible CLI)
+    - Windows: Install Podman (preferred) or docker
+    - (macOS users typically use Colima; this Windows script expects a docker-compatible CLI)
 
   Create Generic Credential for API token:
     Control Panel > User Accounts > Credential Manager > Windows Credentials > Add a generic credential
@@ -49,15 +49,15 @@ function Test-DockerAvailable {
   try {
     $null = Get-Command $env:DOCKER_COMMAND -ErrorAction Stop
   } catch {
-  Write-Error "$($env:DOCKER_COMMAND) is not installed or not in PATH. Install a Docker-compatible runtime (Docker Desktop or Podman on Windows)."
+    Write-Error "$($env:DOCKER_COMMAND) is not installed or not in PATH. Install Podman (preferred) or docker for Windows."
     exit 1
   }
   
-  # Check if Docker daemon is running
+  # Check if container runtime daemon is running
   try {
     & $env:DOCKER_COMMAND info *>$null
   } catch {
-  Write-Error "$($env:DOCKER_COMMAND) daemon is not running. Start Docker Desktop (or your chosen container runtime) before using this wrapper."
+    Write-Error "$($env:DOCKER_COMMAND) daemon is not running. Start Podman (podman machine start) or docker before using this wrapper."
     exit 1
   }
 }
@@ -105,7 +105,7 @@ function Update-AtlassianImage {
   }
 }
 
-# Check Docker availability
+# Check container runtime availability
 Test-DockerAvailable
 
 # Domain is required from environment (set in JSON config)
@@ -175,7 +175,7 @@ if ($env:AUTH_METHOD -eq 'api_token') {
   }
 }
 
-# Launch the Docker container in interactive mode with stdin/stdout
+# Launch the container in interactive mode with stdin/stdout
 $fullArgs = @('run', '--rm', '-i') + $dockerEnvArgs + @($env:MCP_ATLASSIAN_IMAGE) + $Args
 
 & $env:DOCKER_COMMAND @fullArgs
