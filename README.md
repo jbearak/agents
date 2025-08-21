@@ -123,13 +123,13 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 | Macintosh | ~/Library/Application Support/Code/User/prompts/       |
 
 
-**Alternatively,** you can create custom modes directly in VS Code:
+**Alternatively,** you can create create these files using the VS Code menus:
 
 1. Choose "Configure Modes..." from the Mode menu in the Chat pane
 2. From the "Select the chat mode file to open" menu, press "Create new custom mode chat file..."
 3. From the "Select a location to create the mode file in..." menu, press "User Data Folder"
 4. From the "Enter the name of the custom chat mode file..." menu, type the mode name as you want it to appear in your modes menu
-5. Paste the file contents into the new file
+5. Paste the file contents into the new file (repeating steps 1 to 5 for each mode)
 
 
 
