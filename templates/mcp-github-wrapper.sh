@@ -31,7 +31,8 @@ run_cli() {
   # Stream stdout through a JSON-only filter that forwards only lines starting with '{'
   GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_TOKEN}" \
     "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
-    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+    awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
   exit ${PIPESTATUS[0]}
 }
 
@@ -60,5 +61,5 @@ docker run -i --rm --pull=never \
   -e "NO_COLOR=1" \
   -e "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}" \
   "${DOCKER_IMAGE}" "$@" 2> >(cat >&2) | \
-  awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+  awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
 exit ${PIPESTATUS[0]}

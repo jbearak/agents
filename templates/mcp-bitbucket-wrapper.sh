@@ -61,7 +61,8 @@ DOCKER_IMAGE=${MCP_BITBUCKET_DOCKER_IMAGE:-}
 
 run_cli() {
   "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
-    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+    awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
+:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
   exit ${PIPESTATUS[0]}
 }
 
