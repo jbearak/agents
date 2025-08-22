@@ -2,22 +2,22 @@
   "servers": {
     "Atlassian": {
       "command": "bash",
-      "args": ["~/bin/mcp-atlassian-wrapper.sh"],
+      "args": ["-c", "~/bin/mcp-atlassian-wrapper.sh"],
       "working_directory": null
     },
     "Bitbucket": {
       "command": "bash",
-      "args": ["~/bin/mcp-bitbucket-wrapper.sh"],
+      "args": ["-c", "~/bin/mcp-bitbucket-wrapper.sh"],
       "working_directory": null
     },
     "Context7": {
       "command": "bash",
-      "args": ["~/bin/mcp-context7-wrapper.sh"],
+      "args": ["-c", "~/bin/mcp-context7-wrapper.sh"],
       "working_directory": null
     },
     "GitHub": {
       "command": "bash",
-      "args": ["~/bin/mcp-github-wrapper.sh"],
+      "args": ["-c", "~/bin/mcp-github-wrapper.sh"],
       "working_directory": null
     }
   }
