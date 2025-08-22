@@ -14,7 +14,8 @@ ACCOUNT_NAME="api-token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 MCP_ATLASSIAN_IMAGE="${MCP_ATLASSIAN_IMAGE:-ghcr.io/sooperset/mcp-atlassian:latest}"
 AUTH_METHOD="${AUTH_METHOD:-api_token}"
-# Note: sooperset/mcp-atlassian only supports Docker containers
+REMOTE_MCP_URL="https://mcp.atlassian.com/v1/sse"
+# Note: sooperset/mcp-atlassian supports Docker containers with remote fallback via mcp-remote
 
 # Keep stdout clean when npm/npx is used
 export NO_COLOR=1
@@ -32,65 +33,50 @@ get_keychain_password() {
   security find-generic-password -s "$SERVICE_NAME" -a "$ACCOUNT_NAME" -w 2>/dev/null || return 1
 }
 
-get_keychain_domain() {
-  if [[ "$(uname)" != "Darwin" ]]; then
-    return 1
-  fi
-  security find-generic-password -s "mcp-atlassian" -a "atlassian-domain" -w 2>/dev/null || return 1
-}
-
-check_docker() {
-  if ! command -v "$DOCKER_COMMAND" &> /dev/null; then
-    echo "Error: $DOCKER_COMMAND is not installed or not in PATH." >&2
-    echo "Please install Colima (macOS) or docker / Podman to use the local Atlassian MCP server." >&2
-    exit 1
-  fi
+check_docker_daemon() {
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: $DOCKER_COMMAND daemon is not running." >&2
     echo "Start it with: 'colima start' (macOS) or start your docker/Podman service before using this wrapper." >&2
+    return 1
+  fi
+  return 0
+}
+
+use_remote_server() {
+  echo "Falling back to remote Atlassian MCP server: $REMOTE_MCP_URL" >&2
+  
+  # Check if npx is available for mcp-remote
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "Error: npx not found. Cannot use mcp-remote for remote server connection." >&2
+    echo "Please install Node.js/npm or start Docker/Podman to use Atlassian MCP server." >&2
     exit 1
   fi
+  
+  # Use mcp-remote to bridge stdio to remote HTTP+SSE server with OAuth
+  echo "Using mcp-remote to connect to remote Atlassian MCP server..." >&2
+  
+  # Set up environment for mcp-remote with authentication
+  export ATLASSIAN_API_TOKEN="$API_TOKEN"
+  export ATLASSIAN_DOMAIN="$ATLASSIAN_DOMAIN"
+  export ATLASSIAN_EMAIL="$ATLASSIAN_EMAIL"
+  
+  # Use mcp-remote to connect to remote server with OAuth authentication
+  # Let mcp-remote handle OAuth instead of passing API token headers
+  # The remote server uses OAuth, not API tokens directly
+  echo "Note: Remote server uses OAuth authentication, not API tokens." >&2
+  echo "You may need to authorize in the browser that opens." >&2
+  
+  exec npx -y mcp-remote@latest "$REMOTE_MCP_URL" \
+    --header "X-Atlassian-Domain:${ATLASSIAN_DOMAIN}" \
+    --header "X-Atlassian-Email:${ATLASSIAN_EMAIL}" \
+    "$@"
 }
 
 
-# Derive email first if not provided (needed for domain derivation)
-if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-  GIT_EMAIL=""
-  if command -v git >/dev/null 2>&1; then
-    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
-  fi
-  if [[ -n "$GIT_EMAIL" ]]; then
-    ATLASSIAN_EMAIL="$GIT_EMAIL"
-  else
-    # We'll set a placeholder for now, will be updated after domain derivation
-    ATLASSIAN_EMAIL=""
-  fi
-fi
-
-# Domain derivation with fallback hierarchy: env var -> keychain -> email -> default
+# Domain default if unset
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-  # Try keychain first (macOS only)
-  if [[ "$(uname)" == "Darwin" ]]; then
-    if KEYCHAIN_DOMAIN=$(get_keychain_domain) && [[ -n "$KEYCHAIN_DOMAIN" ]]; then
-      ATLASSIAN_DOMAIN="$KEYCHAIN_DOMAIN"
-      echo "Note: ATLASSIAN_DOMAIN retrieved from keychain as '${ATLASSIAN_DOMAIN}'." >&2
-    fi
-  fi
-  
-  # If still not set, try email derivation
-  if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-    if [[ -n "$ATLASSIAN_EMAIL" && "$ATLASSIAN_EMAIL" == *@* ]]; then
-      # Extract organization from email (user@organization.org -> organization.atlassian.net)
-      ORG_DOMAIN="${ATLASSIAN_EMAIL##*@}"  # Get part after @
-      ORG_NAME="${ORG_DOMAIN%.*}"          # Remove .org/.com/etc suffix
-      ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
-      echo "Note: ATLASSIAN_DOMAIN derived from email as '${ATLASSIAN_DOMAIN}'." >&2
-    else
-      # Final fallback to guttmacher
-      ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
-      echo "Note: ATLASSIAN_DOMAIN was not set, not in keychain, and no email available; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
-    fi
-  fi
+  ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
+  echo "Note: ATLASSIAN_DOMAIN was not set; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
 fi
 
 # Get API token from environment or keychain (for api_token auth method)
@@ -113,16 +99,34 @@ else
   fi
 fi
 
-# Complete email derivation if still not set after domain derivation
+# Derive email if not provided (prefer env var -> git -> username@derived .org)
 if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-  ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
+  GIT_EMAIL=""
+  if command -v git >/dev/null 2>&1; then
+    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+  fi
+  if [[ -n "$GIT_EMAIL" ]]; then
+    ATLASSIAN_EMAIL="$GIT_EMAIL"
+  else
+    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
+  fi
   echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
 # run_cli function removed - sooperset/mcp-atlassian only supports Docker containers
 
-# Use container runtime (only option available)
-check_docker
+# Check if Docker is available
+if ! command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
+  echo "Error: Docker not found. Please install Docker or set DOCKER_COMMAND to point to your container runtime." >&2
+  echo "Attempting to use remote server fallback..." >&2
+  use_remote_server
+fi
+
+# Check if Docker daemon is running
+if ! check_docker_daemon; then
+  echo "Attempting to use remote server fallback..." >&2
+  use_remote_server
+fi
 
 DOCKER_ENV_ARGS=(
   -e "NO_COLOR=1"
@@ -139,7 +143,8 @@ if ! "$DOCKER_COMMAND" image inspect "${MCP_ATLASSIAN_IMAGE}" >/dev/null 2>&1; t
   echo "Pulling Atlassian MCP Docker image: ${MCP_ATLASSIAN_IMAGE}" >&2
   if ! "$DOCKER_COMMAND" pull "${MCP_ATLASSIAN_IMAGE}" >&2; then
     echo "Error: failed to pull image: ${MCP_ATLASSIAN_IMAGE}" >&2
-    exit 1
+    echo "Attempting to use remote server fallback..." >&2
+    use_remote_server
   fi
   echo "Pulled Atlassian MCP Docker image successfully: ${MCP_ATLASSIAN_IMAGE}" >&2
 fi
