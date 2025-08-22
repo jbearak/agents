@@ -37,7 +37,6 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 
 ```
 ./
-├── llm_coding_style_guidelines.txt   # General coding style guidelines
 ├── README.md                         # This document
 ├── TOOLS_GLOSSARY.md                 # Glossary of all available tools
 ├── copilot/
@@ -55,6 +54,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 │   ├── mcp-bitbucket-wrapper.sh     # macOS/Linux Bitbucket MCP wrapper script
 │   └── mcp-bitbucket-wrapper.ps1    # Windows Bitbucket MCP wrapper script
 ├── templates/
+│   ├── llm_code_style_guidelines.txt      # General coding style guidelines (for copy/paste to other tools)
 │   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
 │   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
 │   └── vscode-settings.jsonc              # VS Code user settings template (optional)
@@ -496,9 +496,9 @@ Install-Module CredentialManager -Scope CurrentUser -Force
      - Internet or network address: `bitbucket-mcp`
      - User name: `app-password`
      - Password: (your Bitbucket app password)
-  - Or CLI:
-    > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>` directly will write your secret in cleartext to your shell history. Use this secure command instead:
-    ```powershell
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+   ```powershell
     $secure = Read-Host -AsSecureString "Enter Bitbucket app password"
     $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
     try {
@@ -592,11 +592,11 @@ The wrapper automatically uses the globally installed package if available, fall
 
 ## LLM Coding Style Guidelines
 
-We maintain concise coding style guidelines for LLMs in `llm_coding_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
+We maintain concise coding style guidelines for LLMs in [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt). We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
 
 ### GitHub Copilot (Repository-Level)
 1. Create or edit `.github/copilot-instructions.md`
-2. Paste `coding_style_guidelines.txt`.
+2. Paste [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt).
 3. Edit as/if needed/desired.
 
 Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
@@ -607,7 +607,7 @@ Reference: [Adding repository custom instructions for GitHub Copilot](https://do
 **Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
 
 1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `llm_coding__style_guidelines.txt`.
+2. Open Custom Instructions editor and paste the full contents of [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt).
 3. Save; changes propagate to organization members (may require editor reload).
 4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
 
@@ -616,7 +616,7 @@ Reference: [Adding organization custom instructions for GitHub Copilot](https://
 #### Personal Instructions
 **Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
 
-Since the organization-level instructions equal `llm_coding_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
+Since the organization-level instructions equal [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt), do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
 
 1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
 2. Open Custom Instructions editor and paste your personal instructions.
@@ -626,7 +626,7 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 ### Warp (Repository-Level)
 1. Create `WARP.md`
-2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
+2. Paste [templates/llm_code_style_guidelines.txt](templates/llm_code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 ### Warp (User-Level)
@@ -637,12 +637,12 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 ### Q (Repository-Level)
 1. Create `.amazonq/rules/llm_coding_style_guidelines.txt` in the repository root
-2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
+2. Paste [templates/llm_code_style_guidelines.txt](templates/llm_code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 ## Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
-2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
+2. Paste [templates/llm_code_style_guidelines.txt](templates/llm_code_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 
