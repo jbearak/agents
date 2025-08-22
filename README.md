@@ -117,14 +117,16 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ### Why custom modes?
 
-- In VS Code, **switching among built-in modes does not set the model**.
-  - I found this cumbersome, annoying, and a cognitive burden.
-  - I wanted to switch between Ask/GPT-4.1 and Agent/Sonnet in one click.
 - The built-in **Agent mode does not remember which tools you turned on and off.**
-  - When you reopen VS Code, it resets all tools to their default state.
-  - This drove me to create custom modes, and then I got carried away...
+  - When you reopen VS Code, it turns every tool back on.
+- The built-in **Ask** mode cannot call _any_ tools.
+  - This means you cannot use it to fetch information, such as documentation from Context7 or issue details from Jira.
+- Custom modes **enforce their behavioral boundaries** by defining which tools agents can call.
+- In VS Code, selecting a built-in modes does not set a model.
+  - This means it takes eight clicks from Ask/GPT-4.1 to Agent/Sonnet and back.
 - You can **type less** because each mode contains prompts tailored to its specific use case.
-- The modes contain prompts tailored to their default models.
+  - This reduces the need for repetitive instructions.
+  - We created two variants of Code Mode, with instructions tailored to GPT-5 (terse) and Sonnet 4 (verbose).
 - **You can still use the built-in modes.**
   - Switch to **Agent** mode when you do not want to use tailored instructions.
 
