@@ -77,7 +77,7 @@ Standard YAML frontmatter:
 **Tool Availability Matrix:** The README.md contains a comprehensive table showing which tools are available in which modes. Reference this instead of guessing tool availability.
 
 **Key Relationships:**
-- `templates/llm_code_style_guidelines.txt` (referenced in README) is the canonical source for coding guidelines. Copy/paste into other tools as needed.
+- [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt) (referenced in README) is the canonical source for coding guidelines. Copy/paste into other tools as needed.
 - Mode files define different privilege levels: QnA < Review < Plan < Code
 
 ### Frequently Needed Information

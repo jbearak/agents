@@ -592,11 +592,11 @@ The wrapper automatically uses the globally installed package if available, fall
 
 ## LLM Coding Style Guidelines
 
-We maintain concise coding style guidelines for LLMs in `templates/llm_code_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
+We maintain concise coding style guidelines for LLMs in [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt). We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
 
 ### GitHub Copilot (Repository-Level)
 1. Create or edit `.github/copilot-instructions.md`
-2. Paste `templates/llm_code_style_guidelines.txt`.
+2. Paste [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt).
 3. Edit as/if needed/desired.
 
 Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
@@ -607,7 +607,7 @@ Reference: [Adding repository custom instructions for GitHub Copilot](https://do
 **Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
 
 1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `templates/llm_code_style_guidelines.txt`.
+2. Open Custom Instructions editor and paste the full contents of [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt).
 3. Save; changes propagate to organization members (may require editor reload).
 4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
 
@@ -616,7 +616,7 @@ Reference: [Adding organization custom instructions for GitHub Copilot](https://
 #### Personal Instructions
 **Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
 
-Since the organization-level instructions equal `templates/llm_code_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
+Since the organization-level instructions equal [`templates/llm_code_style_guidelines.txt`](templates/llm_code_style_guidelines.txt), do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
 
 1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
 2. Open Custom Instructions editor and paste your personal instructions.
