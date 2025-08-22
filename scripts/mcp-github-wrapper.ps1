@@ -53,7 +53,7 @@ function Use-RemoteServer {
     
   } catch {
     [Console]::Error.WriteLine("Error: Failed to connect to remote GitHub MCP server.")
-    [Console]::Error.WriteLine("Please check your GITHUB_PERSONAL_ACCESS_TOKEN and network connection.")
+    [Console]::Error.WriteLine("Please check your `$env:GITHUB_PERSONAL_ACCESS_TOKEN` and network connection.")
     exit 1
   }
 }
