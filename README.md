@@ -687,1155 +687,1191 @@ Legend: ✅ available, ❌ unavailable in that mode.
 </thead>
 <tbody>
 <tr>
-<td>**Built-In (VS Code / Core)**</td>
+<td><strong>Built-In (VS Code / Core)</strong></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>*Code &amp; Project Navigation*</td>
+<td><em>Code &amp; Project Navigation</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[codebase](TOOLS_GLOSSARY.md#codebase)</td>
+<td><a href="TOOLS_GLOSSARY.md#codebase">codebase</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[findTestFiles](TOOLS_GLOSSARY.md#findtestfiles)</td>
+<td><a href="TOOLS_GLOSSARY.md#findtestfiles">findTestFiles</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[search](TOOLS_GLOSSARY.md#search)</td>
+<td><a href="TOOLS_GLOSSARY.md#search">search</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[searchResults](TOOLS_GLOSSARY.md#searchresults)</td>
+<td><a href="TOOLS_GLOSSARY.md#searchresults">searchResults</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[usages](TOOLS_GLOSSARY.md#usages)</td>
+<td><a href="TOOLS_GLOSSARY.md#usages">usages</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Quality &amp; Diagnostics*</td>
+<td><em>Quality &amp; Diagnostics</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[problems](TOOLS_GLOSSARY.md#problems)</td>
+<td><a href="TOOLS_GLOSSARY.md#problems">problems</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[testFailure](TOOLS_GLOSSARY.md#testfailure)</td>
+<td><a href="TOOLS_GLOSSARY.md#testfailure">testFailure</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Version Control &amp; Changes*</td>
+<td><em>Version Control &amp; Changes</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[changes](TOOLS_GLOSSARY.md#changes)</td>
+<td><a href="TOOLS_GLOSSARY.md#changes">changes</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Environment &amp; Execution*</td>
+<td><em>Environment &amp; Execution</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand)</td>
+<td><a href="TOOLS_GLOSSARY.md#terminallastcommand">terminalLastCommand</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[terminalSelection](TOOLS_GLOSSARY.md#terminalselection)</td>
+<td><a href="TOOLS_GLOSSARY.md#terminalselection">terminalSelection</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[think](TOOLS_GLOSSARY.md#think)</td>
+<td><a href="TOOLS_GLOSSARY.md#think">think</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[todos](TOOLS_GLOSSARY.md#todos)</td>
+<td><a href="TOOLS_GLOSSARY.md#todos">todos</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Web &amp; External Content*</td>
+<td><em>Web &amp; External Content</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[fetch](TOOLS_GLOSSARY.md#fetch)</td>
+<td><a href="TOOLS_GLOSSARY.md#fetch">fetch</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[githubRepo](TOOLS_GLOSSARY.md#githubrepo)</td>
+<td><a href="TOOLS_GLOSSARY.md#githubrepo">githubRepo</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Editor &amp; Extensions*</td>
+<td><em>Editor &amp; Extensions</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[extensions](TOOLS_GLOSSARY.md#extensions)</td>
+<td><a href="TOOLS_GLOSSARY.md#extensions">extensions</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[vscodeAPI](TOOLS_GLOSSARY.md#vscodeapi)</td>
+<td><a href="TOOLS_GLOSSARY.md#vscodeapi">vscodeAPI</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Editing &amp; Automation*</td>
+<td><em>Editing &amp; Automation</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[editFiles](TOOLS_GLOSSARY.md#editfiles)</td>
+<td><a href="TOOLS_GLOSSARY.md#editfiles">editFiles</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[runCommands](TOOLS_GLOSSARY.md#runcommands)</td>
+<td><a href="TOOLS_GLOSSARY.md#runcommands">runCommands</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[runTasks](TOOLS_GLOSSARY.md#runtasks)</td>
+<td><a href="TOOLS_GLOSSARY.md#runtasks">runTasks</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>**GitHub Pull Requests Extension (VS Code)**</td>
+<td><strong>GitHub Pull Requests Extension (VS Code)</strong></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[activePullRequest](TOOLS_GLOSSARY.md#activepullrequest)</td>
+<td><a href="TOOLS_GLOSSARY.md#activepullrequest">activePullRequest</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[copilotCodingAgent](TOOLS_GLOSSARY.md#copilotcodingagent)</td>
+<td><a href="TOOLS_GLOSSARY.md#copilotcodingagent">copilotCodingAgent</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>**Context7**</td>
+<td><strong>Context7</strong></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[resolve-library-id](TOOLS_GLOSSARY.md#resolve-library-id)</td>
+<td><a href="TOOLS_GLOSSARY.md#resolve-library-id">resolve-library-id</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get-library-docs](TOOLS_GLOSSARY.md#get-library-docs)</td>
+<td><a href="TOOLS_GLOSSARY.md#get-library-docs">get-library-docs</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>**Atlassian**</td>
+<td><strong>Atlassian</strong></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>*Jira Issues &amp; Operations*</td>
+<td><em>Jira Issues &amp; Operations</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[jira_add_comment](TOOLS_GLOSSARY.md#jira_add_comment)</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_add_comment">jira_add_comment</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[jira_create_issue](TOOLS_GLOSSARY.md#jira_create_issue)</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
+<td>addCommentToJiraIssue</td>
 </tr>
 <tr>
-<td>[jira_update_issue](TOOLS_GLOSSARY.md#jira_update_issue)</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_create_issue">jira_create_issue</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[jira_get_issue](TOOLS_GLOSSARY.md#jira_get_issue)</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td>createJiraIssue</td>
 </tr>
 <tr>
-<td>[jira_search](TOOLS_GLOSSARY.md#jira_search)</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_update_issue">jira_update_issue</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue)</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
+<td>editJiraIssue</td>
 </tr>
 <tr>
-<td>[jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions)</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_issue">jira_get_issue</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr>
+<td>getJiraIssue</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#jira_search">jira_search</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr>
+<td>searchJiraIssuesUsingJql</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#jira_transition_issue">jira_transition_issue</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[jira_get_link_types](TOOLS_GLOSSARY.md#jira_get_link_types)</td>
+<td>transitionJiraIssue</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_transitions">jira_get_transitions</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr>
+<td>getTransitionsForJiraIssue</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_link_types">jira_get_link_types</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_project_versions](TOOLS_GLOSSARY.md#jira_get_project_versions)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_project_versions">jira_get_project_versions</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_worklog](TOOLS_GLOSSARY.md#jira_get_worklog)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_worklog">jira_get_worklog</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_download_attachments](TOOLS_GLOSSARY.md#jira_download_attachments)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_download_attachments">jira_download_attachments</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_add_worklog](TOOLS_GLOSSARY.md#jira_add_worklog)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_add_worklog">jira_add_worklog</a></td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_link_to_epic](TOOLS_GLOSSARY.md#jira_link_to_epic)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_link_to_epic">jira_link_to_epic</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_create_issue_link](TOOLS_GLOSSARY.md#jira_create_issue_link)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_create_issue_link">jira_create_issue_link</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_create_remote_issue_link](TOOLS_GLOSSARY.md#jira_create_remote_issue_link)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_create_remote_issue_link">jira_create_remote_issue_link</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_delete_issue">jira_delete_issue</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Jira Project &amp; Board Operations*</td>
+<td><em>Jira Project &amp; Board Operations</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_all_projects">jira_get_all_projects</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_project_issues](TOOLS_GLOSSARY.md#jira_get_project_issues)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_project_issues">jira_get_project_issues</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_agile_boards](TOOLS_GLOSSARY.md#jira_get_agile_boards)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_agile_boards">jira_get_agile_boards</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_board_issues](TOOLS_GLOSSARY.md#jira_get_board_issues)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_board_issues">jira_get_board_issues</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_sprints_from_board](TOOLS_GLOSSARY.md#jira_get_sprints_from_board)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_sprints_from_board">jira_get_sprints_from_board</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_sprint_issues](TOOLS_GLOSSARY.md#jira_get_sprint_issues)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_sprint_issues">jira_get_sprint_issues</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_search_fields](TOOLS_GLOSSARY.md#jira_search_fields)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_search_fields">jira_search_fields</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[jira_get_user_profile](TOOLS_GLOSSARY.md#jira_get_user_profile)</td>
+<td><a href="TOOLS_GLOSSARY.md#jira_get_user_profile">jira_get_user_profile</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Confluence Pages &amp; Content*</td>
+<td><em>Confluence Pages &amp; Content</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[confluence_create_page](TOOLS_GLOSSARY.md#confluence_create_page)</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_create_page">confluence_create_page</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[confluence_get_page](TOOLS_GLOSSARY.md#confluence_get_page)</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td>createConfluencePage</td>
 </tr>
 <tr>
-<td>[confluence_update_page](TOOLS_GLOSSARY.md#confluence_update_page)</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_page">confluence_get_page</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[confluence_delete_page](TOOLS_GLOSSARY.md#confluence_delete_page)</td>
+<td>getConfluencePage</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#confluence_update_page">confluence_update_page</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr>
+<td>updateConfluencePage</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#confluence_delete_page">confluence_delete_page</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[confluence_get_page_children](TOOLS_GLOSSARY.md#confluence_get_page_children)</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_page_children">confluence_get_page_children</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
 </tr>
 <tr>
-<td>[confluence_search](TOOLS_GLOSSARY.md#confluence_search)</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
+<td>getConfluencePageDescendants</td>
+</tr>
+<tr>
+<td><a href="TOOLS_GLOSSARY.md#confluence_search">confluence_search</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr>
+<td>searchConfluenceUsingCql</td>
 </tr>
 <tr>
-<td>[confluence_get_comments](TOOLS_GLOSSARY.md#confluence_get_comments)</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_comments">confluence_get_comments</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[confluence_add_comment](TOOLS_GLOSSARY.md#confluence_add_comment)</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_add_comment">confluence_add_comment</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[confluence_get_labels](TOOLS_GLOSSARY.md#confluence_get_labels)</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_labels">confluence_get_labels</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[confluence_add_label](TOOLS_GLOSSARY.md#confluence_add_label)</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_add_label">confluence_add_label</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[confluence_search_user](TOOLS_GLOSSARY.md#confluence_search_user)</td>
+<td><a href="TOOLS_GLOSSARY.md#confluence_search_user">confluence_search_user</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>**GitHub**</td>
+<td><strong>GitHub</strong></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>*Commits &amp; Repository*</td>
+<td><em>Commits &amp; Repository</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[create_branch](TOOLS_GLOSSARY.md#create_branch)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_branch">create_branch</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[create_repository](TOOLS_GLOSSARY.md#create_repository)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_repository">create_repository</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_commit](TOOLS_GLOSSARY.md#get_commit)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_commit">get_commit</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_file_contents](TOOLS_GLOSSARY.md#get_file_contents)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_file_contents">get_file_contents</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_tag](TOOLS_GLOSSARY.md#get_tag)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_tag">get_tag</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[list_branches](TOOLS_GLOSSARY.md#list_branches)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_branches">list_branches</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[list_commits](TOOLS_GLOSSARY.md#list_commits)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_commits">list_commits</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[list_tags](TOOLS_GLOSSARY.md#list_tags)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_tags">list_tags</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[push_files](TOOLS_GLOSSARY.md#push_files)</td>
+<td><a href="TOOLS_GLOSSARY.md#push_files">push_files</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Pull Requests  Retrieval*</td>
+<td><em>Pull Requests  Retrieval</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[get_pull_request](TOOLS_GLOSSARY.md#get_pull_request)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request">get_pull_request</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_pull_request_comments](TOOLS_GLOSSARY.md#get_pull_request_comments)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_comments">get_pull_request_comments</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_pull_request_diff](TOOLS_GLOSSARY.md#get_pull_request_diff)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_diff">get_pull_request_diff</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_pull_request_files](TOOLS_GLOSSARY.md#get_pull_request_files)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_files">get_pull_request_files</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_pull_request_reviews](TOOLS_GLOSSARY.md#get_pull_request_reviews)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_reviews">get_pull_request_reviews</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_pull_request_status](TOOLS_GLOSSARY.md#get_pull_request_status)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_status">get_pull_request_status</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[list_pull_requests](TOOLS_GLOSSARY.md#list_pull_requests)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_pull_requests">list_pull_requests</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Pull Requests  Actions*</td>
+<td><em>Pull Requests  Actions</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[add_comment_to_pending_review](TOOLS_GLOSSARY.md#add_comment_to_pending_review)</td>
+<td><a href="TOOLS_GLOSSARY.md#add_comment_to_pending_review">add_comment_to_pending_review</a></td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[create_pending_pull_request_review](TOOLS_GLOSSARY.md#create_pending_pull_request_review)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_pending_pull_request_review">create_pending_pull_request_review</a></td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[create_pull_request](TOOLS_GLOSSARY.md#create_pull_request)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_pull_request">create_pull_request</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[create_pull_request_with_copilot](TOOLS_GLOSSARY.md#create_pull_request_with_copilot)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_pull_request_with_copilot">create_pull_request_with_copilot</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[merge_pull_request](TOOLS_GLOSSARY.md#merge_pull_request)</td>
+<td><a href="TOOLS_GLOSSARY.md#merge_pull_request">merge_pull_request</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[request_copilot_review](TOOLS_GLOSSARY.md#request_copilot_review)</td>
+<td><a href="TOOLS_GLOSSARY.md#request_copilot_review">request_copilot_review</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review)</td>
+<td><a href="TOOLS_GLOSSARY.md#submit_pending_pull_request_review">submit_pending_pull_request_review</a></td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[update_pull_request](TOOLS_GLOSSARY.md#update_pull_request)</td>
+<td><a href="TOOLS_GLOSSARY.md#update_pull_request">update_pull_request</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch)</td>
+<td><a href="TOOLS_GLOSSARY.md#update_pull_request_branch">update_pull_request_branch</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Issues*</td>
+<td><em>Issues</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[add_issue_comment](TOOLS_GLOSSARY.md#add_issue_comment)</td>
+<td><a href="TOOLS_GLOSSARY.md#add_issue_comment">add_issue_comment</a></td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[create_issue](TOOLS_GLOSSARY.md#create_issue)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_issue">create_issue</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_issue](TOOLS_GLOSSARY.md#get_issue)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_issue">get_issue</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[get_issue_comments](TOOLS_GLOSSARY.md#get_issue_comments)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_issue_comments">get_issue_comments</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[list_issues](TOOLS_GLOSSARY.md#list_issues)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_issues">list_issues</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[search_issues](TOOLS_GLOSSARY.md#search_issues)</td>
+<td><a href="TOOLS_GLOSSARY.md#search_issues">search_issues</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[update_issue](TOOLS_GLOSSARY.md#update_issue)</td>
+<td><a href="TOOLS_GLOSSARY.md#update_issue">update_issue</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Sub-Issues*</td>
+<td><em>Sub-Issues</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_sub_issues">list_sub_issues</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue)</td>
+<td><a href="TOOLS_GLOSSARY.md#reprioritize_sub_issue">reprioritize_sub_issue</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Gists*</td>
+<td><em>Gists</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[list_gists](TOOLS_GLOSSARY.md#list_gists)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_gists">list_gists</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[update_gist](TOOLS_GLOSSARY.md#update_gist)</td>
+<td><a href="TOOLS_GLOSSARY.md#update_gist">update_gist</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Notifications*</td>
+<td><em>Notifications</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[list_notifications](TOOLS_GLOSSARY.md#list_notifications)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_notifications">list_notifications</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Code Scanning &amp; Security*</td>
+<td><em>Code Scanning &amp; Security</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_code_scanning_alerts">list_code_scanning_alerts</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Workflows (GitHub Actions)*</td>
+<td><em>Workflows (GitHub Actions)</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_workflow_run">get_workflow_run</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_workflow_run_logs">get_workflow_run_logs</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_workflow_run_usage">get_workflow_run_usage</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_workflow_jobs">list_workflow_jobs</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_workflow_run_artifacts">list_workflow_run_artifacts</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_workflow_runs">list_workflow_runs</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[list_workflows](TOOLS_GLOSSARY.md#list_workflows)</td>
+<td><a href="TOOLS_GLOSSARY.md#list_workflows">list_workflows</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs)</td>
+<td><a href="TOOLS_GLOSSARY.md#rerun_failed_jobs">rerun_failed_jobs</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[rerun_workflow_run](TOOLS_GLOSSARY.md#rerun_workflow_run)</td>
+<td><a href="TOOLS_GLOSSARY.md#rerun_workflow_run">rerun_workflow_run</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Search &amp; Discovery*</td>
+<td><em>Search &amp; Discovery</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[search_code](TOOLS_GLOSSARY.md#search_code)</td>
+<td><a href="TOOLS_GLOSSARY.md#search_code">search_code</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[search_orgs](TOOLS_GLOSSARY.md#search_orgs)</td>
+<td><a href="TOOLS_GLOSSARY.md#search_orgs">search_orgs</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests)</td>
+<td><a href="TOOLS_GLOSSARY.md#search_pull_requests">search_pull_requests</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[search_repositories](TOOLS_GLOSSARY.md#search_repositories)</td>
+<td><a href="TOOLS_GLOSSARY.md#search_repositories">search_repositories</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[search_users](TOOLS_GLOSSARY.md#search_users)</td>
+<td><a href="TOOLS_GLOSSARY.md#search_users">search_users</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*User &amp; Account*</td>
+<td><em>User &amp; Account</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[get_me](TOOLS_GLOSSARY.md#get_me)</td>
+<td><a href="TOOLS_GLOSSARY.md#get_me">get_me</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*File Operations*</td>
+<td><em>File Operations</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file)</td>
+<td><a href="TOOLS_GLOSSARY.md#create_or_update_file">create_or_update_file</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>**Bitbucket**</td>
+<td><strong>Bitbucket</strong></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>*Workspaces*</td>
+<td><em>Workspaces</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[bb_ls_workspaces](TOOLS_GLOSSARY.md#bb_ls_workspaces)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_workspaces">bb_ls_workspaces</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_get_workspace](TOOLS_GLOSSARY.md#bb_get_workspace)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_get_workspace">bb_get_workspace</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Repositories*</td>
+<td><em>Repositories</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[bb_ls_repos](TOOLS_GLOSSARY.md#bb_ls_repos)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_repos">bb_ls_repos</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_get_repo](TOOLS_GLOSSARY.md#bb_get_repo)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_get_repo">bb_get_repo</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_get_commit_history](TOOLS_GLOSSARY.md#bb_get_commit_history)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_get_commit_history">bb_get_commit_history</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_get_file](TOOLS_GLOSSARY.md#bb_get_file)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_get_file">bb_get_file</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_list_branches](TOOLS_GLOSSARY.md#bb_list_branches)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_list_branches">bb_list_branches</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_add_branch](TOOLS_GLOSSARY.md#bb_add_branch)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_add_branch">bb_add_branch</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_clone_repo](TOOLS_GLOSSARY.md#bb_clone_repo)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_clone_repo">bb_clone_repo</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Pull Requests*</td>
+<td><em>Pull Requests</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[bb_ls_prs](TOOLS_GLOSSARY.md#bb_ls_prs)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_prs">bb_ls_prs</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_get_pr](TOOLS_GLOSSARY.md#bb_get_pr)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_get_pr">bb_get_pr</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_ls_pr_comments](TOOLS_GLOSSARY.md#bb_ls_pr_comments)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_pr_comments">bb_ls_pr_comments</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_add_pr_comment">bb_add_pr_comment</a></td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_add_pr">bb_add_pr</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_update_pr">bb_update_pr</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_approve_pr">bb_approve_pr</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>[bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_reject_pr">bb_reject_pr</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
 <tr>
-<td>*Search*</td>
+<td><em>Search</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[bb_search](TOOLS_GLOSSARY.md#bb_search)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_search">bb_search</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>*Diff*</td>
+<td><em>Diff</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td>[bb_diff_branches](TOOLS_GLOSSARY.md#bb_diff_branches)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_diff_branches">bb_diff_branches</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>[bb_diff_commits](TOOLS_GLOSSARY.md#bb_diff_commits)</td>
+<td><a href="TOOLS_GLOSSARY.md#bb_diff_commits">bb_diff_commits</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
