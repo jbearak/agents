@@ -197,21 +197,56 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## MCP Servers
 
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). However, we must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.
+Model Context Provider (MCP) Servers provide a bridge between agents and APIs. Agents communicate with MCP server, which, in turns, communicates with APIs: Agent <- -> MCP Server <- -> API. MCP Servers work by providing agents a list of tools, with definitions and examples. They agent makes natural-language queries to the MCP server, which then translates those queries into API calls.
 
-**Note:** While remote MCP servers exist for GitHub and Atlassian, those are "in preview". At least for the time being, therefore, these instructions explain how to set up local servers.
+Local MCP servers run on your computer whereas remote MCP servers run in the cloud. 
+ - Microsoft provides both kinds for GitHub. However, they describe their remote server as "[in preview](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/)".
+ - Atlassian provides a remote server for Jira and Bitbucket. However, they describe it as "[in public beta](https://github.com/atlassian/atlassian-mcp-server)".
+ - Atlassian subjects their beta to [usage limits](https://github.com/atlassian/atlassian-mcp-server?tab=readme-ov-file#beta-access-and-limits): 1,000 requests per hour per organization, plus an unspecified per-user limits.
+ - Occasionally, I have found Atlassian's server not to respond to requests.
 
- [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using a local Atlassian server (documented below) for better reliability and performance.
+This repository contains wrapper scripts for each MCP server that try to launch the appropriate local server, and, should that fail, try to launch the remote server. Since the local servers run in docker containers, this provides a graceful fallback mechanism in case the daemon is not running. 
 
-After you configure these MCP servers, follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+A separate MCP server handles Bitbucket. A remote version does not exist.
+
+Atlassian does not make a local MCP server, and does not provide one of either kind for Bitbucket. For this reason, we use open-source alternatives.
+
+You must download each of the wrapper scripts and store login information in your credential manager (on Windows) or login keychain (on macOS). Follow the steps provided below for each MCP server, and then follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents).
+
+Before you begin, ensure you have the necessary tools installed.
+
+You need a docker daemon. 
+
+Windows:
+```powershell
+winget install RedHat.Podman
+podman machine init --cpus 2 --memory 4096 --disk-size 20
+podman machine start
+```
+
+macOS: 
+```bash
+brew install colima
+brew services start colima
+```
+
+You need node.js.
+
+Windows:
+```powershell
+winget install nodejs
+```
+
+macOS:
+```bash
+brew install nodejs
+```
 
 ### GitHub MCP Server
 
-GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop, and other MCP-compatible applications. The Docker version is the official and recommended way to run the GitHub MCP server locally.
+#### Obtain GitHub Personal Access Token**
 
-**Automatic Fallback:** The wrapper scripts automatically fall back to GitHub's remote MCP server (`https://api.githubcopilot.com/mcp/`) when Docker is unavailable, the daemon is not running, or the image cannot be pulled. This ensures the GitHub MCP server works even without Docker installed.
-
-**You will need a GitHub Personal Access Token. To create one, follow these steps:**
+You need a GitHub Personal Access Token. To create one, follow these steps:**
 
 1. Go to [GitHub Settings](https://github.com/settings/tokens).
 2. Click on "Generate new token" > "Generate new token (classic)".
@@ -223,8 +258,6 @@ GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop
 - project
 4. Click "Generate token".
 5. Copy your new personal access token. You won’t be able to see it again!
-
-**Note:** We use a wrapper script to store secrets safely in OS-provided secure storage.
 
 #### Configure GitHub MCP Server on Windows
 
@@ -244,12 +277,6 @@ GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop
 5. Set execution policy (user scope):
    ```powershell
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-   ```
-6. Install & init Podman:
-   ```powershell
-   winget install RedHat.Podman
-   podman machine init --cpus 2 --memory 4096 --disk-size 20
-   podman machine start
    ```
 7. Verify wrapper:
    ```powershell
@@ -285,9 +312,9 @@ export PATH="$HOME/bin:$PATH"
 
 ### Bitbucket MCP Server
 
-Although Atlassian does not provide one yet, Bitbucket MCP servers made by others exist: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
+#### Obtain Bitbucket App Password
 
-**You will need a Bitbucket App Password with the required scopes. To create one, follow these steps:**
+**You need a Bitbucket App Password with the required scopes. To create one, follow these steps:**
 
 1. Go to Personal Bitbucket Settings → App Passwords → Create app password (https://bitbucket.org/account/settings/app-passwords/)
 2. Permissions needed (tick these):
@@ -379,21 +406,14 @@ $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bi
 
 ### Atlassian MCP Server
 
-We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a container and provides access to both Jira and Confluence.
+#### Obtain Atlassian API Token
 
-**You will need an Atlassian API Token. To create one, follow these steps:**
+**You need an Atlassian API Token. To create one, follow these steps:**
 
 1. Go to [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
 2. Click "Create API token"
 3. Enter a label (e.g., "MCP Server Access")
 4. Copy the generated token immediately (you won't be able to see it again!)
-
-**Prerequisites:**
-- Container runtime installed and running:
-  - macOS: Colima (preferred) -> install via Homebrew: `brew install colima; colima start`
-  - Windows: Podman (preferred) -> install via winget: `winget install RedHat.Podman`
-  - Linux: docker Engine (or Podman)
-- Alternatively set `DOCKER_COMMAND=podman` (or another compatible CLI) if not using the default docker CLI
 
 #### Configure Atlassian MCP Server on macOS
 
