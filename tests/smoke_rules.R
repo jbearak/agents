@@ -212,65 +212,9 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
   return(tool_matrix)
 }
 
-# Function to parse tool mappings from atlassian_tools_map.md
-parse_tool_mappings <- function(mapping_file = "atlassian_tools_map.md") {
-  if (!file.exists(mapping_file)) {
-    warning(paste("Tool mapping file not found:", mapping_file))
-    return(list())
-  }
-  
-  content <- readLines(mapping_file, warn = FALSE)
-  
-  # Find table rows (lines starting with |)
-  table_lines <- content[str_detect(content, "^\\|")]
-  
-  # Skip header and separator lines
-  table_lines <- table_lines[!str_detect(table_lines, "Local.*Remote.*Notes|---|\\*\\*")]
-  
-  tool_pairs <- list()
-  
-  for (line in table_lines) {
-    # Split by | and clean up
-    parts <- str_split(line, "\\|")[[1]]
-    parts <- str_trim(parts)
-    parts <- parts[parts != ""]
-    
-    if (length(parts) >= 2) {
-      local_tool <- parts[1]
-      remote_tool <- parts[2]
-      
-      # Skip section headers and empty cells
-      if (str_detect(local_tool, "^\\*\\*") || local_tool == "" || remote_tool == "") {
-        next
-      }
-      
-      # Handle multiple remote tools (split by <br/>)
-      if (str_detect(remote_tool, "<br/>")) {
-        remote_tools <- str_split(remote_tool, "<br/>")[[1]]
-        remote_tools <- str_trim(remote_tools)
-        for (rt in remote_tools) {
-          if (rt != "" && !is.na(rt)) {
-            tool_pairs[[local_tool]] <- c(tool_pairs[[local_tool]], rt)
-            tool_pairs[[rt]] <- c(tool_pairs[[rt]], local_tool)
-          }
-        }
-      } else if (remote_tool != "" && !is.na(remote_tool)) {
-        tool_pairs[[local_tool]] <- c(tool_pairs[[local_tool]], remote_tool)
-        tool_pairs[[remote_tool]] <- c(tool_pairs[[remote_tool]], local_tool)
-      }
-    }
-  }
-  
-  # Remove duplicates and clean up
-  for (tool in names(tool_pairs)) {
-    tool_pairs[[tool]] <- unique(tool_pairs[[tool]])
-  }
-  
-  return(tool_pairs)
-}
 
 # Function to convert tool matrix to expected toolsets per mode
-convert_matrix_to_toolsets <- function(tool_matrix, tool_mappings = list()) {
+convert_matrix_to_toolsets <- function(tool_matrix) {
   # The README has a single 'Code' column that applies to both Code chatmodes.
   base_modes <- c("QnA", "Review", "Plan", "Code")
   expected_toolsets <- list()
@@ -303,13 +247,6 @@ convert_matrix_to_toolsets <- function(tool_matrix, tool_mappings = list()) {
 # Main validation function
 validate_toolsets <- function() {
   cat("=== Tool Availability Matrix Validation ===\n\n")
-  
-  # Parse tool mappings from atlassian_tools_map.md
-  cat("Reading tool mappings from atlassian_tools_map.md...\n")
-  tool_mappings <- parse_tool_mappings()
-  if (length(tool_mappings) > 0) {
-    cat(paste("Found", length(tool_mappings), "tool mappings\n"))
-  }
   
   # Extract expected toolsets from README.md
   cat("Reading tool matrix from README.md...\n")
@@ -360,7 +297,7 @@ validate_toolsets <- function() {
     }
   }
   
-  expected_toolsets <- convert_matrix_to_toolsets(tool_matrix, tool_mappings)
+  expected_toolsets <- convert_matrix_to_toolsets(tool_matrix)
   
   # Show expected toolsets summary
   cat("Expected toolsets from README.md:\n")
@@ -403,7 +340,7 @@ validate_toolsets <- function() {
     cat(paste("  ", mode, ":", length(actual_toolsets[[mode]]), "tools\n"))
   }
   
-  # Compare toolsets with mapping-aware validation
+  # Compare toolsets
   cat("\n=== Validation Results ===\n")
   all_valid <- TRUE
   
@@ -425,34 +362,13 @@ validate_toolsets <- function() {
       next
     }
     
-    # For mapped tools, check if either the local or remote version is present
-    missing_tools <- character(0)
+    # Compare toolsets for exact matches
+    missing_tools <- setdiff(expected, actual)
     extra_tools <- setdiff(actual, expected)
     
-    for (exp_tool in expected) {
-      # Check if expected tool or any of its mapped alternatives are present
-      tool_found <- exp_tool %in% actual
-      
-      # If not found directly, check if any mapped alternative is present
-      if (!tool_found && exp_tool %in% names(tool_mappings)) {
-        mapped_tools <- tool_mappings[[exp_tool]]
-        tool_found <- any(mapped_tools %in% actual)
-        
-        # Remove mapped alternatives from extra_tools since they're valid
-        if (tool_found) {
-          extra_tools <- setdiff(extra_tools, mapped_tools)
-        }
-      }
-      
-      # If still not found, it's truly missing
-      if (!tool_found) {
-        missing_tools <- c(missing_tools, exp_tool)
-      }
-    }
-    
-    # Check for perfect match or acceptable alternatives
+    # Check for exact match
     if (length(missing_tools) == 0 && length(extra_tools) == 0) {
-      cat("  ✅ Toolsets match (including valid tool alternatives)\n")
+      cat("  ✅ Toolsets match exactly\n")
       cat(paste("     Tool count:", length(actual), "\n"))
     } else {
       cat("  ❌ Toolsets do not match\n")
@@ -460,14 +376,9 @@ validate_toolsets <- function() {
       
       # Show differences
       if (length(missing_tools) > 0) {
-        cat("     Missing tools in chatmode.md (no local or remote alternative found):\n")
+        cat("     Missing tools in chatmode.md:\n")
         for (tool in missing_tools) {
-          alternatives <- if (tool %in% names(tool_mappings)) tool_mappings[[tool]] else character(0)
-          if (length(alternatives) > 0) {
-            cat(paste("       -", tool, "(or alternatives:", paste(alternatives, collapse = ", "), ")\n"))
-          } else {
-            cat(paste("       -", tool, "\n"))
-          }
+          cat(paste("       -", tool, "\n"))
         }
       }
       
