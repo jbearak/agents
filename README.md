@@ -200,7 +200,7 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
 
 ## MCP Servers
 
-Model Context Provider (MCP) Servers provide a bridge between agents and APIs. Agents communicate with MCP server, which, in turns, communicates with APIs: Agent <- -> MCP Server <- -> API. MCP Servers work by providing agents a list of tools, with definitions and examples. They agent makes natural-language queries to the MCP server, which then translates those queries into API calls.
+Model Context Provider (MCP) Servers provide a bridge between agents and APIs: Agent <-> MCP Server <-> API. MCP Servers provide agents tool lists and (ideally) include usage examples for each tool.
 
 Local MCP servers run on your computer whereas remote MCP servers run in the cloud. 
  - Microsoft provides both kinds for GitHub. However, they describe their remote server as "[in preview](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/)".
