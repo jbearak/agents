@@ -940,7 +940,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>addCommentToJiraIssue</td>
+<td><a href="TOOLS_GLOSSARY.md#addcommenttojiraissue">addCommentToJiraIssue</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_create_issue">jira_create_issue</a></td>
@@ -950,7 +950,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>createJiraIssue</td>
+<td><a href="TOOLS_GLOSSARY.md#createjiraissue">createJiraIssue</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_update_issue">jira_update_issue</a></td>
@@ -960,7 +960,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>editJiraIssue</td>
+<td><a href="TOOLS_GLOSSARY.md#editjiraissue">editJiraIssue</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_get_issue">jira_get_issue</a></td>
@@ -970,7 +970,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>getJiraIssue</td>
+<td><a href="TOOLS_GLOSSARY.md#getjiraissue">getJiraIssue</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_search">jira_search</a></td>
@@ -980,7 +980,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>searchJiraIssuesUsingJql</td>
+<td><a href="TOOLS_GLOSSARY.md#searchjiraissuesusingjql">searchJiraIssuesUsingJql</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_transition_issue">jira_transition_issue</a></td>
@@ -990,7 +990,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>transitionJiraIssue</td>
+<td><a href="TOOLS_GLOSSARY.md#transitionjiraissue">transitionJiraIssue</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_get_transitions">jira_get_transitions</a></td>
@@ -1000,7 +1000,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>getTransitionsForJiraIssue</td>
+<td><a href="TOOLS_GLOSSARY.md#gettransitionsforjiraissue">getTransitionsForJiraIssue</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#jira_get_link_types">jira_get_link_types</a></td>
@@ -1143,7 +1143,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
-<td>createConfluencePage</td>
+<td><a href="TOOLS_GLOSSARY.md#createconfluencepage">createConfluencePage</a></td>
 </tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_get_page">confluence_get_page</a></td>
@@ -1153,7 +1153,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
-<td>getConfluencePage</td>
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepage">getConfluencePage</a></td>
 </tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_update_page">confluence_update_page</a></td>
@@ -1163,7 +1163,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
-<td>updateConfluencePage</td>
+<td><a href="TOOLS_GLOSSARY.md#updateconfluencepage">updateConfluencePage</a></td>
 </tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_delete_page">confluence_delete_page</a></td>
@@ -1180,7 +1180,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>getConfluencePageDescendants</td>
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepagedescendants">getConfluencePageDescendants</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_search">confluence_search</a></td>
@@ -1190,7 +1190,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td rowspan="2">✅</td>
 </tr>
 <tr style="background-color: #f8f9fa;">
-<td>searchConfluenceUsingCql</td>
+<td><a href="TOOLS_GLOSSARY.md#searchconfluenceusingcql">searchConfluenceUsingCql</a></td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_get_comments">confluence_get_comments</a></td>
