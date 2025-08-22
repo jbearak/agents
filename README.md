@@ -542,17 +542,7 @@ $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bi
 
 ### Context7 MCP Server
 
-Context7 provides up-to-date, version-specific documentation and code examples for libraries and frameworks. The MCP server requires no authentication and works immediately after installation.
-
-**Installation:**
-
-```bash
-# Option 1: Install globally (recommended)
-npm install -g @upstash/context7-mcp@latest
-
-# Option 2: Use via npx (automatic fallback)
-npx -y @upstash/context7-mcp@latest --help
-```
+Context7 provides up-to-date, version-specific documentation and code examples for libraries and frameworks. It requires no authentication.
 
 **Configuration:**
 
@@ -566,7 +556,7 @@ npx -y @upstash/context7-mcp@latest --help
 
 The wrapper automatically uses the globally installed package if available, falling back to npx if not.
 
-**Usage:** Query for documentation like "show me React hooks examples" or "get Next.js routing docs". The server will resolve library names and provide relevant, current documentation.
+**Usage:** Query for documentation like "show me dplyr mutate examples" or "get ggplot2 plotting docs". The server will resolve library names and provide relevant, current documentation.
 
 ### Add MCP Servers to Agents
 
