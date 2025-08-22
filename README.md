@@ -496,9 +496,9 @@ Install-Module CredentialManager -Scope CurrentUser -Force
      - Internet or network address: `bitbucket-mcp`
      - User name: `app-password`
      - Password: (your Bitbucket app password)
-  - Or CLI:
-    > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>` directly will write your secret in cleartext to your shell history. Use this secure command instead:
-    ```powershell
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+   ```powershell
     $secure = Read-Host -AsSecureString "Enter Bitbucket app password"
     $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
     try {
