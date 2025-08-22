@@ -163,7 +163,7 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
 | Q                 | ✅      | ❌        | ❌     | ❌         | ❌      | ❌              | ❌              |
 | Warp              | ✅      | ✅        | ✅     | ❌         | ✅      | ✅              | ✅              |
 
-**Note:** None of these agents specify whether GPT-5 refers to the model with minimal, low, medium, or high reasoning.
+**Note:** None of these agents except Warp specify whether GPT-5 refers to the model with minimal, low, medium, or high reasoning. (Warp offers low, medium, and high.)
 
 
 ### Simulated Reasoning
