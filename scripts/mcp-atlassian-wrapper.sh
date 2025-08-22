@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Atlassian (Local) MCP Server Wrapper (macOS / Linux)
 # Securely launches the Sooperset Atlassian MCP server with API token from macOS Keychain or environment variables
-# Startup order: local CLI on PATH -> npx (no global install, if package available) -> container (cached, --pull=never)
-# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
-# Env overrides: MCP_ATLASSIAN_CLI_BIN, MCP_ATLASSIAN_NPM_PKG, MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
+# Startup order: container only (Docker-based MCP server)
+# The upstream sooperset/mcp-atlassian only provides Docker container deployment
+# Env overrides: MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
 # Logging note: All diagnostics/info are sent to stderr on purpose. MCP clients require
 # stdout to contain only JSON-RPC (and headers). Any human text on stdout can break init.
 
@@ -14,8 +14,7 @@ ACCOUNT_NAME="api-token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 MCP_ATLASSIAN_IMAGE="${MCP_ATLASSIAN_IMAGE:-ghcr.io/sooperset/mcp-atlassian:latest}"
 AUTH_METHOD="${AUTH_METHOD:-api_token}"
-NPM_PKG_NAME=${MCP_ATLASSIAN_NPM_PKG:-@sooperset/mcp-atlassian}
-CLI_BIN_NAME=${MCP_ATLASSIAN_CLI_BIN:-mcp-atlassian}
+# Note: sooperset/mcp-atlassian only supports Docker containers
 
 # Keep stdout clean when npm/npx is used
 export NO_COLOR=1
@@ -87,53 +86,9 @@ if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
   echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
-run_cli() {
-  CONFLUENCE_URL="https://${ATLASSIAN_DOMAIN}/wiki" \
-  JIRA_URL="https://${ATLASSIAN_DOMAIN}" \
-  CONFLUENCE_USERNAME="${ATLASSIAN_EMAIL}" \
-  JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
-  CONFLUENCE_API_TOKEN="${API_TOKEN}" \
-  JIRA_API_TOKEN="${API_TOKEN}" \
-  "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
-awk 'BEGIN{IGNORECASE=1}
-{
-  if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*\{/ || $0 ~ /^[[:space:]]*\[[[:space:]]*(\"|\{|\[|[0-9-]|t|f|n|\])/) {
-    print; fflush();
-  } else {
-    print $0 > "/dev/stderr"; fflush("/dev/stderr");
-  }
-}'
-  exit ${PIPESTATUS[0]}
-}
+# run_cli function removed - sooperset/mcp-atlassian only supports Docker containers
 
-# Try npm-based CLI first (only if already installed) or via npx if resolvable
-if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
-  echo "Using Atlassian MCP via local CLI on PATH: ${CLI_BIN_NAME}" >&2
-  run_cli "$@"
-fi
-if command -v npx >/dev/null 2>&1; then
-  # Try to run via npx; on failure, fall back to container
-  set +e
-  echo "Using Atlassian MCP via npx package: ${NPM_PKG_NAME}@latest" >&2
-  CONFLUENCE_URL="https://${ATLASSIAN_DOMAIN}/wiki" \
-  JIRA_URL="https://${ATLASSIAN_DOMAIN}" \
-  CONFLUENCE_USERNAME="${ATLASSIAN_EMAIL}" \
-  JIRA_USERNAME="${ATLASSIAN_EMAIL}" \
-  CONFLUENCE_API_TOKEN="${API_TOKEN}" \
-  JIRA_API_TOKEN="${API_TOKEN}" \
-  NPX_FLAGS=(-y)
-  npx "${NPX_FLAGS[@]}" "${NPM_PKG_NAME}@latest" "$@" 2> >(cat >&2) | \
-    awk 'BEGIN{IGNORECASE=1} { if ($0 ~ /^[[:space:]]*Content-(Length|Type):/ || $0 ~ /^[[:space:]]*$/ || $0 ~ /^[[:space:]]*[\[{]/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  rc=${PIPESTATUS[0]}
-  set -e
-  if [ "$rc" -eq 0 ]; then
-    exit 0
-  else
-    echo "Warning: npx ${NPM_PKG_NAME} failed with code $rc; falling back to container." >&2
-  fi
-fi
-
-# Fallback to container runtime
+# Use container runtime (only option available)
 check_docker
 
 DOCKER_ENV_ARGS=(

@@ -37,9 +37,9 @@
   Additional arguments passed through to the MCP server process.
 #>
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-# Startup order: local CLI on PATH -> npx (no global install, if package available) -> container (podman/docker)
-# No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
-# Env overrides: MCP_ATLASSIAN_CLI_BIN, MCP_ATLASSIAN_NPM_PKG, MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
+# Startup order: container only (Docker-based MCP server)
+# The upstream sooperset/mcp-atlassian only provides Docker container deployment
+# Env overrides: MCP_ATLASSIAN_IMAGE/DOCKER_COMMAND
 # Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -145,9 +145,8 @@ Could not retrieve Atlassian API token:
   }
 }
 
-# Prefer npm-installed CLI if available (package may be private); otherwise use container
-$CLI_BIN = $env:MCP_ATLASSIAN_CLI_BIN; if (-not $CLI_BIN) { $CLI_BIN = 'mcp-atlassian' }
-$NPM_PKG = $env:MCP_ATLASSIAN_NPM_PKG; if (-not $NPM_PKG) { $NPM_PKG = '@sooperset/mcp-atlassian' }
+# Note: sooperset/mcp-atlassian only supports Docker containers
+# CLI_BIN and NPM_PKG variables removed - not supported by upstream
 
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
@@ -160,30 +159,7 @@ $prefEnv = @(
   "JIRA_API_TOKEN=$apiToken"
 )
 
-if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-  [Console]::Error.WriteLine("Using Atlassian MCP via local CLI on PATH: $CLI_BIN")
-  $env:NO_COLOR = '1'
-  foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
-  & $CLI_BIN @Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-}
-
-# Try npx as an optional fallback if available (no global install)
-if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
-  [Console]::Error.WriteLine("Using Atlassian MCP via npx package: $NPM_PKG@latest")
-  $env:NO_COLOR = '1'
-  $env:NPM_CONFIG_LOGLEVEL = 'silent'
-  $env:NPM_CONFIG_FUND = 'false'
-  $env:NPM_CONFIG_AUDIT = 'false'
-  $env:NO_UPDATE_NOTIFIER = '1'
-  $env:ADBLOCK = '1'
-  foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
-  $npxArgs = @('-y', "$NPM_PKG@latest")
-  & 'npx' @($npxArgs + $Args) | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-}
-
-# Fallback to container
+# Use container runtime (only option available)
 # Ensure image present (auto-pull if missing)
 try {
   & $env:DOCKER_COMMAND image inspect $env:MCP_ATLASSIAN_IMAGE 2>$null

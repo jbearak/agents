@@ -17,6 +17,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [GitHub MCP Server](#github-mcp-server)
   - [Bitbucket MCP Server](#bitbucket-mcp-server)
   - [Atlassian MCP Server](#atlassian-mcp-server)
+  - [Technical Notes](#technical-notes-on-mcp-wrappers)
 - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
   - [VS Code](#vs-code)
   - [Claude Desktop](#claude-desktop)
@@ -196,46 +197,19 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## Installing MCP Servers
 
-How these wrapper scripts launch servers
-- Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
-  - GitHub: Docker container (required)
-  - Atlassian (Sooperset): local CLI (if present) → npx @latest → Docker fallback
-  - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
-- The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
+Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). However, we must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.
 
-Optional: pre-pull GitHub container image (auto-pulls on first run)
-  - docker pull ghcr.io/github/github-mcp-server:latest
+**Note:** While remote MCP servers exist for GitHub and Atlassian, those are "in preview". At least for the time being, therefore, these instructions explain how to set up local servers.
 
-Optional: pre‑pull container images (Atlassian)
-Pre‑pulling avoids network access during regular runs and makes startup instant when the container path is used.
-  - docker pull ghcr.io/sooperset/mcp-atlassian:latest
-
-Optional: local CLI installs (advanced)
-- Bitbucket MCP (Node CLI):
-  - npm i -g @aashari/mcp-server-atlassian-bitbucket
-- Atlassian MCP (Sooperset):
-  - No public npm package exists.
-
-Quick verification commands
-Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
-- macOS (zsh/bash):
-  - GitHub: ~/bin/mcp-github-wrapper.sh --help | head -5
-  - Bitbucket: ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
-  - Atlassian: ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
-- Windows (PowerShell):
-  - GitHub: & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 5
-  - Bitbucket: $env:ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
-  - Atlassian: $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
-
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
-
-**Note:** While Microsoft lists a [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using the local Atlassian server (documented below) for better reliability and performance.
+ [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using a local Atlassian server (documented below) for better reliability and performance.
 
 After you configure these MCP servers, follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
 
 ### GitHub MCP Server
 
 GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop, and other MCP-compatible applications. The Docker version is the official and recommended way to run the GitHub MCP server locally.
+
+**Automatic Fallback:** The wrapper scripts automatically fall back to GitHub's remote MCP server (`https://api.githubcopilot.com/mcp/`) when Docker is unavailable, the daemon is not running, or the image cannot be pulled. This ensures the GitHub MCP server works even without Docker installed.
 
 **You will need a GitHub Personal Access Token. To create one, follow these steps:**
 
@@ -403,16 +377,6 @@ $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
 $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
 ```
 
-#### Troubleshooting
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| macOS: "Could not retrieve Bitbucket credentials" | Keychain item missing | Create keychain entry with service `bitbucket-mcp` |
-| Windows: Credential not found | Generic credential not created | Add credential `bitbucket-mcp` in Credential Manager | 
-| Username rejected | Using email instead of username | Use profile username from settings page | 
-| 401 Unauthorized | Wrong app password scope / value | Regenerate app password with correct scopes | 
-
-Scopes: Use the minimal scopes required by your workflows (e.g., repository read/write as needed). Avoid over-broad admin scopes.
-
 ### Atlassian MCP Server
 
 We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a container and provides access to both Jira and Confluence.
@@ -512,16 +476,36 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
    ```
 
-#### Troubleshooting Atlassian MCP Server
+### Technical notes on MCP wrappers
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| "docker is not installed" | Container runtime CLI not available | Install Colima (macOS) or Podman/docker and ensure CLI is in PATH |
-| "docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or `podman machine start` (Windows) |
-| "Could not retrieve API token" | Keychain/credential missing | Create credential with correct service name |
-| Container fails to start | Invalid domain/credentials | Verify ATLASSIAN_DOMAIN and API token |
-| 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |
-| Connection timeouts | Network/firewall issues | Check container network settings and firewall |
+- Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
+  - GitHub: Docker container (preferred) → remote server fallback (https://api.githubcopilot.com/mcp/)
+  - Atlassian (Sooperset): Docker container only (upstream only supports containers)
+  - Bitbucket (@aashari): local CLI (if present) → npx @latest (Node.js only, no Docker)
+- The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
+- GitHub wrapper environment variables: `MCP_GITHUB_DOCKER_IMAGE`, `DOCKER_COMMAND`, `GITHUB_MCP_REMOTE_URL`
+
+Optional: pre-pull container images (auto-pulls on first run)
+  - docker pull ghcr.io/github/github-mcp-server:latest
+  - docker pull ghcr.io/sooperset/mcp-atlassian:latest
+
+Optional: local CLI installs (more efficient than containers/remote)
+- Bitbucket MCP Server:
+  - npm i -g @aashari/mcp-server-atlassian-bitbucket
+- Note: Atlassian MCP Server does not provide CLI/npm packages - only Docker containers
+- Note: Bitbucket MCP Server does not provide Docker containers - only CLI/npm packages
+
+Quick verification commands
+Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
+- macOS (zsh/bash):
+  - GitHub: ~/bin/mcp-github-wrapper.sh --help | head -5
+  - Bitbucket: ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
+  - Atlassian: ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
+- Windows (PowerShell):
+  - GitHub: & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 5
+  - Bitbucket: $env:ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
+  - Atlassian: $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
+
 
 
 ## Add MCP Servers to Agents

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Bitbucket MCP Server Wrapper (macOS / Linux)
 # Securely launches the Bitbucket MCP server with app password from macOS Keychain (macOS) or environment variables (fallback)
-# Startup order: local CLI on PATH -> npx (no global install) -> container (cached, --pull=never if image set)
+# Startup order: local CLI on PATH -> npx (no global install)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
-# Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG, MCP_BITBUCKET_DOCKER_IMAGE
+# Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG
 # Logging note: All diagnostics/info are sent to stderr intentionally. MCP clients expect
 # stdout to be pure JSON-RPC; human-readable text on stdout can break initialization.
 
@@ -68,7 +68,7 @@ export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-Guttmacher}"
 # Defaults can be overridden via environment variables
 NPM_PKG_NAME=${MCP_BITBUCKET_NPM_PKG:-@aashari/mcp-server-atlassian-bitbucket}
 CLI_BIN_NAME=${MCP_BITBUCKET_CLI_BIN:-mcp-atlassian-bitbucket}
-DOCKER_IMAGE=${MCP_BITBUCKET_DOCKER_IMAGE:-}
+# Note: @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm, no Docker
 
 run_cli() {
   "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
@@ -109,28 +109,7 @@ awk 'BEGIN{IGNORECASE=1; started=0; saw=0}
   exit ${PIPESTATUS[0]}
 fi
 
-# 3) Optional Docker fallback if image is specified
-if [ -n "${DOCKER_IMAGE}" ] && command -v docker >/dev/null 2>&1; then
-# Ensure image present (auto-pull if missing)
-if ! docker image inspect "${DOCKER_IMAGE}" >/dev/null 2>&1; then
-  echo "Pulling Bitbucket MCP Docker image: ${DOCKER_IMAGE}" >&2
-  if ! docker pull "${DOCKER_IMAGE}" >&2; then
-    echo "Error: failed to pull image: ${DOCKER_IMAGE}" >&2
-    exit 1
-  fi
-  echo "Pulled Bitbucket MCP Docker image successfully: ${DOCKER_IMAGE}" >&2
-fi
+# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm
 
-echo "Using Bitbucket MCP via docker image: ${DOCKER_IMAGE}" >&2
-  docker run -i --rm --pull=never \
-    -e "NO_COLOR=1" \
-    -e "ATLASSIAN_BITBUCKET_USERNAME=${ATLASSIAN_BITBUCKET_USERNAME}" \
-    -e "ATLASSIAN_BITBUCKET_APP_PASSWORD=${APP_PASS}" \
-    -e "BITBUCKET_DEFAULT_WORKSPACE=${BITBUCKET_DEFAULT_WORKSPACE}" \
-    "${DOCKER_IMAGE}" "$@" 2> >(cat >&2) | \
-    awk '{ if ($0 ~ /^[[:space:]]*\{/) { print; fflush(); } else { print $0 > "/dev/stderr"; fflush("/dev/stderr"); } }'
-  exit ${PIPESTATUS[0]}
-fi
-
-echo "Error: Bitbucket MCP CLI not found and no viable fallback (npm/npx/docker) available." >&2
+echo "Error: Bitbucket MCP CLI not found and no viable fallback (npm/npx) available." >&2
 exit 1

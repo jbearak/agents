@@ -11,6 +11,7 @@ SERVICE_NAME="github-mcp"
 ACCOUNT_NAME="token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 DOCKER_IMAGE="${MCP_GITHUB_DOCKER_IMAGE:-ghcr.io/github/github-mcp-server:latest}"
+REMOTE_MCP_URL="${GITHUB_MCP_REMOTE_URL:-https://api.githubcopilot.com/mcp/}"
 
 # --- Helper Functions ---
 check_docker_daemon() {
@@ -18,6 +19,54 @@ check_docker_daemon() {
     echo "Error: Docker daemon ('$DOCKER_COMMAND') is not running." >&2
     echo "Please start your container runtime (e.g., 'colima start')." >&2
     return 1
+  fi
+}
+
+use_remote_server() {
+  echo "Falling back to remote GitHub MCP server: $REMOTE_MCP_URL" >&2
+  
+  # Check if curl is available
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "Error: curl not found. Cannot connect to remote server." >&2
+    echo "Please install Docker/Podman or curl to use GitHub MCP server." >&2
+    exit 1
+  fi
+  
+  # For MCP over HTTP, we need to handle the initialize handshake properly
+  # Read the first message (should be initialize request)
+  local input_line
+  read -r input_line
+  
+  # Send initialize request to remote server and get response
+  response=$(echo "$input_line" | curl -s -S \
+    -H "Authorization: Bearer $GITHUB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -X POST \
+    -d @- \
+    "$REMOTE_MCP_URL" 2>/dev/null)
+  
+  if [ $? -eq 0 ] && [ -n "$response" ]; then
+    echo "$response"
+    # Continue processing additional messages
+    while read -r input_line; do
+      if [ -n "$input_line" ]; then
+        response=$(echo "$input_line" | curl -s -S \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Content-Type: application/json" \
+          -H "Accept: application/json" \
+          -X POST \
+          -d @- \
+          "$REMOTE_MCP_URL" 2>/dev/null)
+        if [ $? -eq 0 ] && [ -n "$response" ]; then
+          echo "$response"
+        fi
+      fi
+    done
+  else
+    echo "Error: Failed to connect to remote GitHub MCP server." >&2
+    echo "Please check your GITHUB_TOKEN and network connection." >&2
+    exit 1
   fi
 }
 
@@ -66,12 +115,14 @@ fi
 # Check if Docker is available
 if ! command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
   echo "Error: Docker not found. Please install Docker or set DOCKER_COMMAND to point to your container runtime." >&2
-  exit 1
+  echo "Attempting to use remote server fallback..." >&2
+  use_remote_server
 fi
 
 # Check if Docker daemon is running
 if ! check_docker_daemon; then
-  exit 1
+  echo "Attempting to use remote server fallback..." >&2
+  use_remote_server
 fi
 
 # Ensure image present (auto-pull if missing)
@@ -79,7 +130,8 @@ if ! "$DOCKER_COMMAND" image inspect "${DOCKER_IMAGE}" >/dev/null 2>&1; then
   echo "Pulling GitHub MCP Docker image: ${DOCKER_IMAGE}" >&2
   if ! "$DOCKER_COMMAND" pull "${DOCKER_IMAGE}" >&2; then
     echo "Error: failed to pull image: ${DOCKER_IMAGE}" >&2
-    exit 1
+    echo "Attempting to use remote server fallback..." >&2
+    use_remote_server
   fi
   echo "Pulled GitHub MCP Docker image successfully: ${DOCKER_IMAGE}" >&2
 fi

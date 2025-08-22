@@ -18,9 +18,9 @@
   Additional arguments passed through to the MCP server process.
 #>
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-# Startup order: local CLI on PATH -> npx (no global install) -> container (podman/docker, --pull=never)
+# Startup order: local CLI on PATH -> npx (no global install)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
-# Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG, MCP_BITBUCKET_DOCKER_IMAGE
+# Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG
 # Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -72,10 +72,10 @@ if ($env:ATLASSIAN_BITBUCKET_APP_PASSWORD) {
 
 $env:ATLASSIAN_BITBUCKET_APP_PASSWORD = $appPassword
 
-# Prefer npm-installed CLI; fallback to npx; optional container fallback
+# Prefer npm-installed CLI; fallback to npx
 $CLI_BIN = $env:MCP_BITBUCKET_CLI_BIN; if (-not $CLI_BIN) { $CLI_BIN = 'mcp-atlassian-bitbucket' }
 $NPM_PKG = $env:MCP_BITBUCKET_NPM_PKG; if (-not $NPM_PKG) { $NPM_PKG = '@aashari/mcp-server-atlassian-bitbucket' }
-$IMG     = $env:MCP_BITBUCKET_DOCKER_IMAGE
+# Note: @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm, no Docker
 
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
@@ -99,29 +99,7 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
-if ($IMG) {
-  $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
-  if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
-[Console]::Error.WriteLine("Using Bitbucket MCP via docker image: $IMG")
-  # Ensure image present (auto-pull if missing)
-  try {
-    & $runtime image inspect $IMG 2>$null
-    if ($LASTEXITCODE -ne 0) {
-      [Console]::Error.WriteLine("Pulling Bitbucket MCP Docker image: $IMG")
-& $runtime pull $IMG
-      if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
-      [Console]::Error.WriteLine("Pulled Bitbucket MCP Docker image successfully: $IMG")
-    }
-  } catch {
-    [Console]::Error.WriteLine("Pulling Bitbucket MCP Docker image: $IMG")
-    & $runtime pull $IMG
-    if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
-    [Console]::Error.WriteLine("Pulled Bitbucket MCP Docker image successfully: $IMG")
-  }
-  $envArgs = @('-e','NO_COLOR=1','-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
-  & $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-}
+# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm
 
-Write-Error 'Bitbucket MCP CLI not found and no viable fallback (npm/npx/docker) available.'
+Write-Error 'Bitbucket MCP CLI not found and no viable fallback (npm/npx) available.'
 exit 1

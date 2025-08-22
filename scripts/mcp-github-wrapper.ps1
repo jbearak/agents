@@ -23,15 +23,48 @@ if (-not ($Args -contains 'stdio' -or $Args -contains '--stdio' -or $Args -conta
 
 # Defaults
 $IMG = $env:MCP_GITHUB_DOCKER_IMAGE; if (-not $IMG) { $IMG = 'ghcr.io/github/github-mcp-server:latest' }
+$REMOTE_URL = $env:GITHUB_MCP_REMOTE_URL; if (-not $REMOTE_URL) { $REMOTE_URL = 'https://api.githubcopilot.com/mcp/' }
 
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
+
+function Use-RemoteServer {
+  [Console]::Error.WriteLine("Falling back to remote GitHub MCP server: $REMOTE_URL")
+  
+  try {
+    $headers = @{
+      'Authorization' = "Bearer $($env:GITHUB_PERSONAL_ACCESS_TOKEN)"
+      'Content-Type' = 'application/json'
+      'Accept' = 'application/json'
+    }
+    
+    # Read and process MCP messages line by line
+    do {
+      $inputLine = [System.Console]::In.ReadLine()
+      if ($inputLine -and $inputLine.Trim() -ne '') {
+        try {
+          $response = Invoke-WebRequest -Uri $REMOTE_URL -Method POST -Headers $headers -Body $inputLine -UseBasicParsing -ErrorAction Stop
+          [System.Console]::WriteLine($response.Content)
+        } catch {
+          [Console]::Error.WriteLine("Error communicating with remote server: $_")
+          break
+        }
+      }
+    } while ($inputLine -ne $null)
+    
+  } catch {
+    [Console]::Error.WriteLine("Error: Failed to connect to remote GitHub MCP server.")
+    [Console]::Error.WriteLine("Please check your `$env:GITHUB_PERSONAL_ACCESS_TOKEN` and network connection.")
+    exit 1
+  }
+}
 
 # Find container runtime (prefer Podman on Windows)
 $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
 
 if (-not $runtime) {
   Write-Error 'Error: No container runtime found. Please install Docker or Podman.'
-  exit 1
+  [Console]::Error.WriteLine('Attempting to use remote server fallback...')
+  Use-RemoteServer
 }
 
 # Check if container runtime daemon is running
@@ -39,11 +72,13 @@ try {
   & $runtime info 2>&1 | Out-Null
   if ($LASTEXITCODE -ne 0) {
     Write-Error "Error: $runtime daemon is not running. Please start it first."
-    exit 1
+    [Console]::Error.WriteLine('Attempting to use remote server fallback...')
+    Use-RemoteServer
   }
 } catch {
   Write-Error "Error: Failed to check $runtime daemon status."
-  exit 1
+  [Console]::Error.WriteLine('Attempting to use remote server fallback...')
+  Use-RemoteServer
 }
 
 # Ensure image present (auto-pull if missing)
@@ -52,13 +87,21 @@ try {
   if ($LASTEXITCODE -ne 0) {
     [Console]::Error.WriteLine("Pulling GitHub MCP Docker image: $IMG")
 & $runtime pull $IMG
-    if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
+    if ($LASTEXITCODE -ne 0) { 
+      Write-Error "Failed to pull image: $IMG"
+      [Console]::Error.WriteLine('Attempting to use remote server fallback...')
+      Use-RemoteServer
+    }
     [Console]::Error.WriteLine("Pulled GitHub MCP Docker image successfully: $IMG")
   }
 } catch {
   [Console]::Error.WriteLine("Pulling GitHub MCP Docker image: $IMG")
   & $runtime pull $IMG
-  if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
+  if ($LASTEXITCODE -ne 0) { 
+    Write-Error "Failed to pull image: $IMG"
+    [Console]::Error.WriteLine('Attempting to use remote server fallback...')
+    Use-RemoteServer
+  }
   [Console]::Error.WriteLine("Pulled GitHub MCP Docker image successfully: $IMG")
 }
 
