@@ -153,6 +153,7 @@ if ! "$DOCKER_COMMAND" image inspect "${MCP_ATLASSIAN_IMAGE}" >/dev/null 2>&1; t
     echo "Error: failed to pull image: ${MCP_ATLASSIAN_IMAGE}" >&2
     exit 1
   fi
+  echo "Pulled Atlassian MCP Docker image successfully: ${MCP_ATLASSIAN_IMAGE}" >&2
 fi
 
 echo "Using Atlassian MCP via container image: ${MCP_ATLASSIAN_IMAGE}" >&2

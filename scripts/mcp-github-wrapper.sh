@@ -81,6 +81,7 @@ if ! "$DOCKER_COMMAND" image inspect "${DOCKER_IMAGE}" >/dev/null 2>&1; then
     echo "Error: failed to pull image: ${DOCKER_IMAGE}" >&2
     exit 1
   fi
+  echo "Pulled GitHub MCP Docker image successfully: ${DOCKER_IMAGE}" >&2
 fi
 
 echo "Using GitHub MCP via Docker image: ${DOCKER_IMAGE}" >&2

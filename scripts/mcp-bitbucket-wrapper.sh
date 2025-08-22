@@ -118,6 +118,7 @@ if ! docker image inspect "${DOCKER_IMAGE}" >/dev/null 2>&1; then
     echo "Error: failed to pull image: ${DOCKER_IMAGE}" >&2
     exit 1
   fi
+  echo "Pulled Bitbucket MCP Docker image successfully: ${DOCKER_IMAGE}" >&2
 fi
 
 echo "Using Bitbucket MCP via docker image: ${DOCKER_IMAGE}" >&2

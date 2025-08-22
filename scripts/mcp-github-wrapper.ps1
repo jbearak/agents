@@ -51,13 +51,15 @@ try {
   & $runtime image inspect $IMG 2>&1 | Out-Null
   if ($LASTEXITCODE -ne 0) {
     [Console]::Error.WriteLine("Pulling GitHub MCP Docker image: $IMG")
-    & $runtime pull $IMG
+& $runtime pull $IMG
     if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
+    [Console]::Error.WriteLine("Pulled GitHub MCP Docker image successfully: $IMG")
   }
 } catch {
   [Console]::Error.WriteLine("Pulling GitHub MCP Docker image: $IMG")
   & $runtime pull $IMG
   if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
+  [Console]::Error.WriteLine("Pulled GitHub MCP Docker image successfully: $IMG")
 }
 
 [Console]::Error.WriteLine("Using GitHub MCP via container image: $IMG")

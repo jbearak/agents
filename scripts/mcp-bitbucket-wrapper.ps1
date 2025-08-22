@@ -108,13 +108,15 @@ if ($IMG) {
     & $runtime image inspect $IMG 2>$null
     if ($LASTEXITCODE -ne 0) {
       [Console]::Error.WriteLine("Pulling Bitbucket MCP Docker image: $IMG")
-      & $runtime pull $IMG
+& $runtime pull $IMG
       if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
+      [Console]::Error.WriteLine("Pulled Bitbucket MCP Docker image successfully: $IMG")
     }
   } catch {
     [Console]::Error.WriteLine("Pulling Bitbucket MCP Docker image: $IMG")
     & $runtime pull $IMG
     if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
+    [Console]::Error.WriteLine("Pulled Bitbucket MCP Docker image successfully: $IMG")
   }
   $envArgs = @('-e','NO_COLOR=1','-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
   & $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }

@@ -203,10 +203,10 @@ How these wrapper scripts launch servers
   - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
 - The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
 
-Required: pull GitHub container image
+Optional: pre-pull GitHub container image (auto-pulls on first run)
   - docker pull ghcr.io/github/github-mcp-server:latest
 
-Recommended: pre‑pull container images (Atlassian)
+Optional: pre‑pull container images (Atlassian)
 Pre‑pulling avoids network access during regular runs and makes startup instant when the container path is used.
   - docker pull ghcr.io/sooperset/mcp-atlassian:latest
 

@@ -189,13 +189,15 @@ try {
   & $env:DOCKER_COMMAND image inspect $env:MCP_ATLASSIAN_IMAGE 2>$null
   if ($LASTEXITCODE -ne 0) {
     [Console]::Error.WriteLine("Pulling Atlassian MCP Docker image: $($env:MCP_ATLASSIAN_IMAGE)")
-    & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
+& $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
     if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)"; exit 1 }
+    [Console]::Error.WriteLine("Pulled Atlassian MCP Docker image successfully: $($env:MCP_ATLASSIAN_IMAGE)")
   }
 } catch {
   [Console]::Error.WriteLine("Pulling Atlassian MCP Docker image: $($env:MCP_ATLASSIAN_IMAGE)")
   & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
   if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)"; exit 1 }
+  [Console]::Error.WriteLine("Pulled Atlassian MCP Docker image successfully: $($env:MCP_ATLASSIAN_IMAGE)")
 }
 [Console]::Error.WriteLine("Using Atlassian MCP via container image: $($env:MCP_ATLASSIAN_IMAGE)")
 $dockerEnvArgs = @(
