@@ -247,9 +247,9 @@ brew install nodejs
 
 ### GitHub MCP Server
 
-#### Obtain GitHub Personal Access Token**
+#### Obtain GitHub Personal Access Token
 
-You need a GitHub Personal Access Token. To create one, follow these steps:**
+Follow these steps to obtain a necessary GitHub access token:
 
 1. Go to [GitHub Settings](https://github.com/settings/tokens).
 2. Click on "Generate new token" > "Generate new token (classic)".
