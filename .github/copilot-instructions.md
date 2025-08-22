@@ -32,16 +32,32 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ### Repository Structure
 ```
 ./
-├── README.md               # Main documentation (3191 words, 528 lines)
-├── coding_guidelines.txt   # Shared custom instructions for coding standards saved to https://github.com/organizations/Guttmacher/settings/copilot/custom_instructions
-└── copilot/
-    └── modes/
-        ├── QnA.chatmode.md         # Read-only Q&A mode (renamed from Question)
-        ├── Plan.chatmode.md        # Planning mode (71 lines)
-        ├── Review.chatmode.md      # Review mode (67 lines)
-        ├── Code-GPT5.chatmode.md   # Full implementation mode with GPT-5
-        └── Code-Sonnet4.chatmode.md # Full implementation mode with Claude Sonnet 4
-```
+./
+├── README.md                         # Main documentation
+├── llm_coding_style_guidelines.txt   # General coding style guidelines
+├── TOOLS_GLOSSARY.md                 # Glossary of all available tools
+├── copilot/
+│   └── modes/
+│       ├── QnA.chatmode.md                # Strict read-only Q&A / analysis (no mutations)
+│       ├── Plan.chatmode.md               # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+│       ├── Code-Sonnet4.chatmode.md       # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-GPT5.chatmode.md          # Full coding, execution, PR + branch ops (GPT-5 model)
+│       ├── Review.chatmode.md             # PR & issue review feedback (comments only)
+├── scripts/
+│   ├── mcp-github-wrapper.sh        # macOS/Linux GitHub MCP wrapper script
+│   ├── mcp-github-wrapper.ps1       # Windows GitHub MCP wrapper script
+│   ├── mcp-atlassian-wrapper.sh     # macOS/Linux Atlassian MCP wrapper script
+│   ├── mcp-atlassian-wrapper.ps1    # Windows Atlassian MCP wrapper script
+│   ├── mcp-bitbucket-wrapper.sh     # macOS/Linux Bitbucket MCP wrapper script
+│   └── mcp-bitbucket-wrapper.ps1    # Windows Bitbucket MCP wrapper script
+├── templates/
+│   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
+│   └── vscode-settings.jsonc              # VS Code user settings template (optional)
+└── tests/
+    ├── smoke_mcp_wrappers.py        # Smoke test runner for wrapper stdout (filters/validates stdout)
+    ├── smoke_auth.sh                # Tests for authentication setup
+    └── smoke_rules.R                # R script for validating tool lists/matrix consistency```
 
 ### Key File Contents and Patterns
 
@@ -58,7 +74,7 @@ Standard YAML frontmatter:
 **Tool Availability Matrix:** The README.md contains a comprehensive table showing which tools are available in which modes. Reference this instead of guessing tool availability.
 
 **Key Relationships:**
-- `coding_guidelines.txt` is referenced as the canonical source for multi-tool custom instructions
+- `llm_coding_guidelines.txt` is referenced as the canonical source for multi-tool custom instructions
 - `.github/copilot-instructions.md` (this file) is referenced in Code.chatmode.md line 46
 - Mode files define different privilege levels: QnA < Review < Plan < Code
 

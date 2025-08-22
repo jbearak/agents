@@ -13,15 +13,15 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Models Available in Each Agent](#models-available-in-each-agent)
   - [Simulated Reasoning](#simulated-reasoning)
   - [Context Window](#context-window)
-- [Installing MCP Servers](#installing-mcp-servers)
+- [MCP Servers](#mcp-servers)
   - [GitHub MCP Server](#github-mcp-server)
   - [Bitbucket MCP Server](#bitbucket-mcp-server)
   - [Atlassian MCP Server](#atlassian-mcp-server)
+  - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+    - [VS Code](#vs-code)
+    - [Claude Desktop](#claude-desktop)
   - [Technical Notes](#technical-notes-on-mcp-wrappers)
-- [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
-  - [VS Code](#vs-code)
-  - [Claude Desktop](#claude-desktop)
-- [Coding Style Guidelines](#coding-style-guidelines)
+- [LLM Coding Style Guidelines](#llm-coding-style-guidelines)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
   - [Warp (Repository-Level)](#warp-repository-level)
@@ -36,31 +36,31 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 
 ```
 ./
-├── code_style_guidelines.txt   # General coding style guidelines
-├── README.md                   # This document
-├── TOOLS_GLOSSARY.md           # Glossary of all available tools
+├── llm_coding_style_guidelines.txt   # General coding style guidelines
+├── README.md                         # This document
+├── TOOLS_GLOSSARY.md                 # Glossary of all available tools
 ├── copilot/
 │   └── modes/
-│       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
-│       ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
-│       ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
-│       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
-│       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+│       ├── QnA.chatmode.md                # Strict read-only Q&A / analysis (no mutations)
+│       ├── Plan.chatmode.md               # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+│       ├── Code-Sonnet4.chatmode.md       # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-GPT5.chatmode.md          # Full coding, execution, PR + branch ops (GPT-5 model)
+│       ├── Review.chatmode.md             # PR & issue review feedback (comments only)
 ├── scripts/
-│   ├── mcp-github-wrapper.sh    # macOS/Linux GitHub MCP wrapper script
-│   ├── mcp-github-wrapper.ps1   # Windows GitHub MCP wrapper script
-│   ├── mcp-atlassian-wrapper.sh # macOS/Linux Atlassian MCP wrapper script
-│   ├── mcp-atlassian-wrapper.ps1# Windows Atlassian MCP wrapper script
-│   ├── mcp-bitbucket-wrapper.sh # macOS/Linux Bitbucket MCP wrapper script
-│   └── mcp-bitbucket-wrapper.ps1# Windows Bitbucket MCP wrapper script
+│   ├── mcp-github-wrapper.sh        # macOS/Linux GitHub MCP wrapper script
+│   ├── mcp-github-wrapper.ps1       # Windows GitHub MCP wrapper script
+│   ├── mcp-atlassian-wrapper.sh     # macOS/Linux Atlassian MCP wrapper script
+│   ├── mcp-atlassian-wrapper.ps1    # Windows Atlassian MCP wrapper script
+│   ├── mcp-bitbucket-wrapper.sh     # macOS/Linux Bitbucket MCP wrapper script
+│   └── mcp-bitbucket-wrapper.ps1    # Windows Bitbucket MCP wrapper script
 ├── templates/
-│   ├── mcp_mac.json                # MCP configuration for macOS (VS Code and Claude Desktop)
-│   ├── mcp_win.json                # MCP configuration for Windows (VS Code and Claude Desktop)
-│   └── vscode-settings.jsonc       # VS Code user settings template (optional)
+│   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
+│   └── vscode-settings.jsonc              # VS Code user settings template (optional)
 └── tests/
-    ├── smoke_mcp_wrappers.py   # Smoke test runner for wrapper stdout (filters/validates stdout)
-    ├── smoke_auth.sh           # Tests for authentication setup
-    └── smoke_rules.R           # R script for validating tool lists/matrix consistency
+    ├── smoke_mcp_wrappers.py        # Smoke test runner for wrapper stdout (filters/validates stdout)
+    ├── smoke_auth.sh                # Tests for authentication setup
+    └── smoke_rules.R                # R script for validating tool lists/matrix consistency
 ```
 
 ## Modes
@@ -195,7 +195,7 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 **Note:** Agents will generally compress and prune prompts to fit within their context windows in multi-turn chats. However, Claude.ai/Desktop will not; if after several turns you exceed the context window, you cannot continue the chat.
 
 
-## Installing MCP Servers
+## MCP Servers
 
 Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). However, we must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.
 
@@ -508,9 +508,9 @@ Once you’ve copied the wrapper scripts to a folder on your PATH and set up cre
 
 
 
-## Add MCP Servers to Agents
+### Add MCP Servers to Agents
 
-### VS Code
+#### VS Code
 
 1. From the Command Palette, choose **MCP: Open User Configuration**
 2. Use the provided configuration: copy [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) or [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) and customize paths if/as needed
@@ -518,7 +518,7 @@ Once you’ve copied the wrapper scripts to a folder on your PATH and set up cre
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
 
-### Claude Desktop
+#### Claude Desktop
 
 1. Open Settings -> Developer > Edit Config
 - Note: This will open a File Explorer (Windows) or Finder (macOS) window
@@ -529,13 +529,13 @@ Once you’ve copied the wrapper scripts to a folder on your PATH and set up cre
 **Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
 
 
-## Coding Style Guidelines
+## LLM Coding Style Guidelines
 
-We maintain concise coding style guidelines for LLMs in `code_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
+We maintain concise coding style guidelines for LLMs in `llm_coding_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
 
 ### GitHub Copilot (Repository-Level)
 1. Create or edit `.github/copilot-instructions.md`
-2. Paste `code_style_guidelines.txt`.
+2. Paste `coding_style_guidelines.txt`.
 3. Edit as/if needed/desired.
 
 Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
@@ -546,7 +546,7 @@ Reference: [Adding repository custom instructions for GitHub Copilot](https://do
 **Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
 
 1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
+2. Open Custom Instructions editor and paste the full contents of `llm_coding__style_guidelines.txt`.
 3. Save; changes propagate to organization members (may require editor reload).
 4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
 
@@ -555,7 +555,7 @@ Reference: [Adding organization custom instructions for GitHub Copilot](https://
 #### Personal Instructions
 **Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
 
-Since the organization-level instructions equal `code_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
+Since the organization-level instructions equal `llm_coding_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
 
 1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
 2. Open Custom Instructions editor and paste your personal instructions.
@@ -565,7 +565,7 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 ### Warp (Repository-Level)
 1. Create `WARP.md`
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 ### Warp (User-Level)
@@ -575,13 +575,13 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 
 ### Q (Repository-Level)
-1. Create `.amazonq/rules/code_style_guidelines.txt` in the repository root
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+1. Create `.amazonq/rules/llm_coding_style_guidelines.txt` in the repository root
+2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 ## Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 
