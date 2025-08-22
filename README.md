@@ -556,7 +556,7 @@ Context7 provides up-to-date, version-specific documentation and code examples f
 
 The wrapper automatically uses the globally installed package if available, falling back to npx if not.
 
-**Usage:** Query for documentation like "show me dplyr mutate examples" or "get ggplot2 plotting docs". The server will resolve library names and provide relevant, current documentation.
+**Usage:** Ask for documentation like "show me dplyr mutate examples" or "get ggplot2 plotting docs", or instruct the agent to use it in the course of planning, coding, or reviewing.
 
 ### Add MCP Servers to Agents
 
