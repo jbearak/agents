@@ -53,7 +53,6 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ├── templates/
 │   ├── llm_code_style_guidelines.txt      # General coding style guidelines (for copy/paste to other tools)
 │   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
-│   ├── mcp_mac_usr_local.json             # Alternate macOS config (usr/local node, etc.)
 │   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
 │   └── vscode-settings.jsonc              # VS Code user settings template (optional)
 └── tests/
