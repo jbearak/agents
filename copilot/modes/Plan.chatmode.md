@@ -5,7 +5,7 @@ tools: [
   'think', 'todos',
   'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
   'resolve-library-id', 'get-library-docs',
-  'get_commit', 'get_file_contents', 'get_me',
+  'get_commit', 'get_file_contents', 'get_me', 'get_teams', 'get_team_members', 'list_issue_types',
   'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff', 'get_pull_request_files',
     'get_pull_request_reviews', 'get_pull_request_status', 'activePullRequest',
   'create_pull_request', 'update_pull_request', 'create_pending_pull_request_review', 'add_comment_to_pending_review',

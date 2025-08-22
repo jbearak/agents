@@ -480,6 +480,17 @@ Search for GitHub users.
 #### get_me
 Get details for the authenticated GitHub user.
 
+### Organization & Teams
+
+#### get_teams
+Get details of the teams the user is a member of. Limited to organizations accessible with current credentials.
+
+#### get_team_members
+Get member usernames of a specific team in an organization. Limited to organizations accessible with current credentials.
+
+#### list_issue_types
+List available issue types for GitHub projects.
+
 ### File Operations
 
 #### create_or_update_file

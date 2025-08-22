@@ -1782,6 +1782,34 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td>✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
+<td><em>Organization &amp; Teams</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_teams">get_teams</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_team_members">get_team_members</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_issue_types">list_issue_types</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
 <td><em>File Operations</em></td>
 <td></td>
 <td></td>

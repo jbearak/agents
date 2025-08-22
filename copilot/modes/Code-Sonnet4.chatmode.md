@@ -8,7 +8,7 @@ tools: [
   'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'search',
   'activePullRequest', 
   'copilotCodingAgent',
-  'get_commit', 'get_file_contents', 'get_me', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
+  'get_commit', 'get_file_contents', 'get_me', 'get_teams', 'get_team_members', 'list_issue_types', 'get_pull_request', 'get_pull_request_comments', 'get_pull_request_diff',
     'get_pull_request_files', 'get_pull_request_reviews', 'get_pull_request_status', 'list_branches',
     'list_commits', 'list_tags', 'list_pull_requests', 'list_notifications', 'list_sub_issues',
   'editFiles', 'create_or_update_file', 'add_comment_to_pending_review', 'create_pending_pull_request_review',
