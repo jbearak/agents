@@ -11,8 +11,11 @@
       "working_directory": null
     },
     "Context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "command": "powershell",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+        "%USERPROFILE%/bin/mcp-context7-wrapper.ps1"
+      ],
       "env": {},
       "working_directory": null
     },

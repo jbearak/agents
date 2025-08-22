@@ -6,9 +6,8 @@
       "working_directory": null
     },
     "Context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
-      "env": {},
+      "command": "~/bin/mcp-context7-wrapper.sh",
+      "args": [],
       "working_directory": null
     },
     "GitHub": {
