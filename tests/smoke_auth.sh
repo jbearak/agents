@@ -84,14 +84,19 @@ check_atlassian() {
     fail_line "Keychain item present but empty value (service '$service', account '$account')"
     return 1
   fi
-  local domain="${ATLASSIAN_DOMAIN:-}" email="${ATLASSIAN_EMAIL:-}"
-  if [[ -z "$domain" ]]; then
-    fail_line "Missing env ATLASSIAN_DOMAIN (e.g., guttmacher.atlassian.net)"
-    return 1
+  local domain="${ATLASSIAN_DOMAIN:-guttmacher.atlassian.net}" email="${ATLASSIAN_EMAIL:-}"
+  if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
+    warn_line "ATLASSIAN_DOMAIN was not set; defaulting to '$domain'"
   fi
   if [[ -z "$email" ]]; then
-    fail_line "Missing env ATLASSIAN_EMAIL (email used with API token)"
-    return 1
+    # Derive email: prefer git config user.email, else user@org based on domain
+    if command -v git >/dev/null 2>&1; then
+      email="$(git config --get user.email 2>/dev/null || true)"
+    fi
+    if [[ -z "$email" ]]; then
+      email="${USER}@${domain//.atlassian.net/.org}"
+    fi
+    warn_line "ATLASSIAN_EMAIL unset; using derived '$email'"
   fi
   if ! have_cmd curl; then
     warn_line "curl not found; skipping API reachability test"
@@ -124,8 +129,24 @@ check_bitbucket() {
   fi
   local user="${ATLASSIAN_BITBUCKET_USERNAME:-}"
   if [[ -z "$user" ]]; then
-    fail_line "Missing env ATLASSIAN_BITBUCKET_USERNAME (Bitbucket username, not email)"
-    return 1
+    local default_user="" git_email=""
+    if command -v git >/dev/null 2>&1; then
+      git_email="$(git config --get user.email 2>/dev/null || true)"
+    fi
+    if [[ -n "$git_email" ]]; then
+      default_user="${git_email%@*}"
+    else
+      default_user="$USER"
+    fi
+    if [[ -t 0 && -t 2 ]]; then
+      printf "Bitbucket username [%s]: " "$default_user" >&2
+      read -r input_username
+      user="${input_username:-$default_user}"
+      warn_line "Using Bitbucket username '$user' for this check"
+    else
+      user="$default_user"
+      warn_line "ATLASSIAN_BITBUCKET_USERNAME unset; non-interactive shell. Using derived '$user'"
+    fi
   fi
   if ! have_cmd curl; then
     warn_line "curl not found; skipping API reachability test"

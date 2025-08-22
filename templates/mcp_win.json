@@ -1,9 +1,9 @@
 {
-  "mcpServers": {
+  "servers": {
     "Atlassian": {
       "command": "powershell",
       "args": [
-        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
         "C:/Users/<your-os-username>/bin/mcp-atlassian-wrapper.ps1"
       ],
       "env": {
@@ -15,14 +15,14 @@
     },
     "Context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": ["-y", "@upstash/context7-mcp@latest"],
       "env": {},
       "working_directory": null
     },
     "GitHub": {
       "command": "powershell",
       "args": [
-        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
         "C:/Users/<your-os-username>/bin/mcp-github-wrapper.ps1"
       ],
       "env": {},
@@ -31,7 +31,7 @@
     "Bitbucket": {
       "command": "powershell",
       "args": [
-        "-NoProfile","-ExecutionPolicy","Bypass","-File",
+        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
         "C:/Users/<your-os-username>/bin/mcp-bitbucket-wrapper.ps1"
       ],
       "env": {
@@ -41,3 +41,4 @@
     }
   }
 }
+

@@ -17,9 +17,9 @@ ALLOWED_PATTERNS = [
 ]
 
 DEFAULT_WRAPPERS = [
-    "templates/mcp-github-wrapper.sh",
-    "templates/mcp-bitbucket-wrapper.sh",
-    "templates/mcp-atlassian-wrapper.sh",
+    "scripts/mcp-github-wrapper.sh",
+    "scripts/mcp-bitbucket-wrapper.sh",
+    "scripts/mcp-atlassian-wrapper.sh",
 ]
 
 BIN_WRAPPERS = [

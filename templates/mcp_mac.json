@@ -1,31 +1,37 @@
 {
   "servers": {
-    "atlassian": {
+    "Atlassian": {
       "command": "/Users/<your-os-username>/bin/mcp-atlassian-wrapper.sh",
       "args": [],
       "env": {
         "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
         "ATLASSIAN_EMAIL": "<your-email>@guttmacher.org",
         "AUTH_METHOD": "api_token"
-      }
+      },
+      "working_directory": null
     },
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "type": "http"
-    },
-    "context7": {
+    "Context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
-      ]
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "env": {},
+      "working_directory": null
     },
-    "bitbucket": {
+    "GitHub": {
+      "command": "/Users/<your-os-username>/bin/mcp-github-wrapper.sh",
+      "args": [],
+      "env": {
+        "DOCKER_HOST": "unix:///Users/<your-os-username>/.colima/default/docker.sock"
+      },
+      "working_directory": null
+    },
+    "Bitbucket": {
       "command": "/Users/<your-os-username>/bin/mcp-bitbucket-wrapper.sh",
       "args": [],
       "env": {
         "ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"
-      }
+      },
+      "working_directory": null
     }
   }
 }
+
