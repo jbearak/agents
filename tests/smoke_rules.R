@@ -105,10 +105,11 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
   tr_matches <- str_extract_all(tbody_match, tr_pattern)[[1]]
   
   tool_matrix <- data.frame()
+  last_row_with_checkmarks <- NULL
   
   for (tr in tr_matches) {
     # Extract table cells from <td> elements
-    td_pattern <- "<td>([\\s\\S]*?)</td>"
+    td_pattern <- "<td[^>]*>([\\s\\S]*?)</td>"
     td_matches <- str_extract_all(tr, td_pattern)[[1]]
     
     if (length(td_matches) == 0) {
@@ -116,10 +117,19 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
     }
     
     # Extract content from each <td>
-    cells <- str_extract(td_matches, "(?<=<td>)[\\s\\S]*?(?=</td>)")
+    cells <- character(length(td_matches))
+    for (i in seq_along(td_matches)) {
+      # Remove opening and closing td tags
+      cell_content <- gsub("<td[^>]*>", "", td_matches[i])
+      cell_content <- gsub("</td>", "", cell_content)
+      cells[i] <- cell_content
+    }
+    
+    # Check if this row has rowspan attributes (indicating it has checkmarks)
+    has_rowspan <- any(str_detect(td_matches, "rowspan"))
     
     if (length(cells) >= length(headers)) {
-      # Extract tool name from first cell (remove HTML tags and markdown links)
+      # This is a full row with all columns (including checkmarks)
       tool_name <- cells[1]
       
       # Skip section headers and empty rows
@@ -148,15 +158,107 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
           stringsAsFactors = FALSE
         )
         tool_matrix <- rbind(tool_matrix, row_data)
+        
+        # If this row has rowspan, store it for the next row
+        if (has_rowspan) {
+          last_row_with_checkmarks <- row_data
+        } else {
+          last_row_with_checkmarks <- NULL
+        }
       }
+    } else if (length(cells) == 1 && !is.null(last_row_with_checkmarks)) {
+      # This is a single-cell row (second row of a rowspan pair)
+      # This contains the remote MCP tool name that should also be validated
+      tool_name <- cells[1]
+      
+      # Skip section headers and empty rows
+      if (str_detect(tool_name, "^\\*") || tool_name == "" || str_detect(tool_name, "^\\*\\*") || str_trim(tool_name) == "") {
+        next
+      }
+      
+      # Clean up tool name
+      tool_name <- str_trim(tool_name)
+      
+      if (tool_name != "" && !is.na(tool_name)) {
+        # Use the checkmarks from the previous row (same availability as local MCP tool)
+        row_data <- data.frame(
+          Tool = tool_name,
+          QnA = last_row_with_checkmarks$QnA,
+          Review = last_row_with_checkmarks$Review,
+          Plan = last_row_with_checkmarks$Plan, 
+          Code = last_row_with_checkmarks$Code,
+          stringsAsFactors = FALSE
+        )
+        tool_matrix <- rbind(tool_matrix, row_data)
+      }
+      
+      # Clear the stored row after using it
+      last_row_with_checkmarks <- NULL
     }
   }
   
   return(tool_matrix)
 }
 
+# Function to parse tool mappings from atlassian_tools_map.md
+parse_tool_mappings <- function(mapping_file = "atlassian_tools_map.md") {
+  if (!file.exists(mapping_file)) {
+    warning(paste("Tool mapping file not found:", mapping_file))
+    return(list())
+  }
+  
+  content <- readLines(mapping_file, warn = FALSE)
+  
+  # Find table rows (lines starting with |)
+  table_lines <- content[str_detect(content, "^\\|")]
+  
+  # Skip header and separator lines
+  table_lines <- table_lines[!str_detect(table_lines, "Local.*Remote.*Notes|---|\\*\\*")]
+  
+  tool_pairs <- list()
+  
+  for (line in table_lines) {
+    # Split by | and clean up
+    parts <- str_split(line, "\\|")[[1]]
+    parts <- str_trim(parts)
+    parts <- parts[parts != ""]
+    
+    if (length(parts) >= 2) {
+      local_tool <- parts[1]
+      remote_tool <- parts[2]
+      
+      # Skip section headers and empty cells
+      if (str_detect(local_tool, "^\\*\\*") || local_tool == "" || remote_tool == "") {
+        next
+      }
+      
+      # Handle multiple remote tools (split by <br/>)
+      if (str_detect(remote_tool, "<br/>")) {
+        remote_tools <- str_split(remote_tool, "<br/>")[[1]]
+        remote_tools <- str_trim(remote_tools)
+        for (rt in remote_tools) {
+          if (rt != "" && !is.na(rt)) {
+            tool_pairs[[local_tool]] <- c(tool_pairs[[local_tool]], rt)
+            tool_pairs[[rt]] <- c(tool_pairs[[rt]], local_tool)
+          }
+        }
+      } else if (remote_tool != "" && !is.na(remote_tool)) {
+        tool_pairs[[local_tool]] <- c(tool_pairs[[local_tool]], remote_tool)
+        tool_pairs[[remote_tool]] <- c(tool_pairs[[remote_tool]], local_tool)
+      }
+    }
+  }
+  
+  # Remove duplicates and clean up
+  for (tool in names(tool_pairs)) {
+    tool_pairs[[tool]] <- unique(tool_pairs[[tool]])
+  }
+  
+  return(tool_pairs)
+}
+
 # Function to convert tool matrix to expected toolsets per mode
-convert_matrix_to_toolsets <- function(tool_matrix) {
+convert_matrix_to_toolsets <- function(tool_matrix, tool_mappings = list()) {
   # The README has a single 'Code' column that applies to both Code chatmodes.
   base_modes <- c("QnA", "Review", "Plan", "Code")
   expected_toolsets <- list()
@@ -190,6 +292,13 @@ convert_matrix_to_toolsets <- function(tool_matrix) {
 validate_toolsets <- function() {
   cat("=== Tool Availability Matrix Validation ===\n\n")
   
+  # Parse tool mappings from atlassian_tools_map.md
+  cat("Reading tool mappings from atlassian_tools_map.md...\n")
+  tool_mappings <- parse_tool_mappings()
+  if (length(tool_mappings) > 0) {
+    cat(paste("Found", length(tool_mappings), "tool mappings\n"))
+  }
+  
   # Extract expected toolsets from README.md
   cat("Reading tool matrix from README.md...\n")
   tool_matrix <- extract_tool_matrix_from_readme()
@@ -212,7 +321,7 @@ validate_toolsets <- function() {
     }
   }
   
-  expected_toolsets <- convert_matrix_to_toolsets(tool_matrix)
+  expected_toolsets <- convert_matrix_to_toolsets(tool_matrix, tool_mappings)
   
   # Debug: show expected toolsets
   cat("Debug: Expected toolsets:\n")
@@ -267,7 +376,7 @@ validate_toolsets <- function() {
     }
   }
   
-  # Compare toolsets
+  # Compare toolsets with mapping-aware validation
   cat("\n=== Validation Results ===\n")
   all_valid <- TRUE
   
@@ -289,22 +398,49 @@ validate_toolsets <- function() {
       next
     }
     
-    # Check for exact match
-    if (setequal(expected, actual)) {
-      cat("  ✅ Toolsets match perfectly\n")
+    # For mapped tools, check if either the local or remote version is present
+    missing_tools <- character(0)
+    extra_tools <- setdiff(actual, expected)
+    
+    for (exp_tool in expected) {
+      # Check if expected tool or any of its mapped alternatives are present
+      tool_found <- exp_tool %in% actual
+      
+      # If not found directly, check if any mapped alternative is present
+      if (!tool_found && exp_tool %in% names(tool_mappings)) {
+        mapped_tools <- tool_mappings[[exp_tool]]
+        tool_found <- any(mapped_tools %in% actual)
+        
+        # Remove mapped alternatives from extra_tools since they're valid
+        if (tool_found) {
+          extra_tools <- setdiff(extra_tools, mapped_tools)
+        }
+      }
+      
+      # If still not found, it's truly missing
+      if (!tool_found) {
+        missing_tools <- c(missing_tools, exp_tool)
+      }
+    }
+    
+    # Check for perfect match or acceptable alternatives
+    if (length(missing_tools) == 0 && length(extra_tools) == 0) {
+      cat("  ✅ Toolsets match (including valid tool alternatives)\n")
       cat(paste("     Tool count:", length(actual), "\n"))
     } else {
       cat("  ❌ Toolsets do not match\n")
       all_valid <- FALSE
       
       # Show differences
-      missing_tools <- setdiff(expected, actual)
-      extra_tools <- setdiff(actual, expected)
-      
       if (length(missing_tools) > 0) {
-        cat("     Missing tools in chatmode.md:\n")
+        cat("     Missing tools in chatmode.md (no local or remote alternative found):\n")
         for (tool in missing_tools) {
-          cat(paste("       -", tool, "\n"))
+          alternatives <- if (tool %in% names(tool_mappings)) tool_mappings[[tool]] else character(0)
+          if (length(alternatives) > 0) {
+            cat(paste("       -", tool, "(or alternatives:", paste(alternatives, collapse = ", "), ")\n"))
+          } else {
+            cat(paste("       -", tool, "\n"))
+          }
         }
       }
       
