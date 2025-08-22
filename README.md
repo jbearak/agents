@@ -481,7 +481,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 - Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
   - GitHub: Docker container (preferred) → remote server fallback (https://api.githubcopilot.com/mcp/)
   - Atlassian (Sooperset): Docker container only (upstream only supports containers)
-  - Bitbucket (@aashari): local CLI (if present) → npx @latest (Node.js only)
+  - Bitbucket (@aashari): local CLI (if present) → npx @latest (Node.js only, no Docker)
 - The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
 - GitHub wrapper environment variables: `MCP_GITHUB_DOCKER_IMAGE`, `DOCKER_COMMAND`, `GITHUB_MCP_REMOTE_URL`
 
@@ -489,10 +489,11 @@ Optional: pre-pull container images (auto-pulls on first run)
   - docker pull ghcr.io/github/github-mcp-server:latest
   - docker pull ghcr.io/sooperset/mcp-atlassian:latest
 
-Optional: local CLI installs (more efficient than docker)
+Optional: local CLI installs (more efficient than containers/remote)
 - Bitbucket MCP Server:
   - npm i -g @aashari/mcp-server-atlassian-bitbucket
 - Note: Atlassian MCP Server does not provide CLI/npm packages - only Docker containers
+- Note: Bitbucket MCP Server does not provide Docker containers - only CLI/npm packages
 
 Quick verification commands
 Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
