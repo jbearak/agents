@@ -82,7 +82,8 @@ function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Argume
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
   [Console]::Error.WriteLine("Using Bitbucket MCP via local CLI on PATH: $CLI_BIN")
   $env:NO_COLOR = '1'
-  Invoke-Exec $CLI_BIN $Args
+  & $CLI_BIN @Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 if (Get-Command npx -ErrorAction SilentlyContinue) {
@@ -94,15 +95,28 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
   $env:NO_UPDATE_NOTIFIER = '1'
   $env:ADBLOCK = '1'
   $npxArgs = @('-y', "$NPM_PKG@latest")
-  Invoke-Exec 'npx' $npxArgs + $Args
+  & 'npx' @($npxArgs + $Args) | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 if ($IMG) {
   $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
   if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
   [Console]::Error.WriteLine("Using Bitbucket MCP via docker image: $IMG")
+  # Verify image exists (no auto-pull)
+  try {
+    & $runtime image inspect $IMG 2>$null
+    if ($LASTEXITCODE -ne 0) {
+      Write-Error "Image not found: $IMG. Hint: run '$runtime pull $IMG' first."
+      exit 1
+    }
+  } catch {
+    Write-Error "Image not found: $IMG. Hint: run '$runtime pull $IMG' first."
+    exit 1
+  }
   $envArgs = @('-e','NO_COLOR=1','-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
-  Invoke-Exec $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args
+  & $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 Write-Error 'Bitbucket MCP CLI not found and no viable fallback (npm/npx/docker) available.'

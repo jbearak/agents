@@ -100,14 +100,6 @@ function Get-StoredPassword {
   }
 }
 
-function Update-AtlassianImage {
-  [Console]::Error.WriteLine("Checking for latest Atlassian MCP server image...")
-  try {
-    & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE 2>$null
-  } catch {
-    [Console]::Error.WriteLine("Warning: Failed to pull latest image. Using local version if available.")
-  }
-}
 
 # Check container runtime availability
 Test-DockerAvailable
@@ -172,7 +164,8 @@ if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
   [Console]::Error.WriteLine("Using Atlassian MCP via local CLI on PATH: $CLI_BIN")
   $env:NO_COLOR = '1'
   foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
-  Invoke-Exec $CLI_BIN $Args
+  & $CLI_BIN @Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 # Try npx as an optional fallback if available (no global install)
@@ -186,12 +179,23 @@ if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
   $env:ADBLOCK = '1'
   foreach ($kv in $prefEnv) { $name,$val = $kv.Split('='); Set-Item -Path env:$name -Value $val }
   $npxArgs = @('-y', "$NPM_PKG@latest")
-  Invoke-Exec 'npx' $npxArgs + $Args
+  & 'npx' @($npxArgs + $Args) | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 # Fallback to container
 [Console]::Error.WriteLine("Using Atlassian MCP via container image: $($env:MCP_ATLASSIAN_IMAGE)")
-Update-AtlassianImage
+# Verify image exists (no auto-pull)
+try {
+  & $env:DOCKER_COMMAND image inspect $env:MCP_ATLASSIAN_IMAGE 2>$null
+  if ($LASTEXITCODE -ne 0) {
+    Write-Error "Image not found: $($env:MCP_ATLASSIAN_IMAGE). Hint: run '$($env:DOCKER_COMMAND) pull $($env:MCP_ATLASSIAN_IMAGE)' first."
+    exit 1
+  }
+} catch {
+  Write-Error "Image not found: $($env:MCP_ATLASSIAN_IMAGE). Hint: run '$($env:DOCKER_COMMAND) pull $($env:MCP_ATLASSIAN_IMAGE)' first."
+  exit 1
+}
 $dockerEnvArgs = @(
   '-e','NO_COLOR=1',
   '-e', "CONFLUENCE_URL=https://$($env:ATLASSIAN_DOMAIN)/wiki",
@@ -202,5 +206,5 @@ $dockerEnvArgs = @(
   '-e', "JIRA_API_TOKEN=$apiToken"
 )
 $fullArgs = @('run', '--rm', '-i') + $dockerEnvArgs + @($env:MCP_ATLASSIAN_IMAGE) + $Args
-& $env:DOCKER_COMMAND @fullArgs
+& $env:DOCKER_COMMAND @fullArgs | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

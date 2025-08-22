@@ -46,16 +46,16 @@ try {
   exit 1
 }
 
-# Pull the image if it doesn't exist
+# Verify image exists (no auto-pull)
 try {
   & $runtime image inspect $IMG 2>&1 | Out-Null
   if ($LASTEXITCODE -ne 0) {
-    [Console]::Error.WriteLine("Pulling GitHub MCP Docker image: $IMG")
-    & $runtime pull $IMG
+    Write-Error "Image not found: $IMG. Hint: run '$runtime pull $IMG' first."
+    exit 1
   }
 } catch {
-  [Console]::Error.WriteLine("Pulling GitHub MCP Docker image: $IMG")
-  & $runtime pull $IMG
+  Write-Error "Image not found: $IMG. Hint: run '$runtime pull $IMG' first."
+  exit 1
 }
 
 [Console]::Error.WriteLine("Using GitHub MCP via container image: $IMG")
