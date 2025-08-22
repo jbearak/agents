@@ -4,12 +4,9 @@
       "command": "powershell",
       "args": [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-        "C:/Users/<your-os-username>/bin/mcp-atlassian-wrapper.ps1"
+        "%USERPROFILE%/bin/mcp-atlassian-wrapper.ps1"
       ],
       "env": {
-        "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
-        "ATLASSIAN_EMAIL": "<your-email>@guttmacher.org",
-        "AUTH_METHOD": "api_token"
       },
       "working_directory": null
     },
@@ -23,7 +20,7 @@
       "command": "powershell",
       "args": [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-        "C:/Users/<your-os-username>/bin/mcp-github-wrapper.ps1"
+      "%USERPROFILE%/bin/mcp-github-wrapper.ps1"
       ],
       "env": {},
       "working_directory": null
@@ -32,10 +29,9 @@
       "command": "powershell",
       "args": [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-        "C:/Users/<your-os-username>/bin/mcp-bitbucket-wrapper.ps1"
+      "%USERPROFILE%/bin/mcp-bitbucket-wrapper.ps1"
       ],
       "env": {
-        "ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"
       },
       "working_directory": null
     }
