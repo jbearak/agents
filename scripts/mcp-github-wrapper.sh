@@ -65,7 +65,7 @@ use_remote_server() {
     done
   else
     echo "Error: Failed to connect to remote GitHub MCP server." >&2
-    echo "Please check your GITHUB_PERSONAL_ACCESS_TOKEN and network connection." >&2
+    echo "Please check your GITHUB_TOKEN and network connection." >&2
     exit 1
   fi
 }
