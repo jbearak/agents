@@ -205,7 +205,7 @@ Model Context Provider (MCP) Servers provide a bridge between agents and APIs: A
 Local MCP servers run on your computer whereas remote MCP servers run in the cloud. 
  - Microsoft provides both kinds for GitHub. However, they describe their remote server as "[in preview](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/)".
  - Atlassian provides a remote server for Jira and Bitbucket. However, they describe it as "[in public beta](https://github.com/atlassian/atlassian-mcp-server)".
- - Atlassian subjects their beta to [usage limits](https://github.com/atlassian/atlassian-mcp-server?tab=readme-ov-file#beta-access-and-limits): 1,000 requests per hour per organization, plus an unspecified per-user limits.
+ - Atlassian subjects their beta to [usage limits](https://github.com/atlassian/atlassian-mcp-server?tab=readme-ov-file#beta-access-and-limits): 1,000 requests per hour per organization, plus unspecified per-user limits.
  - Occasionally, I have found Atlassian's server not to respond to requests.
 
 This repository contains wrapper scripts for each MCP server that try to launch the appropriate local server, and, should that fail, try to launch the remote server. Since the local servers run in docker containers, this provides a graceful fallback mechanism in case the daemon is not running. 
@@ -247,9 +247,9 @@ brew install nodejs
 
 ### GitHub MCP Server
 
-#### Obtain GitHub Personal Access Token**
+#### Obtain GitHub Personal Access Token
 
-You need a GitHub Personal Access Token. To create one, follow these steps:**
+Follow these steps to obtain a necessary GitHub access token:
 
 1. Go to [GitHub Settings](https://github.com/settings/tokens).
 2. Click on "Generate new token" > "Generate new token (classic)".
