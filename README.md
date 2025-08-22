@@ -358,6 +358,8 @@ export PATH="$HOME/bin:$PATH"
    ~/bin/mcp-atlassian-wrapper.sh --help | head -5
    ```
 
+**Note:** If Docker/Podman is unavailable, the wrapper may fall back to the Atlassian remote MCP server and authenticate via OAuth. This will open your default browser to complete sign-in.
+
 #### Configure Atlassian MCP Server on Windows
 
 1. If you have not already done so, install the CredentialManager module:
@@ -407,6 +409,8 @@ export PATH="$HOME/bin:$PATH"
    $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
    ```
 
+**Note:** If Docker/Podman is unavailable, the wrapper may fall back to the Atlassian remote MCP server and authenticate via OAuth. This will open your default browser to complete sign-in.
+
 
 
 ### Bitbucket MCP Server
@@ -453,11 +457,11 @@ export PATH="$HOME/bin:$PATH"
 2. Create a keychain item for your Bitbucket username:
    - GUI: Keychain Access → File → New Password Item…
      - Name (Service): `bitbucket-mcp`
-     - Account: `username`
+     - Account: `bitbucket-username`
      - Password: (your Bitbucket username)
    - Or CLI:
   ```bash
-  security add-generic-password -s bitbucket-mcp -a username -w bitbucket-username -w "<your-bitbucket-username>"
+  security add-generic-password -s bitbucket-mcp -a bitbucket-username -w "<your-bitbucket-username>"
   ```
 
 You can skip step 2 if your Bitbucket username is the same as the first part of your email address--the one set in your global git config.
