@@ -675,170 +675,1171 @@ Note: "Code" shows toolsets for "Code - GPT-5" and "Code - Sonnet-4" modes.
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | QnA | Review | Plan | Code |
-|------|-----|--------|------|------|
-| **Built-In (VS Code / Core)** | | | | |
-| *Code & Project Navigation* | | | | |
-| [codebase](TOOLS_GLOSSARY.md#codebase) | ✅ | ✅ | ✅ | ✅ |
-| [findTestFiles](TOOLS_GLOSSARY.md#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
-| [search](TOOLS_GLOSSARY.md#search) | ✅ | ✅ | ✅ | ✅ |
-| [searchResults](TOOLS_GLOSSARY.md#searchresults) | ✅ | ✅ | ✅ | ✅ |
-| [usages](TOOLS_GLOSSARY.md#usages) | ✅ | ✅ | ✅ | ✅ |
-| *Quality & Diagnostics* | | | | |
-| [problems](TOOLS_GLOSSARY.md#problems) | ✅ | ✅ | ✅ | ✅ |
-| [testFailure](TOOLS_GLOSSARY.md#testfailure) | ✅ | ✅ | ✅ | ✅ |
-| *Version Control & Changes* | | | | |
-| [changes](TOOLS_GLOSSARY.md#changes) | ✅ | ✅ | ✅ | ✅ |
-| *Environment & Execution* | | | | |
-| [terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
-| [terminalSelection](TOOLS_GLOSSARY.md#terminalselection) | ❌ | ❌ | ❌ | ✅ |
-| [think](TOOLS_GLOSSARY.md#think) | ✅ | ✅ | ✅ | ✅ |
-| [todos](TOOLS_GLOSSARY.md#todos) | ✅ | ✅ | ✅ | ✅ |
-| *Web & External Content* | | | | |
-| [fetch](TOOLS_GLOSSARY.md#fetch) | ✅ | ✅ | ✅ | ✅ |
-| [githubRepo](TOOLS_GLOSSARY.md#githubrepo) | ✅ | ✅ | ✅ | ✅ |
-| *Editor & Extensions* | | | | |
-| [extensions](TOOLS_GLOSSARY.md#extensions) | ❌ | ❌ | ❌ | ❌ |
-| [vscodeAPI](TOOLS_GLOSSARY.md#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
-| *Editing & Automation* | | | | |
-| [editFiles](TOOLS_GLOSSARY.md#editfiles) | ❌ | ❌ | ❌ | ✅ |
-| [runCommands](TOOLS_GLOSSARY.md#runcommands) | ❌ | ❌ | ❌ | ✅ |
-| [runTasks](TOOLS_GLOSSARY.md#runtasks) | ❌ | ❌ | ❌ | ✅ |
-| **GitHub Pull Requests Extension (VS Code)** | | | | |
-| [activePullRequest](TOOLS_GLOSSARY.md#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
-| [copilotCodingAgent](TOOLS_GLOSSARY.md#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
-| **Context7** | | | | |
-| [resolve-library-id](TOOLS_GLOSSARY.md#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
-| [get-library-docs](TOOLS_GLOSSARY.md#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
-| **Atlassian** | | | | |
-| *Jira Issues & Operations* | | | | |
-| [jira_add_comment](TOOLS_GLOSSARY.md#jira_add_comment) | ❌ | ✅ | ✅ | ✅ |
-| [jira_create_issue](TOOLS_GLOSSARY.md#jira_create_issue) | ❌ | ❌ | ✅ | ✅ |
-| [jira_update_issue](TOOLS_GLOSSARY.md#jira_update_issue) | ❌ | ❌ | ✅ | ✅ |
-| [jira_get_issue](TOOLS_GLOSSARY.md#jira_get_issue) | ✅ | ✅ | ✅ | ✅ |
-| [jira_search](TOOLS_GLOSSARY.md#jira_search) | ✅ | ✅ | ✅ | ✅ |
-| [jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue) | ❌ | ❌ | ✅ | ✅ |
-| [jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_link_types](TOOLS_GLOSSARY.md#jira_get_link_types) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_project_versions](TOOLS_GLOSSARY.md#jira_get_project_versions) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_worklog](TOOLS_GLOSSARY.md#jira_get_worklog) | ✅ | ✅ | ✅ | ✅ |
-| [jira_download_attachments](TOOLS_GLOSSARY.md#jira_download_attachments) | ✅ | ✅ | ✅ | ✅ |
-| [jira_add_worklog](TOOLS_GLOSSARY.md#jira_add_worklog) | ❌ | ✅ | ✅ | ✅ |
-| [jira_link_to_epic](TOOLS_GLOSSARY.md#jira_link_to_epic) | ❌ | ❌ | ✅ | ✅ |
-| [jira_create_issue_link](TOOLS_GLOSSARY.md#jira_create_issue_link) | ❌ | ❌ | ✅ | ✅ |
-| [jira_create_remote_issue_link](TOOLS_GLOSSARY.md#jira_create_remote_issue_link) | ❌ | ❌ | ✅ | ✅ |
-| [jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue) | ❌ | ❌ | ❌ | ❌ |
-| *Jira Project & Board Operations* | | | | |
-| [jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_project_issues](TOOLS_GLOSSARY.md#jira_get_project_issues) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_agile_boards](TOOLS_GLOSSARY.md#jira_get_agile_boards) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_board_issues](TOOLS_GLOSSARY.md#jira_get_board_issues) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_sprints_from_board](TOOLS_GLOSSARY.md#jira_get_sprints_from_board) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_sprint_issues](TOOLS_GLOSSARY.md#jira_get_sprint_issues) | ✅ | ✅ | ✅ | ✅ |
-| [jira_search_fields](TOOLS_GLOSSARY.md#jira_search_fields) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_user_profile](TOOLS_GLOSSARY.md#jira_get_user_profile) | ✅ | ✅ | ✅ | ✅ |
-| *Confluence Pages & Content* | | | | |
-| [confluence_create_page](TOOLS_GLOSSARY.md#confluence_create_page) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_get_page](TOOLS_GLOSSARY.md#confluence_get_page) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_update_page](TOOLS_GLOSSARY.md#confluence_update_page) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_delete_page](TOOLS_GLOSSARY.md#confluence_delete_page) | ❌ | ❌ | ❌ | ❌ |
-| [confluence_get_page_children](TOOLS_GLOSSARY.md#confluence_get_page_children) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_search](TOOLS_GLOSSARY.md#confluence_search) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_get_comments](TOOLS_GLOSSARY.md#confluence_get_comments) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_add_comment](TOOLS_GLOSSARY.md#confluence_add_comment) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_get_labels](TOOLS_GLOSSARY.md#confluence_get_labels) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_add_label](TOOLS_GLOSSARY.md#confluence_add_label) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_search_user](TOOLS_GLOSSARY.md#confluence_search_user) | ✅ | ✅ | ✅ | ✅ |
-| **GitHub** | | | | |
-| *Commits & Repository* | | | | |
-| [create_branch](TOOLS_GLOSSARY.md#create_branch) | ❌ | ❌ | ❌ | ✅ |
-| [create_repository](TOOLS_GLOSSARY.md#create_repository) | ❌ | ❌ | ❌ | ✅ |
-| [get_commit](TOOLS_GLOSSARY.md#get_commit) | ✅ | ✅ | ✅ | ✅ |
-| [get_file_contents](TOOLS_GLOSSARY.md#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
-| [get_tag](TOOLS_GLOSSARY.md#get_tag) | ❌ | ❌ | ❌ | ❌ |
-| [list_branches](TOOLS_GLOSSARY.md#list_branches) | ✅ | ✅ | ✅ | ✅ |
-| [list_commits](TOOLS_GLOSSARY.md#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ✅ | ✅ | ✅ | ✅ |
-| [push_files](TOOLS_GLOSSARY.md#push_files) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Requests  Retrieval* | | | | |
-| [get_pull_request](TOOLS_GLOSSARY.md#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_comments](TOOLS_GLOSSARY.md#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_diff](TOOLS_GLOSSARY.md#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_files](TOOLS_GLOSSARY.md#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_reviews](TOOLS_GLOSSARY.md#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_status](TOOLS_GLOSSARY.md#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
-| [list_pull_requests](TOOLS_GLOSSARY.md#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| *Pull Requests  Actions* | | | | |
-| [add_comment_to_pending_review](TOOLS_GLOSSARY.md#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pending_pull_request_review](TOOLS_GLOSSARY.md#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pull_request](TOOLS_GLOSSARY.md#create_pull_request) | ❌ | ❌ | ✅ | ✅ |
-| [create_pull_request_with_copilot](TOOLS_GLOSSARY.md#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
-| [merge_pull_request](TOOLS_GLOSSARY.md#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
-| [request_copilot_review](TOOLS_GLOSSARY.md#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
-| [submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [update_pull_request](TOOLS_GLOSSARY.md#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
-| [update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
-| *Issues* | | | | |
-| [add_issue_comment](TOOLS_GLOSSARY.md#add_issue_comment) | ❌ | ✅ | ✅ | ✅ |
-| [create_issue](TOOLS_GLOSSARY.md#create_issue) | ❌ | ❌ | ✅ | ✅ |
-| [get_issue](TOOLS_GLOSSARY.md#get_issue) | ✅ | ✅ | ✅ | ✅ |
-| [get_issue_comments](TOOLS_GLOSSARY.md#get_issue_comments) | ✅ | ✅ | ✅ | ✅ |
-| [list_issues](TOOLS_GLOSSARY.md#list_issues) | ✅ | ✅ | ✅ | ✅ |
-| [search_issues](TOOLS_GLOSSARY.md#search_issues) | ✅ | ✅ | ✅ | ✅ |
-| [update_issue](TOOLS_GLOSSARY.md#update_issue) | ❌ | ❌ | ✅ | ✅ |
-| *Sub-Issues* | | | | |
-| [list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |
-| *Gists* | | | | |
-| [list_gists](TOOLS_GLOSSARY.md#list_gists) | ❌ | ❌ | ❌ | ❌ |
-| [update_gist](TOOLS_GLOSSARY.md#update_gist) | ❌ | ❌ | ❌ | ❌ |
-| *Notifications* | | | | |
-| [list_notifications](TOOLS_GLOSSARY.md#list_notifications) | ✅ | ✅ | ✅ | ✅ |
-| *Code Scanning & Security* | | | | |
-| [list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
-| *Workflows (GitHub Actions)* | | | | |
-| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ❌ | ❌ | ❌ | ❌ |
-| [get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
-| [get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflows](TOOLS_GLOSSARY.md#list_workflows) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_workflow_run](TOOLS_GLOSSARY.md#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
-| *Search & Discovery* | | | | |
-| [search_code](TOOLS_GLOSSARY.md#search_code) | ✅ | ✅ | ✅ | ✅ |
-| [search_orgs](TOOLS_GLOSSARY.md#search_orgs) | ❌ | ❌ | ❌ | ❌ |
-| [search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
-| [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
-| *User & Account* | | | | |
-| [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
-| *File Operations* | | | | |
-| [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
-| **Bitbucket** | | | | |
-| *Workspaces* | | | | |
-| [bb_ls_workspaces](TOOLS_GLOSSARY.md#bb_ls_workspaces) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_workspace](TOOLS_GLOSSARY.md#bb_get_workspace) | ✅ | ✅ | ✅ | ✅ |
-| *Repositories* | | | | |
-| [bb_ls_repos](TOOLS_GLOSSARY.md#bb_ls_repos) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_repo](TOOLS_GLOSSARY.md#bb_get_repo) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_commit_history](TOOLS_GLOSSARY.md#bb_get_commit_history) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_file](TOOLS_GLOSSARY.md#bb_get_file) | ✅ | ✅ | ✅ | ✅ |
-| [bb_list_branches](TOOLS_GLOSSARY.md#bb_list_branches) | ✅ | ✅ | ✅ | ✅ |
-| [bb_add_branch](TOOLS_GLOSSARY.md#bb_add_branch) | ❌ | ❌ | ❌ | ✅ |
-| [bb_clone_repo](TOOLS_GLOSSARY.md#bb_clone_repo) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Requests* | | | | |
-| [bb_ls_prs](TOOLS_GLOSSARY.md#bb_ls_prs) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_pr](TOOLS_GLOSSARY.md#bb_get_pr) | ✅ | ✅ | ✅ | ✅ |
-| [bb_ls_pr_comments](TOOLS_GLOSSARY.md#bb_ls_pr_comments) | ✅ | ✅ | ✅ | ✅ |
-| [bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment) | ❌ | ✅ | ✅ | ✅ |
-| [bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr) | ❌ | ❌ | ✅ | ✅ |
-| [bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr) | ❌ | ❌ | ✅ | ✅ |
-| [bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr) | ❌ | ❌ | ❌ | ❌ |
-| [bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr) | ❌ | ❌ | ❌ | ❌ |
-| *Search* | | | | |
-| [bb_search](TOOLS_GLOSSARY.md#bb_search) | ✅ | ✅ | ✅ | ✅ |
-| *Diff* | | | | |
-| [bb_diff_branches](TOOLS_GLOSSARY.md#bb_diff_branches) | ✅ | ✅ | ✅ | ✅ |
-| [bb_diff_commits](TOOLS_GLOSSARY.md#bb_diff_commits) | ✅ | ✅ | ✅ | ✅ |
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>QnA</th>
+<th>Review</th>
+<th>Plan</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>**Built-In (VS Code / Core)**</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>*Code &amp; Project Navigation*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[codebase](TOOLS_GLOSSARY.md#codebase)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[findTestFiles](TOOLS_GLOSSARY.md#findtestfiles)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[search](TOOLS_GLOSSARY.md#search)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[searchResults](TOOLS_GLOSSARY.md#searchresults)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[usages](TOOLS_GLOSSARY.md#usages)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Quality &amp; Diagnostics*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[problems](TOOLS_GLOSSARY.md#problems)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[testFailure](TOOLS_GLOSSARY.md#testfailure)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Version Control &amp; Changes*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[changes](TOOLS_GLOSSARY.md#changes)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Environment &amp; Execution*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[terminalSelection](TOOLS_GLOSSARY.md#terminalselection)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[think](TOOLS_GLOSSARY.md#think)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[todos](TOOLS_GLOSSARY.md#todos)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Web &amp; External Content*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[fetch](TOOLS_GLOSSARY.md#fetch)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[githubRepo](TOOLS_GLOSSARY.md#githubrepo)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Editor &amp; Extensions*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[extensions](TOOLS_GLOSSARY.md#extensions)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[vscodeAPI](TOOLS_GLOSSARY.md#vscodeapi)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Editing &amp; Automation*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[editFiles](TOOLS_GLOSSARY.md#editfiles)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[runCommands](TOOLS_GLOSSARY.md#runcommands)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[runTasks](TOOLS_GLOSSARY.md#runtasks)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>**GitHub Pull Requests Extension (VS Code)**</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[activePullRequest](TOOLS_GLOSSARY.md#activepullrequest)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[copilotCodingAgent](TOOLS_GLOSSARY.md#copilotcodingagent)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>**Context7**</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[resolve-library-id](TOOLS_GLOSSARY.md#resolve-library-id)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get-library-docs](TOOLS_GLOSSARY.md#get-library-docs)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>**Atlassian**</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>*Jira Issues &amp; Operations*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[jira_add_comment](TOOLS_GLOSSARY.md#jira_add_comment)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_create_issue](TOOLS_GLOSSARY.md#jira_create_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_update_issue](TOOLS_GLOSSARY.md#jira_update_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_issue](TOOLS_GLOSSARY.md#jira_get_issue)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_search](TOOLS_GLOSSARY.md#jira_search)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_link_types](TOOLS_GLOSSARY.md#jira_get_link_types)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_project_versions](TOOLS_GLOSSARY.md#jira_get_project_versions)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_worklog](TOOLS_GLOSSARY.md#jira_get_worklog)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_download_attachments](TOOLS_GLOSSARY.md#jira_download_attachments)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_add_worklog](TOOLS_GLOSSARY.md#jira_add_worklog)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_link_to_epic](TOOLS_GLOSSARY.md#jira_link_to_epic)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_create_issue_link](TOOLS_GLOSSARY.md#jira_create_issue_link)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_create_remote_issue_link](TOOLS_GLOSSARY.md#jira_create_remote_issue_link)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Jira Project &amp; Board Operations*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_project_issues](TOOLS_GLOSSARY.md#jira_get_project_issues)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_agile_boards](TOOLS_GLOSSARY.md#jira_get_agile_boards)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_board_issues](TOOLS_GLOSSARY.md#jira_get_board_issues)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_sprints_from_board](TOOLS_GLOSSARY.md#jira_get_sprints_from_board)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_sprint_issues](TOOLS_GLOSSARY.md#jira_get_sprint_issues)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_search_fields](TOOLS_GLOSSARY.md#jira_search_fields)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[jira_get_user_profile](TOOLS_GLOSSARY.md#jira_get_user_profile)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Confluence Pages &amp; Content*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[confluence_create_page](TOOLS_GLOSSARY.md#confluence_create_page)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_get_page](TOOLS_GLOSSARY.md#confluence_get_page)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_update_page](TOOLS_GLOSSARY.md#confluence_update_page)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_delete_page](TOOLS_GLOSSARY.md#confluence_delete_page)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[confluence_get_page_children](TOOLS_GLOSSARY.md#confluence_get_page_children)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_search](TOOLS_GLOSSARY.md#confluence_search)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_get_comments](TOOLS_GLOSSARY.md#confluence_get_comments)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_add_comment](TOOLS_GLOSSARY.md#confluence_add_comment)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_get_labels](TOOLS_GLOSSARY.md#confluence_get_labels)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_add_label](TOOLS_GLOSSARY.md#confluence_add_label)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[confluence_search_user](TOOLS_GLOSSARY.md#confluence_search_user)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>**GitHub**</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>*Commits &amp; Repository*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[create_branch](TOOLS_GLOSSARY.md#create_branch)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[create_repository](TOOLS_GLOSSARY.md#create_repository)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_commit](TOOLS_GLOSSARY.md#get_commit)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_file_contents](TOOLS_GLOSSARY.md#get_file_contents)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_tag](TOOLS_GLOSSARY.md#get_tag)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[list_branches](TOOLS_GLOSSARY.md#list_branches)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[list_commits](TOOLS_GLOSSARY.md#list_commits)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[list_tags](TOOLS_GLOSSARY.md#list_tags)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[push_files](TOOLS_GLOSSARY.md#push_files)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Pull Requests  Retrieval*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[get_pull_request](TOOLS_GLOSSARY.md#get_pull_request)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_pull_request_comments](TOOLS_GLOSSARY.md#get_pull_request_comments)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_pull_request_diff](TOOLS_GLOSSARY.md#get_pull_request_diff)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_pull_request_files](TOOLS_GLOSSARY.md#get_pull_request_files)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_pull_request_reviews](TOOLS_GLOSSARY.md#get_pull_request_reviews)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_pull_request_status](TOOLS_GLOSSARY.md#get_pull_request_status)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[list_pull_requests](TOOLS_GLOSSARY.md#list_pull_requests)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Pull Requests  Actions*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[add_comment_to_pending_review](TOOLS_GLOSSARY.md#add_comment_to_pending_review)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[create_pending_pull_request_review](TOOLS_GLOSSARY.md#create_pending_pull_request_review)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[create_pull_request](TOOLS_GLOSSARY.md#create_pull_request)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[create_pull_request_with_copilot](TOOLS_GLOSSARY.md#create_pull_request_with_copilot)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[merge_pull_request](TOOLS_GLOSSARY.md#merge_pull_request)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[request_copilot_review](TOOLS_GLOSSARY.md#request_copilot_review)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[update_pull_request](TOOLS_GLOSSARY.md#update_pull_request)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Issues*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[add_issue_comment](TOOLS_GLOSSARY.md#add_issue_comment)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[create_issue](TOOLS_GLOSSARY.md#create_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_issue](TOOLS_GLOSSARY.md#get_issue)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[get_issue_comments](TOOLS_GLOSSARY.md#get_issue_comments)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[list_issues](TOOLS_GLOSSARY.md#list_issues)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[search_issues](TOOLS_GLOSSARY.md#search_issues)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[update_issue](TOOLS_GLOSSARY.md#update_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Sub-Issues*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Gists*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[list_gists](TOOLS_GLOSSARY.md#list_gists)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[update_gist](TOOLS_GLOSSARY.md#update_gist)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Notifications*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[list_notifications](TOOLS_GLOSSARY.md#list_notifications)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Code Scanning &amp; Security*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Workflows (GitHub Actions)*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[list_workflows](TOOLS_GLOSSARY.md#list_workflows)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[rerun_workflow_run](TOOLS_GLOSSARY.md#rerun_workflow_run)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Search &amp; Discovery*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[search_code](TOOLS_GLOSSARY.md#search_code)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[search_orgs](TOOLS_GLOSSARY.md#search_orgs)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[search_repositories](TOOLS_GLOSSARY.md#search_repositories)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[search_users](TOOLS_GLOSSARY.md#search_users)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*User &amp; Account*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[get_me](TOOLS_GLOSSARY.md#get_me)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*File Operations*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>**Bitbucket**</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>*Workspaces*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[bb_ls_workspaces](TOOLS_GLOSSARY.md#bb_ls_workspaces)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_get_workspace](TOOLS_GLOSSARY.md#bb_get_workspace)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Repositories*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[bb_ls_repos](TOOLS_GLOSSARY.md#bb_ls_repos)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_get_repo](TOOLS_GLOSSARY.md#bb_get_repo)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_get_commit_history](TOOLS_GLOSSARY.md#bb_get_commit_history)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_get_file](TOOLS_GLOSSARY.md#bb_get_file)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_list_branches](TOOLS_GLOSSARY.md#bb_list_branches)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_add_branch](TOOLS_GLOSSARY.md#bb_add_branch)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_clone_repo](TOOLS_GLOSSARY.md#bb_clone_repo)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Pull Requests*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[bb_ls_prs](TOOLS_GLOSSARY.md#bb_ls_prs)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_get_pr](TOOLS_GLOSSARY.md#bb_get_pr)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_ls_pr_comments](TOOLS_GLOSSARY.md#bb_ls_pr_comments)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr)</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>[bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr)</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>*Search*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[bb_search](TOOLS_GLOSSARY.md#bb_search)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>*Diff*</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[bb_diff_branches](TOOLS_GLOSSARY.md#bb_diff_branches)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>[bb_diff_commits](TOOLS_GLOSSARY.md#bb_diff_commits)</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
