@@ -38,7 +38,6 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 ├── code_style_guidelines.txt   # General coding style guidelines
 ├── README.md                   # This document
 ├── TOOLS_GLOSSARY.md           # Glossary of all available tools
-├── validate_tools.R            # Script for validating tool configurations
 ├── copilot/
 │   └── modes/
 │       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
@@ -46,15 +45,21 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 │       ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
 │       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
 │       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
-└── templates/
-    ├── claude_desktop_config_macos.json
-    ├── claude_desktop_config_windows.json
-    ├── mcp-bitbucket-wrapper.ps1
-    ├── mcp-bitbucket-wrapper.sh
-    ├── mcp-github-wrapper.ps1
-    ├── mcp-github-wrapper.sh
-    ├── vscode-mcp-config_macos.json
-    └── vscode-mcp-config_windows.json
+├── scripts/
+│   ├── mcp-github-wrapper.sh    # macOS/Linux GitHub MCP wrapper script
+│   ├── mcp-github-wrapper.ps1   # Windows GitHub MCP wrapper script
+│   ├── mcp-atlassian-wrapper.sh # macOS/Linux Atlassian MCP wrapper script
+│   ├── mcp-atlassian-wrapper.ps1# Windows Atlassian MCP wrapper script
+│   ├── mcp-bitbucket-wrapper.sh # macOS/Linux Bitbucket MCP wrapper script
+│   └── mcp-bitbucket-wrapper.ps1# Windows Bitbucket MCP wrapper script
+├── templates/
+│   ├── mcp_mac.json                # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_win.json                # MCP configuration for Windows (VS Code and Claude Desktop)
+│   └── vscode-settings.jsonc       # VS Code user settings template (optional)
+└── tests/
+    ├── smoke_mcp_wrappers.py   # Smoke test runner for wrapper stdout (filters/validates stdout)
+    ├── smoke_auth.sh           # Tests for authentication setup
+    └── smoke_rules.R           # R script for validating tool lists/matrix consistency
 ```
 
 ## Modes
@@ -191,6 +196,37 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## Installing MCP Servers
 
+How these wrapper scripts launch servers
+- Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
+  - GitHub: Docker container (required)
+  - Atlassian (Sooperset): local CLI (if present) → npx @latest → Docker fallback
+  - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
+- The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
+
+Optional: pre-pull GitHub container image (auto-pulls on first run)
+  - docker pull ghcr.io/github/github-mcp-server:latest
+
+Optional: pre‑pull container images (Atlassian)
+Pre‑pulling avoids network access during regular runs and makes startup instant when the container path is used.
+  - docker pull ghcr.io/sooperset/mcp-atlassian:latest
+
+Optional: local CLI installs (advanced)
+- Bitbucket MCP (Node CLI):
+  - npm i -g @aashari/mcp-server-atlassian-bitbucket
+- Atlassian MCP (Sooperset):
+  - No public npm package exists.
+
+Quick verification commands
+Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
+- macOS (zsh/bash):
+  - GitHub: ~/bin/mcp-github-wrapper.sh --help | head -5
+  - Bitbucket: ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
+  - Atlassian: ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
+- Windows (PowerShell):
+  - GitHub: & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 5
+  - Bitbucket: $env:ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
+  - Atlassian: $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
+
 Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). **We must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.**
 
 **Note:** While Microsoft lists a [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using the local Atlassian server (documented below) for better reliability and performance.
@@ -199,7 +235,7 @@ After you configure these MCP servers, follow the instructions in [Add MCP Serve
 
 ### GitHub MCP Server
 
-GitHub makes a **local** MCP server that provides the **same functionality** as GitHub's remote MCP server (linked above) **and** works in more apps (such as Claude Desktop). Also, while the remote MCP server has worked well in my experience, it is still technically ["in preview"](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/).
+GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop, and other MCP-compatible applications. The Docker version is the official and recommended way to run the GitHub MCP server locally.
 
 **You will need a GitHub Personal Access Token. To create one, follow these steps:**
 
@@ -220,16 +256,16 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 
 1. Store token securely:
    - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - Internet or network address: `GitHub`
+   - Internet or network address: `github-mcp`
    - Username: `token` (placeholder)
    - Password: (your PAT)
 2. (Optional) Inspect via PowerShell:
    ```powershell
    Install-Module -Name CredentialManager -Scope CurrentUser -Force
    Import-Module CredentialManager
-   Get-StoredCredential -Target GitHub
+   Get-StoredCredential -Target github-mcp
    ```
-3. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.ps1`](templates/mcp-github-wrapper.ps1) to `C:\Users\<your-os-username>\bin\mcp-github-wrapper.ps1`
+3. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.ps1`](scripts/mcp-github-wrapper.ps1) to `C:\Users\<your-os-username>\bin\mcp-github-wrapper.ps1`
 4. Ensure script dir: `New-Item -ItemType Directory -Force "$Env:UserProfile\bin" | Out-Null`
 5. Set execution policy (user scope):
    ```powershell
@@ -252,18 +288,18 @@ GitHub makes a **local** MCP server that provides the **same functionality** as 
 1. Create a keychain item:
    - GUI: Keychain Access → File → New Password Item…
      - Name (Service): `github-mcp`
-     - Account: your macOS username (must match `$USER`).
+     - Account: `token`
      - Password: (your GitHub Personal Access Token)
    - Or CLI:
-     > ⚠️ **Security Warning:** Running `security add-generic-password -s "github-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
+     > ⚠️ **Security Warning:** Running `security add-generic-password -s "github-mcp" -a "token" -w "<token>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
      ```bash
      ( unset HISTFILE; stty -echo; printf "Enter GitHub Personal Access Token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s github-mcp -a app-password -w "$PW"; \
+       security add-generic-password -s github-mcp -a token -w "$PW"; \
        unset PW )
      ```
-2. Use the provided wrapper script: copy [`templates/mcp-github-wrapper.sh`](templates/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
+2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
-4. Test retrieval (optional): `security find-generic-password -s github-mcp -a "$USER" -w`
+4. Test retrieval (optional): `security find-generic-password -s github-mcp -a token -w`
 5. Verify wrapper: `~/bin/mcp-github-wrapper.sh --help | head -5`
 
 **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` (macOS default shell) and then `source ~/.zshrc`:
@@ -314,9 +350,9 @@ Although Atlassian does not provide one yet, Bitbucket MCP servers made by other
        unset PW )
      ```
 
-2. Copy `templates/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH`:
+2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH`:
    ```bash
-  cp templates/mcp-bitbucket-wrapper.sh ~/bin/
+  cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
    ```
 3. Make it executable:
    ```bash
@@ -345,7 +381,7 @@ cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
 Install-Module CredentialManager -Scope CurrentUser -Force
 ```
 
-3. Copy `templates/mcp-bitbucket-wrapper.ps1` to a folder on your PATH (or run in place). Example using a user bin folder:
+3. Copy `scripts/mcp-bitbucket-wrapper.ps1` to a folder on your PATH (or run in place). Example using a user bin folder:
 ```powershell
 # create a user bin folder and copy the script there
 New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
@@ -399,24 +435,24 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 1. Create a keychain item for the API token:
    - GUI: Keychain Access → File → New Password Item…
-     - Name (Service): `atlassian-mcp-local`
+     - Name (Service): `atlassian-mcp`
      - Account: `api-token`
      - Password: (your Atlassian API token)
    - Or CLI:
      > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
      ```bash
      ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s atlassian-mcp-local -a api-token -w "$PW"; \
+       security add-generic-password -s atlassian-mcp -a api-token -w "$PW"; \
        unset PW )
      ```
 
-2. Copy `templates/mcp-atlassian-local-wrapper.sh` to somewhere on your `$PATH`:
+2. Copy `scripts/mcp-atlassian-wrapper.sh` to somewhere on your `$PATH`:
    ```bash
-   cp templates/mcp-atlassian-local-wrapper.sh ~/bin/
+   cp scripts/mcp-atlassian-wrapper.sh ~/bin/
    ```
 3. Make it executable:
    ```bash
-   chmod +x ~/bin/mcp-atlassian-local-wrapper.sh
+   chmod +x ~/bin/mcp-atlassian-wrapper.sh
    ```
   **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` and then `source ~/.zshrc`:
   ```
@@ -424,14 +460,14 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
   ```
 4. Test
    ```bash
-   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-local-wrapper.sh --help | head -5
+   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
    ```
 
 #### Configure Atlassian MCP Server on Windows
 
 1. Create a **Generic Credential** in Windows Credential Manager for the API token:
    - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - Internet or network address: `atlassian-mcp-local`
+   - Internet or network address: `atlassian-mcp`
    - User name: `api-token`
    - Password: (your Atlassian API token)
 
@@ -442,8 +478,8 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    try {
      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
      # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
-     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp-local","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
-     Write-Host "Credential 'atlassian-mcp-local' created." -ForegroundColor Green
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Write-Host "Credential 'atlassian-mcp' created." -ForegroundColor Green
    } finally {
      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
    }
@@ -456,11 +492,11 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
   **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
 
-3. Copy `templates/mcp-atlassian-local-wrapper.ps1` to your user bin folder:
+3. Copy `scripts/mcp-atlassian-wrapper.ps1` to your user bin folder:
    ```powershell
    # Create a user bin folder and copy the script there
    New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
-   Copy-Item -Path templates\mcp-atlassian-local-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1" -Force
+   Copy-Item -Path scripts\mcp-atlassian-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-wrapper.ps1" -Force
 
    # Optionally add the folder to your user PATH
    [Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
@@ -473,7 +509,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 
 5. Test
    ```powershell
-   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-local-wrapper.ps1 --help | Select-Object -First 5
+   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
    ```
 
 #### Troubleshooting Atlassian MCP Server
@@ -493,20 +529,20 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 ### VS Code
 
 1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Use the provided configuration: copy [`templates/vscode-mcp-config_macos.json`](templates/vscode-mcp-config_macos.json) (macOS) or [`templates/vscode-mcp-config_windows.json`](templates/vscode-mcp-config_windows.json) (Windows) and customize paths if/as needed
+2. Use the provided configuration: copy [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) or [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
 
 ### Claude Desktop
 
 1. Open Settings -> Developer > Edit Config
 - Note: This will open a File Explorer (Windows) or Finder (macOS) window
 2. Double-click the config file
-3. Use the provided configuration: copy [`templates/claude_desktop_config_windows.json`](templates/claude_desktop_config_windows.json) (Windows) or [`templates/claude_desktop_config_macos.json`](templates/claude_desktop_config_macos.json) (macOS) and customize paths if/as needed
+3. Use the provided configuration: copy [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) or [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) and customize paths if/as needed
 4. Update placeholders
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>` and `<your-bitbucket-username>` placeholders.**
+**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
 
 
 ## Coding Style Guidelines
