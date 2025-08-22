@@ -3,8 +3,8 @@
     "Atlassian": {
       "command": "powershell",
       "args": [
-        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-        "%USERPROFILE%/bin/mcp-atlassian-wrapper.ps1"
+  "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+  "$env:USERPROFILE/bin/mcp-atlassian-wrapper.ps1"
       ],
       "env": {
       },
@@ -14,7 +14,7 @@
       "command": "powershell",
       "args": [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-      "%USERPROFILE%/bin/mcp-bitbucket-wrapper.ps1"
+      "$env:USERPROFILE/bin/mcp-bitbucket-wrapper.ps1"
       ],
       "env": {
       },
@@ -23,8 +23,8 @@
     "Context7": {
       "command": "powershell",
       "args": [
-        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-        "%USERPROFILE%/bin/mcp-context7-wrapper.ps1"
+  "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+  "$env:USERPROFILE/bin/mcp-context7-wrapper.ps1"
         ],
       "env": {},
       "working_directory": null
@@ -33,7 +33,7 @@
       "command": "powershell",
       "args": [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-      "%USERPROFILE%/bin/mcp-github-wrapper.ps1"
+      "$env:USERPROFILE/bin/mcp-github-wrapper.ps1"
       ],
       "env": {},
       "working_directory": null
