@@ -104,10 +104,32 @@ function Get-StoredPassword {
 # Check container runtime availability
 Test-DockerAvailable
 
-# Domain default if unset (can be overridden by env/config)
+# Derive email first if not provided (needed for domain derivation)
+if (-not $env:ATLASSIAN_EMAIL) {
+  $gitEmail = $null
+  if (Get-Command git -ErrorAction SilentlyContinue) {
+    try {
+      $gitEmail = (git config --get user.email 2>$null).Trim()
+    } catch {}
+  }
+  if ($gitEmail) {
+    $env:ATLASSIAN_EMAIL = $gitEmail
+  }
+}
+
+# Domain derivation from email if unset
 if (-not $env:ATLASSIAN_DOMAIN) {
-  [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set; defaulting to 'guttmacher.atlassian.net'.")
-  $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+  if ($env:ATLASSIAN_EMAIL -and $env:ATLASSIAN_EMAIL.Contains('@')) {
+    # Extract organization from email (user@organization.org -> organization.atlassian.net)
+    $orgDomain = $env:ATLASSIAN_EMAIL.Split('@')[1]
+    $orgName = $orgDomain.Split('.')[0]
+    $env:ATLASSIAN_DOMAIN = "$orgName.atlassian.net"
+    [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN derived from email as '$($env:ATLASSIAN_DOMAIN)'.")
+  } else {
+    # Fallback to guttmacher if no email available
+    [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set and no email available; defaulting to 'guttmacher.atlassian.net'.")
+    $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+  }
 }
 
 # Get API token from environment or credential manager (for api_token auth method)
@@ -127,20 +149,10 @@ Could not retrieve Atlassian API token:
     }
   }
   
-  # Set email if not provided (env -> git -> username@derived .org)
+  # Complete email derivation if still not set after domain derivation
   if (-not $env:ATLASSIAN_EMAIL) {
-    $gitEmail = $null
-    if (Get-Command git -ErrorAction SilentlyContinue) {
-      try {
-        $gitEmail = (git config --get user.email 2>$null).Trim()
-      } catch {}
-    }
-    if ($gitEmail) {
-      $env:ATLASSIAN_EMAIL = $gitEmail
-    } else {
-      $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.org'
-      $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
-    }
+    $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.org'
+    $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
     [Console]::Error.WriteLine("Note: Using derived email '$($env:ATLASSIAN_EMAIL)'. Set ATLASSIAN_EMAIL to override.")
   }
 }

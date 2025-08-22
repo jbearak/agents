@@ -46,10 +46,33 @@ check_docker() {
 }
 
 
-# Domain default if unset
+# Derive email first if not provided (needed for domain derivation)
+if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
+  GIT_EMAIL=""
+  if command -v git >/dev/null 2>&1; then
+    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+  fi
+  if [[ -n "$GIT_EMAIL" ]]; then
+    ATLASSIAN_EMAIL="$GIT_EMAIL"
+  else
+    # We'll set a placeholder for now, will be updated after domain derivation
+    ATLASSIAN_EMAIL=""
+  fi
+fi
+
+# Domain derivation from email if unset
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-  ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
-  echo "Note: ATLASSIAN_DOMAIN was not set; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
+  if [[ -n "$ATLASSIAN_EMAIL" && "$ATLASSIAN_EMAIL" == *@* ]]; then
+    # Extract organization from email (user@organization.org -> organization.atlassian.net)
+    ORG_DOMAIN="${ATLASSIAN_EMAIL##*@}"  # Get part after @
+    ORG_NAME="${ORG_DOMAIN%.*}"          # Remove .org/.com/etc suffix
+    ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
+    echo "Note: ATLASSIAN_DOMAIN derived from email as '${ATLASSIAN_DOMAIN}'." >&2
+  else
+    # Fallback to guttmacher if no email available
+    ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
+    echo "Note: ATLASSIAN_DOMAIN was not set and no email available; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
+  fi
 fi
 
 # Get API token from environment or keychain (for api_token auth method)
@@ -72,17 +95,9 @@ else
   fi
 fi
 
-# Derive email if not provided (prefer env var -> git -> username@derived .org)
+# Complete email derivation if still not set after domain derivation
 if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-  GIT_EMAIL=""
-  if command -v git >/dev/null 2>&1; then
-    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
-  fi
-  if [[ -n "$GIT_EMAIL" ]]; then
-    ATLASSIAN_EMAIL="$GIT_EMAIL"
-  else
-    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
-  fi
+  ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
   echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
