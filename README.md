@@ -198,10 +198,11 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 How these wrapper scripts launch servers
 - Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
-  - GitHub: Docker container (required)
+  - GitHub: Docker container (preferred) → remote server fallback (https://api.githubcopilot.com/mcp/)
   - Atlassian (Sooperset): local CLI (if present) → npx @latest → Docker fallback
   - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
 - The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
+- GitHub wrapper environment variables: `MCP_GITHUB_DOCKER_IMAGE`, `DOCKER_COMMAND`, `GITHUB_MCP_REMOTE_URL`
 
 Optional: pre-pull GitHub container image (auto-pulls on first run)
   - docker pull ghcr.io/github/github-mcp-server:latest
@@ -236,6 +237,8 @@ After you configure these MCP servers, follow the instructions in [Add MCP Serve
 ### GitHub MCP Server
 
 GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop, and other MCP-compatible applications. The Docker version is the official and recommended way to run the GitHub MCP server locally.
+
+**Automatic Fallback:** The wrapper scripts automatically fall back to GitHub's remote MCP server (`https://api.githubcopilot.com/mcp/`) when Docker is unavailable, the daemon is not running, or the image cannot be pulled. This ensures the GitHub MCP server works even without Docker installed.
 
 **You will need a GitHub Personal Access Token. To create one, follow these steps:**
 
