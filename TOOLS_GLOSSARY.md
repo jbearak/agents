@@ -112,23 +112,44 @@ The [Sooperset local Atlassian MCP Server](https://github.com/sooperset/mcp-atla
 #### jira_add_comment
 Add a comment to a Jira issue.
 
+#### addCommentToJiraIssue
+Adds a comment to an existing Jira issue id or key.
+
 #### jira_create_issue
 Create a new Jira issue in a project.
+
+#### createJiraIssue
+Create a new Jira issue in a given project with a given issue type.
 
 #### jira_update_issue
 Update fields of an existing Jira issue.
 
+#### editJiraIssue
+Update the details of an existing Jira issue id or key.
+
 #### jira_get_issue
 Fetch details for a Jira issue by key or ID.
+
+#### getJiraIssue
+Get the details of a Jira issue by issue id or key.
 
 #### jira_search
 Search Jira issues with JQL (Jira Query Language).
 
+#### searchJiraIssuesUsingJql
+Search Jira issues using Jira Query Language (JQL).
+
 #### jira_transition_issue
 Move an issue through a workflow transition.
 
+#### transitionJiraIssue
+Transition an existing Jira issue (that has issue id or key) to a new status.
+
 #### jira_get_transitions
 List available transitions for a Jira issue.
+
+#### getTransitionsForJiraIssue
+Get available transitions for an existing Jira issue id or key.
 
 #### jira_delete_issue
 Delete a Jira issue.
@@ -188,11 +209,20 @@ Get user profile information from Jira.
 #### confluence_create_page
 Create a Confluence page (regular or live doc).
 
+#### createConfluencePage
+Create a new page in Confluence. Can create regular pages or live docs.
+
 #### confluence_get_page
 Fetch a Confluence page (body converted to Markdown).
 
+#### getConfluencePage
+Get a specific page or live doc data (including body content) from Confluence.
+
 #### confluence_update_page
 Update an existing Confluence page or live doc.
+
+#### updateConfluencePage
+Update an existing page or Live Doc in Confluence.
 
 #### confluence_delete_page
 Delete a Confluence page.
@@ -200,8 +230,14 @@ Delete a Confluence page.
 #### confluence_get_page_children
 List child pages of a Confluence page.
 
+#### getConfluencePageDescendants
+Get all child pages (descendants) of a specific page in Confluence.
+
 #### confluence_search
 Query Confluence content using CQL (Confluence Query Language).
+
+#### searchConfluenceUsingCql
+Search content in Confluence using CQL (Confluence Query Language).
 
 #### confluence_get_comments
 Get comments on a Confluence page.
