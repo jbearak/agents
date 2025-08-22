@@ -3,6 +3,14 @@
 # Tool Availability Matrix Validation Script
 # Compares toolsets in chatmode.md files against the matrix in README.md
 
+# Check if we're in the tests subdirectory and adjust working directory
+current_dir <- getwd()
+if (basename(current_dir) == "tests" && file.exists(file.path(dirname(current_dir), "README.md"))) {
+    cat("Detected running from tests subdirectory, changing to repository root...\n")
+    setwd(dirname(current_dir))
+    cat(paste("Working directory changed to:", getwd(), "\n\n"))
+}
+
 library(readr)
 library(dplyr)
 library(stringr)
