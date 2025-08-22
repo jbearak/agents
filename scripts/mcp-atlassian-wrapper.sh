@@ -32,6 +32,13 @@ get_keychain_password() {
   security find-generic-password -s "$SERVICE_NAME" -a "$ACCOUNT_NAME" -w 2>/dev/null || return 1
 }
 
+get_keychain_domain() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    return 1
+  fi
+  security find-generic-password -s "mcp-atlassian" -a "atlassian-domain" -w 2>/dev/null || return 1
+}
+
 check_docker() {
   if ! command -v "$DOCKER_COMMAND" &> /dev/null; then
     echo "Error: $DOCKER_COMMAND is not installed or not in PATH." >&2
@@ -60,18 +67,29 @@ if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
   fi
 fi
 
-# Domain derivation from email if unset
+# Domain derivation with fallback hierarchy: env var -> keychain -> email -> default
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-  if [[ -n "$ATLASSIAN_EMAIL" && "$ATLASSIAN_EMAIL" == *@* ]]; then
-    # Extract organization from email (user@organization.org -> organization.atlassian.net)
-    ORG_DOMAIN="${ATLASSIAN_EMAIL##*@}"  # Get part after @
-    ORG_NAME="${ORG_DOMAIN%.*}"          # Remove .org/.com/etc suffix
-    ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
-    echo "Note: ATLASSIAN_DOMAIN derived from email as '${ATLASSIAN_DOMAIN}'." >&2
-  else
-    # Fallback to guttmacher if no email available
-    ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
-    echo "Note: ATLASSIAN_DOMAIN was not set and no email available; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
+  # Try keychain first (macOS only)
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if KEYCHAIN_DOMAIN=$(get_keychain_domain) && [[ -n "$KEYCHAIN_DOMAIN" ]]; then
+      ATLASSIAN_DOMAIN="$KEYCHAIN_DOMAIN"
+      echo "Note: ATLASSIAN_DOMAIN retrieved from keychain as '${ATLASSIAN_DOMAIN}'." >&2
+    fi
+  fi
+  
+  # If still not set, try email derivation
+  if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
+    if [[ -n "$ATLASSIAN_EMAIL" && "$ATLASSIAN_EMAIL" == *@* ]]; then
+      # Extract organization from email (user@organization.org -> organization.atlassian.net)
+      ORG_DOMAIN="${ATLASSIAN_EMAIL##*@}"  # Get part after @
+      ORG_NAME="${ORG_DOMAIN%.*}"          # Remove .org/.com/etc suffix
+      ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
+      echo "Note: ATLASSIAN_DOMAIN derived from email as '${ATLASSIAN_DOMAIN}'." >&2
+    else
+      # Final fallback to guttmacher
+      ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
+      echo "Note: ATLASSIAN_DOMAIN was not set, not in keychain, and no email available; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
+    fi
   fi
 fi
 

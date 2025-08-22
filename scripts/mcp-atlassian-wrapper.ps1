@@ -100,6 +100,29 @@ function Get-StoredPassword {
   }
 }
 
+function Get-StoredDomain {
+  try {
+    # Check if credential exists
+    $listing = cmd /c "cmdkey /list" 2>$null
+    if (-not $listing -or $listing -notmatch 'mcp-atlassian') {
+      return $null
+    }
+
+    # Need CredentialManager module to read the credential
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
+    }
+
+    $cred = Get-StoredCredential -Target 'mcp-atlassian'
+    if ($cred -and $cred.UserName -eq 'atlassian-domain' -and $cred.Password) {
+      return $cred.Password
+    }
+    return $null
+  } catch {
+    return $null
+  }
+}
+
 
 # Check container runtime availability
 Test-DockerAvailable
@@ -117,18 +140,26 @@ if (-not $env:ATLASSIAN_EMAIL) {
   }
 }
 
-# Domain derivation from email if unset
+# Domain derivation with fallback hierarchy: env var -> credential manager -> email -> default
 if (-not $env:ATLASSIAN_DOMAIN) {
-  if ($env:ATLASSIAN_EMAIL -and $env:ATLASSIAN_EMAIL.Contains('@')) {
-    # Extract organization from email (user@organization.org -> organization.atlassian.net)
-    $orgDomain = $env:ATLASSIAN_EMAIL.Split('@')[1]
-    $orgName = $orgDomain.Split('.')[0]
-    $env:ATLASSIAN_DOMAIN = "$orgName.atlassian.net"
-    [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN derived from email as '$($env:ATLASSIAN_DOMAIN)'.")
+  # Try credential manager first
+  $credentialDomain = Get-StoredDomain
+  if ($credentialDomain) {
+    $env:ATLASSIAN_DOMAIN = $credentialDomain
+    [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN retrieved from credential manager as '$($env:ATLASSIAN_DOMAIN)'.")
   } else {
-    # Fallback to guttmacher if no email available
-    [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set and no email available; defaulting to 'guttmacher.atlassian.net'.")
-    $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+    # If still not set, try email derivation
+    if ($env:ATLASSIAN_EMAIL -and $env:ATLASSIAN_EMAIL.Contains('@')) {
+      # Extract organization from email (user@organization.org -> organization.atlassian.net)
+      $orgDomain = $env:ATLASSIAN_EMAIL.Split('@')[1]
+      $orgName = $orgDomain.Split('.')[0]
+      $env:ATLASSIAN_DOMAIN = "$orgName.atlassian.net"
+      [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN derived from email as '$($env:ATLASSIAN_DOMAIN)'.")
+    } else {
+      # Final fallback to guttmacher
+      [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set, not in credential manager, and no email available; defaulting to 'guttmacher.atlassian.net'.")
+      $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+    }
   }
 }
 
