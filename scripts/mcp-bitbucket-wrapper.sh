@@ -28,19 +28,38 @@ get_keychain_password() {
   security find-generic-password -s "$SERVICE_NAME" -a "$ACCOUNT_NAME" -w 2>/dev/null || return 1
 }
 
-# Username: never prompt; derive from git email prefix when missing; otherwise require explicit value
-if [[ -z "${ATLASSIAN_BITBUCKET_USERNAME:-}" ]]; then
-  if command -v git >/dev/null 2>&1; then
-    git_email="$(git config --get user.email 2>/dev/null || true)"
-  else
-    git_email=""
+get_keychain_username() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    return 1
   fi
-  if [[ -n "$git_email" ]]; then
-    ATLASSIAN_BITBUCKET_USERNAME="${git_email%@*}"
-    echo "Note: Using Bitbucket username '${ATLASSIAN_BITBUCKET_USERNAME}' derived from git user.email. Set ATLASSIAN_BITBUCKET_USERNAME to override." >&2
-  else
-    echo "Error: ATLASSIAN_BITBUCKET_USERNAME is not set and could not be derived. Set it explicitly or configure 'git config user.email'." >&2
-    exit 1
+  security find-generic-password -s "$SERVICE_NAME" -a "bitbucket-username" -w 2>/dev/null || return 1
+}
+
+# Username derivation with fallback hierarchy: env var -> keychain -> git email username -> OS username
+if [[ -z "${ATLASSIAN_BITBUCKET_USERNAME:-}" ]]; then
+  # Try keychain first (macOS only)
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if KEYCHAIN_USERNAME=$(get_keychain_username) && [[ -n "$KEYCHAIN_USERNAME" ]]; then
+      ATLASSIAN_BITBUCKET_USERNAME="$KEYCHAIN_USERNAME"
+      echo "Note: ATLASSIAN_BITBUCKET_USERNAME retrieved from keychain as '${ATLASSIAN_BITBUCKET_USERNAME}'." >&2
+    fi
+  fi
+  
+  # If still not set, try git email username
+  if [[ -z "${ATLASSIAN_BITBUCKET_USERNAME:-}" ]]; then
+    if command -v git >/dev/null 2>&1; then
+      git_email="$(git config --get user.email 2>/dev/null || true)"
+    else
+      git_email=""
+    fi
+    if [[ -n "$git_email" ]]; then
+      ATLASSIAN_BITBUCKET_USERNAME="${git_email%@*}"
+      echo "Note: Using Bitbucket username '${ATLASSIAN_BITBUCKET_USERNAME}' derived from git user.email. Set ATLASSIAN_BITBUCKET_USERNAME to override." >&2
+    else
+      # Final fallback to OS username
+      ATLASSIAN_BITBUCKET_USERNAME="${USER}"
+      echo "Note: Using Bitbucket username '${ATLASSIAN_BITBUCKET_USERNAME}' from OS username. Set ATLASSIAN_BITBUCKET_USERNAME to override." >&2
+    fi
   fi
 fi
 
