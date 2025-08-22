@@ -184,18 +184,20 @@ if ($NPM_PKG -and (Get-Command npx -ErrorAction SilentlyContinue)) {
 }
 
 # Fallback to container
-[Console]::Error.WriteLine("Using Atlassian MCP via container image: $($env:MCP_ATLASSIAN_IMAGE)")
-# Verify image exists (no auto-pull)
+# Ensure image present (auto-pull if missing)
 try {
   & $env:DOCKER_COMMAND image inspect $env:MCP_ATLASSIAN_IMAGE 2>$null
   if ($LASTEXITCODE -ne 0) {
-    Write-Error "Image not found: $($env:MCP_ATLASSIAN_IMAGE). Hint: run '$($env:DOCKER_COMMAND) pull $($env:MCP_ATLASSIAN_IMAGE)' first."
-    exit 1
+    [Console]::Error.WriteLine("Pulling Atlassian MCP Docker image: $($env:MCP_ATLASSIAN_IMAGE)")
+    & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
+    if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)"; exit 1 }
   }
 } catch {
-  Write-Error "Image not found: $($env:MCP_ATLASSIAN_IMAGE). Hint: run '$($env:DOCKER_COMMAND) pull $($env:MCP_ATLASSIAN_IMAGE)' first."
-  exit 1
+  [Console]::Error.WriteLine("Pulling Atlassian MCP Docker image: $($env:MCP_ATLASSIAN_IMAGE)")
+  & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
+  if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)"; exit 1 }
 }
+[Console]::Error.WriteLine("Using Atlassian MCP via container image: $($env:MCP_ATLASSIAN_IMAGE)")
 $dockerEnvArgs = @(
   '-e','NO_COLOR=1',
   '-e', "CONFLUENCE_URL=https://$($env:ATLASSIAN_DOMAIN)/wiki",

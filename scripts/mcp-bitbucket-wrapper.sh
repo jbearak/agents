@@ -111,7 +111,16 @@ fi
 
 # 3) Optional Docker fallback if image is specified
 if [ -n "${DOCKER_IMAGE}" ] && command -v docker >/dev/null 2>&1; then
-  echo "Using Bitbucket MCP via docker image: ${DOCKER_IMAGE}" >&2
+# Ensure image present (auto-pull if missing)
+if ! docker image inspect "${DOCKER_IMAGE}" >/dev/null 2>&1; then
+  echo "Pulling Bitbucket MCP Docker image: ${DOCKER_IMAGE}" >&2
+  if ! docker pull "${DOCKER_IMAGE}" >&2; then
+    echo "Error: failed to pull image: ${DOCKER_IMAGE}" >&2
+    exit 1
+  fi
+fi
+
+echo "Using Bitbucket MCP via docker image: ${DOCKER_IMAGE}" >&2
   docker run -i --rm --pull=never \
     -e "NO_COLOR=1" \
     -e "ATLASSIAN_BITBUCKET_USERNAME=${ATLASSIAN_BITBUCKET_USERNAME}" \

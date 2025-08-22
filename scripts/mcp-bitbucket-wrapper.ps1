@@ -102,17 +102,19 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
 if ($IMG) {
   $runtime = if (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' } elseif (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' } else { $null }
   if (-not $runtime) { Write-Error 'Neither podman nor docker found on PATH.'; exit 1 }
-  [Console]::Error.WriteLine("Using Bitbucket MCP via docker image: $IMG")
-  # Verify image exists (no auto-pull)
+[Console]::Error.WriteLine("Using Bitbucket MCP via docker image: $IMG")
+  # Ensure image present (auto-pull if missing)
   try {
     & $runtime image inspect $IMG 2>$null
     if ($LASTEXITCODE -ne 0) {
-      Write-Error "Image not found: $IMG. Hint: run '$runtime pull $IMG' first."
-      exit 1
+      [Console]::Error.WriteLine("Pulling Bitbucket MCP Docker image: $IMG")
+      & $runtime pull $IMG
+      if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
     }
   } catch {
-    Write-Error "Image not found: $IMG. Hint: run '$runtime pull $IMG' first."
-    exit 1
+    [Console]::Error.WriteLine("Pulling Bitbucket MCP Docker image: $IMG")
+    & $runtime pull $IMG
+    if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $IMG"; exit 1 }
   }
   $envArgs = @('-e','NO_COLOR=1','-e',"ATLASSIAN_BITBUCKET_USERNAME=$($env:ATLASSIAN_BITBUCKET_USERNAME)",'-e',"ATLASSIAN_BITBUCKET_APP_PASSWORD=$appPassword",'-e',"BITBUCKET_DEFAULT_WORKSPACE=$($env:BITBUCKET_DEFAULT_WORKSPACE)")
   & $runtime @('run','-i','--rm','--pull=never') + $envArgs + @($IMG) + $Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }

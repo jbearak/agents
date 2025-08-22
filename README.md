@@ -201,7 +201,7 @@ How these wrapper scripts launch servers
   - GitHub: Docker container (required)
   - Atlassian (Sooperset): local CLI (if present) → npx @latest → Docker fallback
   - Bitbucket (@aashari): local CLI (if present) → npx @latest → Docker if MCP_BITBUCKET_DOCKER_IMAGE is set
-- The wrappers never install anything automatically. This avoids interactive prompts when editors launch them.
+- The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
 
 Required: pull GitHub container image
   - docker pull ghcr.io/github/github-mcp-server:latest

@@ -146,6 +146,15 @@ DOCKER_ENV_ARGS=(
   -e "JIRA_API_TOKEN=$API_TOKEN"
 )
 
+# Ensure image present (auto-pull if missing)
+if ! "$DOCKER_COMMAND" image inspect "${MCP_ATLASSIAN_IMAGE}" >/dev/null 2>&1; then
+  echo "Pulling Atlassian MCP Docker image: ${MCP_ATLASSIAN_IMAGE}" >&2
+  if ! "$DOCKER_COMMAND" pull "${MCP_ATLASSIAN_IMAGE}" >&2; then
+    echo "Error: failed to pull image: ${MCP_ATLASSIAN_IMAGE}" >&2
+    exit 1
+  fi
+fi
+
 echo "Using Atlassian MCP via container image: ${MCP_ATLASSIAN_IMAGE}" >&2
 "$DOCKER_COMMAND" run --rm -i --pull=never \
   "${DOCKER_ENV_ARGS[@]}" \

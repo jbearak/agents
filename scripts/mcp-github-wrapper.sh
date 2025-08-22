@@ -74,11 +74,13 @@ if ! check_docker_daemon; then
   exit 1
 fi
 
-# Verify image exists (no auto-pull)
+# Ensure image present (auto-pull if missing)
 if ! "$DOCKER_COMMAND" image inspect "${DOCKER_IMAGE}" >/dev/null 2>&1; then
-  echo "Error: GitHub MCP image not found: ${DOCKER_IMAGE}" >&2
-  echo "Hint: run: $DOCKER_COMMAND pull ${DOCKER_IMAGE}" >&2
-  exit 1
+  echo "Pulling GitHub MCP Docker image: ${DOCKER_IMAGE}" >&2
+  if ! "$DOCKER_COMMAND" pull "${DOCKER_IMAGE}" >&2; then
+    echo "Error: failed to pull image: ${DOCKER_IMAGE}" >&2
+    exit 1
+  fi
 fi
 
 echo "Using GitHub MCP via Docker image: ${DOCKER_IMAGE}" >&2
