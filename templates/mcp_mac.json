@@ -1,35 +1,23 @@
 {
   "servers": {
     "Atlassian": {
-      "command": "/Users/<your-os-username>/bin/mcp-atlassian-wrapper.sh",
-      "args": [],
-      "env": {
-        "ATLASSIAN_DOMAIN": "guttmacher.atlassian.net",
-        "ATLASSIAN_EMAIL": "<your-email>@guttmacher.org",
-        "AUTH_METHOD": "api_token"
-      },
-      "working_directory": null
-    },
-    "Context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
-      "env": {},
-      "working_directory": null
-    },
-    "GitHub": {
-      "command": "/Users/<your-os-username>/bin/mcp-github-wrapper.sh",
-      "args": [],
-      "env": {
-        "DOCKER_HOST": "unix:///Users/<your-os-username>/.colima/default/docker.sock"
-      },
+      "command": "bash",
+      "args": ["-c", "~/bin/mcp-atlassian-wrapper.sh"],
       "working_directory": null
     },
     "Bitbucket": {
-      "command": "/Users/<your-os-username>/bin/mcp-bitbucket-wrapper.sh",
-      "args": [],
-      "env": {
-        "ATLASSIAN_BITBUCKET_USERNAME": "<your-bitbucket-username>"
-      },
+      "command": "bash",
+      "args": ["-c", "~/bin/mcp-bitbucket-wrapper.sh"],
+      "working_directory": null
+    },
+    "Context7": {
+      "command": "bash",
+      "args": ["-c", "~/bin/mcp-context7-wrapper.sh"],
+      "working_directory": null
+    },
+    "GitHub": {
+      "command": "bash",
+      "args": ["-c", "~/bin/mcp-github-wrapper.sh"],
       "working_directory": null
     }
   }

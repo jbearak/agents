@@ -48,7 +48,7 @@ extract_tools_from_chatmode <- function(file_path) {
   return(sort(unique(parsed_yaml$tools)))
 }
 
-# Function to extract tool availability matrix from README.md
+# Function to extract tool availability matrix from README.md (HTML table format)
 extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
   if (!file.exists(readme_path)) {
     stop("README.md not found")
@@ -62,68 +62,95 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
     stop("Tool Availability Matrix section not found in README.md")
   }
   
-  # Find the table (lines starting with |)
+  # Find the HTML table start
   table_lines <- content[matrix_start:length(content)]
-  table_start <- which(str_detect(table_lines, "^\\|"))[1]
+  table_start <- which(str_detect(table_lines, "<table>"))[1]
   
   if (is.na(table_start)) {
-    stop("Tool availability table not found")
+    stop("Tool availability HTML table not found")
   }
   
-  # Extract table lines
+  # Find the end of the HTML table
   table_start_abs <- matrix_start + table_start - 1
   table_lines <- content[table_start_abs:length(content)]
+  table_end <- which(str_detect(table_lines, "</table>"))[1]
   
-  # Find end of table (first non-table line that's not empty)
-  table_end <- which(!str_detect(table_lines, "^\\|") & str_trim(table_lines) != "")[1]
   if (is.na(table_end)) {
-    table_end <- length(table_lines) + 1
+    stop("HTML table end tag not found")
   }
   
-  table_lines <- table_lines[1:(table_end - 1)]
+  # Extract the HTML table content
+  table_lines <- table_lines[1:table_end]
+  table_content <- paste(table_lines, collapse = "\n")
   
-  # Remove only the markdown separator row (pipes, spaces, colons, hyphens)
-  sep_idx <- str_detect(table_lines, "^\\|[ :\\-]+\\|$")
-  table_lines <- table_lines[!sep_idx]
+  # Extract headers from <th> elements
+  th_pattern <- "<th>([^<]+)</th>"
+  header_matches <- str_extract_all(table_content, th_pattern)[[1]]
+  headers <- str_extract(header_matches, "(?<=<th>)[^<]+(?=</th>)")
   
-  if (length(table_lines) < 2) {
-    stop("Insufficient table data found")
+  if (length(headers) == 0) {
+    stop("No table headers found")
   }
   
-  # Parse header
-  header_line <- table_lines[1]
-  headers <- str_split(header_line, "\\|")[[1]]
-  headers <- str_trim(headers)
-  headers <- headers[headers != ""]
+  # Extract data rows from <tr> elements in <tbody>
+  tbody_pattern <- "<tbody>[\\s\\S]*?</tbody>"
+  tbody_match <- str_extract(table_content, tbody_pattern)
   
-  # Parse data rows and extract tool names
-  data_rows <- table_lines[-1]
+  if (is.na(tbody_match)) {
+    stop("No table body found")
+  }
+  
+  # Extract individual table rows (handle tr tags with attributes)
+  tr_pattern <- "<tr[^>]*>[\\s\\S]*?</tr>"
+  tr_matches <- str_extract_all(tbody_match, tr_pattern)[[1]]
+  
   tool_matrix <- data.frame()
+  last_row_with_checkmarks <- NULL
   
-  for (i in seq_along(data_rows)) {
-    row <- data_rows[i]
+  for (row_idx in seq_along(tr_matches)) {
+    tr <- tr_matches[row_idx]
     
-    cells <- str_split(row, "\\|")[[1]]
-    cells <- str_trim(cells)
-    cells <- cells[cells != ""]
+    # Extract table cells from <td> elements
+    td_pattern <- "<td[^>]*>([\\s\\S]*?)</td>"
+    td_matches <- str_extract_all(tr, td_pattern)[[1]]
+    
+    if (length(td_matches) == 0) {
+      next
+    }
+    
+    # Extract content from each <td>
+    cells <- character(length(td_matches))
+    for (cell_idx in seq_along(td_matches)) {
+      # Remove opening and closing td tags
+      cell_content <- gsub("<td[^>]*>", "", td_matches[cell_idx])
+      cell_content <- gsub("</td>", "", cell_content)
+      cells[cell_idx] <- cell_content
+    }
+    
+    # Check if this row has rowspan attributes (indicating it has checkmarks)
+    has_rowspan <- any(str_detect(td_matches, "rowspan"))
     
     if (length(cells) >= length(headers)) {
-      # Extract tool name from first cell (remove markdown links and formatting)
+      # This is a full row with all columns (including checkmarks)
       tool_name <- cells[1]
       
       # Skip section headers and empty rows
-      if (str_detect(tool_name, "^\\*") || tool_name == "" || str_detect(tool_name, "^\\*\\*")) {
+      if (str_detect(tool_name, "<strong>") || str_detect(tool_name, "<em>") || tool_name == "" || str_trim(tool_name) == "") {
         next
       }
       
-      # Extract tool name from markdown link [toolname](#link)
-      if (str_detect(tool_name, "\\[.*\\]\\(.*\\)")) {
-        extracted_name <- str_extract(tool_name, "(?<=\\[)[^\\]]+(?=\\])")
-        if (!is.na(extracted_name)) {
-          tool_name <- extracted_name
+      # Extract tool name from HTML link <a href="...">toolname</a>
+      if (str_detect(tool_name, "<a href=")) {
+        # Use gsub with a simpler capturing group approach
+        temp_name <- gsub(".*<a[^>]*>([^<]+)</a>.*", "\\1", tool_name)
+        # Only use the extracted name if it's different from original (meaning extraction worked)
+        if (temp_name != tool_name && !is.na(temp_name) && str_trim(temp_name) != "") {
+          tool_name <- str_trim(temp_name)
         }
-        
       }
+      
+      # Clean up tool name
+      tool_name <- str_trim(tool_name)
       
       if (tool_name != "" && !is.na(tool_name)) {
         row_data <- data.frame(
@@ -135,12 +162,56 @@ extract_tool_matrix_from_readme <- function(readme_path = "README.md") {
           stringsAsFactors = FALSE
         )
         tool_matrix <- rbind(tool_matrix, row_data)
+        
+        # If this row has rowspan, store it for the next row
+        if (has_rowspan) {
+          last_row_with_checkmarks <- row_data
+        } else {
+          last_row_with_checkmarks <- NULL
+        }
       }
+    } else if (length(cells) == 1 && !is.null(last_row_with_checkmarks)) {
+      # This is a single-cell row (second row of a rowspan pair)
+      # This contains the remote MCP tool name that should also be validated
+      tool_name <- cells[1]
+      
+      # Skip section headers and empty rows  
+      if (str_detect(tool_name, "<strong>") || str_detect(tool_name, "<em>") || tool_name == "" || str_trim(tool_name) == "") {
+        next
+      }
+      
+      # Extract tool name from HTML link here too, if present
+      if (str_detect(tool_name, "<a href=")) {
+        temp_name <- gsub(".*<a[^>]*>([^<]+)</a>.*", "\\1", tool_name)
+        if (temp_name != tool_name && !is.na(temp_name) && str_trim(temp_name) != "") {
+          tool_name <- str_trim(temp_name)
+        }
+      }
+      
+      # Clean up tool name
+      tool_name <- str_trim(tool_name)
+      
+      if (tool_name != "" && !is.na(tool_name)) {
+        # Use the checkmarks from the previous row (same availability as local MCP tool)
+        row_data <- data.frame(
+          Tool = tool_name,
+          QnA = last_row_with_checkmarks$QnA,
+          Review = last_row_with_checkmarks$Review,
+          Plan = last_row_with_checkmarks$Plan, 
+          Code = last_row_with_checkmarks$Code,
+          stringsAsFactors = FALSE
+        )
+        tool_matrix <- rbind(tool_matrix, row_data)
+      }
+      
+      # Clear the stored row after using it
+      last_row_with_checkmarks <- NULL
     }
   }
   
   return(tool_matrix)
 }
+
 
 # Function to convert tool matrix to expected toolsets per mode
 convert_matrix_to_toolsets <- function(tool_matrix) {
@@ -181,6 +252,33 @@ validate_toolsets <- function() {
   cat("Reading tool matrix from README.md...\n")
   tool_matrix <- extract_tool_matrix_from_readme()
   
+  
+  # Show first few rows for verification (only if no tools found for debugging)
+  if (nrow(tool_matrix) == 0) {
+    cat("DEBUG: No rows found in matrix. Checking table extraction...\n")
+    # Try to extract the table content for debugging
+    tryCatch({
+      content <- readLines("README.md", warn = FALSE)
+      matrix_start <- grep("## Tool Availability Matrix", content)
+      table_lines <- content[matrix_start:length(content)]
+      table_start <- which(str_detect(table_lines, "<table>"))[1]
+      if (!is.na(table_start)) {
+        table_start_abs <- matrix_start + table_start - 1
+        table_end_lines <- content[table_start_abs:length(content)]
+        table_end <- which(str_detect(table_end_lines, "</table>"))[1]
+        if (!is.na(table_end)) {
+          sample_content <- content[table_start_abs:(table_start_abs + min(50, table_end - 1))]
+          cat("DEBUG: Sample table content (first 50 lines):\n")
+          for (i in seq_along(sample_content)) {
+            cat(paste(i, ":", sample_content[i], "\n"))
+          }
+        }
+      }
+    }, error = function(e) {
+      cat("DEBUG: Error extracting sample content:", e$message, "\n")
+    })
+  }
+  
   # Simple check for target tools
   if ("resolve-library-id" %in% tool_matrix$Tool && "get-library-docs" %in% tool_matrix$Tool) {
     cat("SUCCESS: Both target tools found in matrix!\n")
@@ -201,13 +299,10 @@ validate_toolsets <- function() {
   
   expected_toolsets <- convert_matrix_to_toolsets(tool_matrix)
   
-  # Debug: show expected toolsets
-  cat("Debug: Expected toolsets:\n")
+  # Show expected toolsets summary
+  cat("Expected toolsets from README.md:\n")
   for (mode in names(expected_toolsets)) {
     cat(paste("  ", mode, ":", length(expected_toolsets[[mode]]), "tools\n"))
-    if (length(expected_toolsets[[mode]]) > 0) {
-      cat(paste("    First few:", paste(head(expected_toolsets[[mode]], 3), collapse = ", "), "\n"))
-    }
   }
   
   # Extract actual toolsets from chatmode files
@@ -239,19 +334,10 @@ validate_toolsets <- function() {
     }
   }
   
-  # Debug: show actual toolsets
-  cat("Debug: Actual toolsets:\n")
+  # Show actual toolsets summary
+  cat("Actual toolsets from chatmode.md files:\n")
   for (mode in names(actual_toolsets)) {
     cat(paste("  ", mode, ":", length(actual_toolsets[[mode]]), "tools\n"))
-    if (length(actual_toolsets[[mode]]) > 0) {
-      cat(paste("    First few:", paste(head(actual_toolsets[[mode]], 3), collapse = ", "), "\n"))
-      if ("get-library-docs" %in% actual_toolsets[[mode]]) {
-        cat("    Contains get-library-docs: YES\n")
-      }
-      if ("resolve-library-id" %in% actual_toolsets[[mode]]) {
-        cat("    Contains resolve-library-id: YES\n")
-      }
-    }
   }
   
   # Compare toolsets
@@ -276,18 +362,19 @@ validate_toolsets <- function() {
       next
     }
     
+    # Compare toolsets for exact matches
+    missing_tools <- setdiff(expected, actual)
+    extra_tools <- setdiff(actual, expected)
+    
     # Check for exact match
-    if (setequal(expected, actual)) {
-      cat("  ✅ Toolsets match perfectly\n")
+    if (length(missing_tools) == 0 && length(extra_tools) == 0) {
+      cat("  ✅ Toolsets match exactly\n")
       cat(paste("     Tool count:", length(actual), "\n"))
     } else {
       cat("  ❌ Toolsets do not match\n")
       all_valid <- FALSE
       
       # Show differences
-      missing_tools <- setdiff(expected, actual)
-      extra_tools <- setdiff(actual, expected)
-      
       if (length(missing_tools) > 0) {
         cat("     Missing tools in chatmode.md:\n")
         for (tool in missing_tools) {

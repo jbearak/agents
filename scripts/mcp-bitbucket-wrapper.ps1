@@ -52,10 +52,53 @@ function Get-StoredPassword {
   }
 }
 
-# Username is required from environment (set in JSON config)
+function Get-StoredUsername {
+  try {
+    # Check if credential exists
+    $listing = cmd /c "cmdkey /list" 2>$null
+    if (-not $listing -or $listing -notmatch 'bitbucket-mcp') {
+      return $null
+    }
+
+    # Need CredentialManager module to read the credential
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
+    }
+
+    $cred = Get-StoredCredential -Target 'bitbucket-mcp'
+    if ($cred -and $cred.UserName -eq 'bitbucket-username' -and $cred.Password) {
+      return $cred.Password
+    }
+    return $null
+  } catch {
+    return $null
+  }
+}
+
+# Username derivation with fallback hierarchy: env var -> credential manager -> git email username -> OS username
 if (-not $env:ATLASSIAN_BITBUCKET_USERNAME) {
-  Write-Error "ATLASSIAN_BITBUCKET_USERNAME environment variable is required. This should be set in your agent configuration JSON file."
-  exit 1
+  # Try credential manager first
+  $credentialUsername = Get-StoredUsername
+  if ($credentialUsername) {
+    $env:ATLASSIAN_BITBUCKET_USERNAME = $credentialUsername
+    [Console]::Error.WriteLine("Note: ATLASSIAN_BITBUCKET_USERNAME retrieved from credential manager as '$($env:ATLASSIAN_BITBUCKET_USERNAME)'.")
+  } else {
+    # If still not set, try git email username
+    $gitEmail = $null
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+      try {
+        $gitEmail = (git config --get user.email 2>$null).Trim()
+      } catch {}
+    }
+    if ($gitEmail -and $gitEmail.Contains('@')) {
+      $env:ATLASSIAN_BITBUCKET_USERNAME = $gitEmail.Split('@')[0]
+      [Console]::Error.WriteLine("Note: Using Bitbucket username '$($env:ATLASSIAN_BITBUCKET_USERNAME)' derived from git user.email. Set ATLASSIAN_BITBUCKET_USERNAME to override.")
+    } else {
+      # Final fallback to OS username
+      $env:ATLASSIAN_BITBUCKET_USERNAME = $env:USERNAME
+      [Console]::Error.WriteLine("Note: Using Bitbucket username '$($env:ATLASSIAN_BITBUCKET_USERNAME)' from OS username. Set ATLASSIAN_BITBUCKET_USERNAME to override.")
+    }
+  }
 }
 
 # Get app password from environment or credential manager

@@ -7,23 +7,23 @@ Always reference these instructions first and fallback to search or bash command
 This is a documentation repository for GitHub Copilot modes and tools. All "building" and "testing" consists of validating documentation structure and markdown formatting.
 
 **Bootstrap and validate the repository:**
-- `cd /home/runner/work/agents/agents` (or repository root)
-- **Lint markdown files:** Run `markdownlint /path/to/repo/README.md /path/to/repo/copilot/modes/*.md` -- takes < 1 second. NEVER CANCEL.
-- **Verify git status:** `git --no-pager status && git --no-pager log --oneline -5` -- takes < 0.1 seconds. NEVER CANCEL.
+- `cd <repo-root>` (if needed)
+- **Lint markdown files:** Run `markdownlint "*.md" "**/*.md"` — takes < 1 second. NEVER CANCEL.
+- **Verify git status:** `git --no-pager status && git --no-pager log --oneline -5` — takes < 0.1 seconds. NEVER CANCEL.
 
 ## Validation
 
 **CRITICAL VALIDATION SCENARIOS:** After making any changes to this repository, you MUST test the following complete end-to-end scenarios:
 
-1. **Documentation Navigation Test:** Verify an agent can navigate the repository structure by reading README.md and understanding the mode hierarchy. Test with: `head -50 README.md | grep -E "(##|###)"` -- takes < 0.1 seconds.
+1. **Documentation Navigation Test:** Verify an agent can navigate the repository structure by reading README.md and understanding the mode hierarchy. Test with: `head -50 README.md | grep -E "(##|###)"` — takes < 0.1 seconds.
 
 2. **Mode File Structure Test:** Validate that all mode files follow correct format (YAML frontmatter with tools list and contract section). Check manually by viewing each file.
 
 3. **Cross-Reference Validation:** Check that the tool matrix in README.md matches the tools lists in the individual mode files.
 
-4. **Markdown Quality Check:** Run full markdown linting to ensure documentation quality. The linting will show many existing issues - this is expected and not blocking.
+4. **Markdown Quality Check:** Run full markdown linting to ensure documentation quality. The linting will show many existing issues — this is expected and not blocking.
 
-5. **Tools Lists Validation:** Ensure the tools list in README.md accurately reflects the tools lists in the chatmode.md files. Verify with: `Rscript scripts/smoke_rules.R`.
+5. **Tools Lists Validation:** Ensure the tools list in README.md accurately reflects the tools lists in the chatmode.md files. Verify with: `Rscript tests/smoke_rules.R`.
 
 **NEVER CANCEL any validation command.** All validation operations complete in under 1 second.
 
@@ -32,15 +32,32 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 ### Repository Structure
 ```
 ./
-├── README.md               # Main documentation (3191 words, 528 lines)
-├── coding_guidelines.txt   # Shared custom instructions for coding standards saved to https://github.com/organizations/Guttmacher/settings/copilot/custom_instructions
-└── copilot/
-    └── modes/
-        ├── QnA.chatmode.md         # Read-only Q&A mode (renamed from Question)
-        ├── Plan.chatmode.md        # Planning mode (71 lines)
-        ├── Review.chatmode.md      # Review mode (67 lines)
-        ├── Code-GPT5.chatmode.md   # Full implementation mode with GPT-5
-        └── Code-Sonnet4.chatmode.md # Full implementation mode with Claude Sonnet 4
+├── README.md                         # Main documentation
+├── TOOLS_GLOSSARY.md                 # Glossary of all available tools
+├── copilot/
+│   └── modes/
+│       ├── QnA.chatmode.md                # Strict read-only Q&A / analysis (no mutations)
+│       ├── Plan.chatmode.md               # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+│       ├── Code-Sonnet4.chatmode.md       # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-GPT5.chatmode.md          # Full coding, execution, PR + branch ops (GPT-5 model)
+│       ├── Review.chatmode.md             # PR & issue review feedback (comments only)
+├── scripts/
+│   ├── mcp-github-wrapper.sh        # macOS/Linux GitHub MCP wrapper script
+│   ├── mcp-github-wrapper.ps1       # Windows GitHub MCP wrapper script
+│   ├── mcp-atlassian-wrapper.sh     # macOS/Linux Atlassian MCP wrapper script
+│   ├── mcp-atlassian-wrapper.ps1    # Windows Atlassian MCP wrapper script
+│   ├── mcp-bitbucket-wrapper.sh     # macOS/Linux Bitbucket MCP wrapper script
+│   ├── mcp-bitbucket-wrapper.ps1    # Windows Bitbucket MCP wrapper script
+│   ├── mcp-context7-wrapper.sh      # macOS/Linux Context7 MCP wrapper script
+│   └── mcp-context7-wrapper.ps1     # Windows Context7 MCP wrapper script
+├── templates/
+│   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
+│   └── vscode-settings.jsonc              # VS Code user settings template (optional)
+└── tests/
+    ├── smoke_mcp_wrappers.py        # Smoke test runner for wrapper stdout (filters/validates stdout)
+    ├── smoke_auth.sh                # Tests for authentication setup
+    └── smoke_rules.R                # R script for validating tool lists/matrix consistency
 ```
 
 ### Key File Contents and Patterns
@@ -58,8 +75,7 @@ Standard YAML frontmatter:
 **Tool Availability Matrix:** The README.md contains a comprehensive table showing which tools are available in which modes. Reference this instead of guessing tool availability.
 
 **Key Relationships:**
-- `coding_guidelines.txt` is referenced as the canonical source for multi-tool custom instructions
-- `.github/copilot-instructions.md` (this file) is referenced in Code.chatmode.md line 46
+- `llm_coding_style_guidelines.txt` (referenced in README) is the canonical source for coding guidelines. Copy/paste into other tools as needed.
 - Mode files define different privilege levels: QnA < Review < Plan < Code
 
 ### Frequently Needed Information

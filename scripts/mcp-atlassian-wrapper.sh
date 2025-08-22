@@ -14,7 +14,8 @@ ACCOUNT_NAME="api-token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 MCP_ATLASSIAN_IMAGE="${MCP_ATLASSIAN_IMAGE:-ghcr.io/sooperset/mcp-atlassian:latest}"
 AUTH_METHOD="${AUTH_METHOD:-api_token}"
-# Note: sooperset/mcp-atlassian only supports Docker containers
+REMOTE_MCP_URL="https://mcp.atlassian.com/v1/sse"
+# Note: sooperset/mcp-atlassian supports Docker containers with remote fallback via mcp-remote
 
 # Keep stdout clean when npm/npx is used
 export NO_COLOR=1
@@ -32,17 +33,43 @@ get_keychain_password() {
   security find-generic-password -s "$SERVICE_NAME" -a "$ACCOUNT_NAME" -w 2>/dev/null || return 1
 }
 
-check_docker() {
-  if ! command -v "$DOCKER_COMMAND" &> /dev/null; then
-    echo "Error: $DOCKER_COMMAND is not installed or not in PATH." >&2
-    echo "Please install Colima (macOS) or docker / Podman to use the local Atlassian MCP server." >&2
-    exit 1
-  fi
+check_docker_daemon() {
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: $DOCKER_COMMAND daemon is not running." >&2
     echo "Start it with: 'colima start' (macOS) or start your docker/Podman service before using this wrapper." >&2
+    return 1
+  fi
+  return 0
+}
+
+use_remote_server() {
+  echo "Falling back to remote Atlassian MCP server: $REMOTE_MCP_URL" >&2
+  
+  # Check if npx is available for mcp-remote
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "Error: npx not found. Cannot use mcp-remote for remote server connection." >&2
+    echo "Please install Node.js/npm or start Docker/Podman to use Atlassian MCP server." >&2
     exit 1
   fi
+  
+  # Use mcp-remote to bridge stdio to remote HTTP+SSE server with OAuth
+  echo "Using mcp-remote to connect to remote Atlassian MCP server..." >&2
+  
+  # Set up environment for mcp-remote with authentication
+  export ATLASSIAN_API_TOKEN="$API_TOKEN"
+  export ATLASSIAN_DOMAIN="$ATLASSIAN_DOMAIN"
+  export ATLASSIAN_EMAIL="$ATLASSIAN_EMAIL"
+  
+  # Use mcp-remote to connect to remote server with OAuth authentication
+  # Let mcp-remote handle OAuth instead of passing API token headers
+  # The remote server uses OAuth, not API tokens directly
+  echo "Note: Remote server uses OAuth authentication, not API tokens." >&2
+  echo "You may need to authorize in the browser that opens." >&2
+  
+  exec npx -y mcp-remote@latest "$REMOTE_MCP_URL" \
+    --header "X-Atlassian-Domain:${ATLASSIAN_DOMAIN}" \
+    --header "X-Atlassian-Email:${ATLASSIAN_EMAIL}" \
+    "$@"
 }
 
 
@@ -88,8 +115,18 @@ fi
 
 # run_cli function removed - sooperset/mcp-atlassian only supports Docker containers
 
-# Use container runtime (only option available)
-check_docker
+# Check if Docker is available
+if ! command -v "$DOCKER_COMMAND" >/dev/null 2>&1; then
+  echo "Error: Docker not found. Please install Docker or set DOCKER_COMMAND to point to your container runtime." >&2
+  echo "Attempting to use remote server fallback..." >&2
+  use_remote_server
+fi
+
+# Check if Docker daemon is running
+if ! check_docker_daemon; then
+  echo "Attempting to use remote server fallback..." >&2
+  use_remote_server
+fi
 
 DOCKER_ENV_ARGS=(
   -e "NO_COLOR=1"
@@ -106,7 +143,8 @@ if ! "$DOCKER_COMMAND" image inspect "${MCP_ATLASSIAN_IMAGE}" >/dev/null 2>&1; t
   echo "Pulling Atlassian MCP Docker image: ${MCP_ATLASSIAN_IMAGE}" >&2
   if ! "$DOCKER_COMMAND" pull "${MCP_ATLASSIAN_IMAGE}" >&2; then
     echo "Error: failed to pull image: ${MCP_ATLASSIAN_IMAGE}" >&2
-    exit 1
+    echo "Attempting to use remote server fallback..." >&2
+    use_remote_server
   fi
   echo "Pulled Atlassian MCP Docker image successfully: ${MCP_ATLASSIAN_IMAGE}" >&2
 fi

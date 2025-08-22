@@ -11,7 +11,7 @@ SERVICE_NAME="github-mcp"
 ACCOUNT_NAME="token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 DOCKER_IMAGE="${MCP_GITHUB_DOCKER_IMAGE:-ghcr.io/github/github-mcp-server:latest}"
-REMOTE_MCP_URL="${GITHUB_MCP_REMOTE_URL:-https://api.githubcopilot.com/mcp/}"
+REMOTE_MCP_URL="https://api.githubcopilot.com/mcp/"
 
 # --- Helper Functions ---
 check_docker_daemon() {
@@ -25,49 +25,24 @@ check_docker_daemon() {
 use_remote_server() {
   echo "Falling back to remote GitHub MCP server: $REMOTE_MCP_URL" >&2
   
-  # Check if curl is available
-  if ! command -v curl >/dev/null 2>&1; then
-    echo "Error: curl not found. Cannot connect to remote server." >&2
-    echo "Please install Docker/Podman or curl to use GitHub MCP server." >&2
+  # Check if npx is available for mcp-remote
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "Error: npx not found. Cannot use mcp-remote for remote server connection." >&2
+    echo "Please install Node.js/npm or start Docker/Podman to use GitHub MCP server." >&2
     exit 1
   fi
   
-  # For MCP over HTTP, we need to handle the initialize handshake properly
-  # Read the first message (should be initialize request)
-  local input_line
-  read -r input_line
+  # Use mcp-remote to bridge stdio to remote HTTP+SSE server with OAuth
+  echo "Using mcp-remote to connect to remote GitHub MCP server..." >&2
   
-  # Send initialize request to remote server and get response
-  response=$(echo "$input_line" | curl -s -S \
-    -H "Authorization: Bearer $GITHUB_TOKEN" \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -X POST \
-    -d @- \
-    "$REMOTE_MCP_URL" 2>/dev/null)
+  # Set up environment for mcp-remote with authentication
+  export GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_TOKEN"
   
-  if [ $? -eq 0 ] && [ -n "$response" ]; then
-    echo "$response"
-    # Continue processing additional messages
-    while read -r input_line; do
-      if [ -n "$input_line" ]; then
-        response=$(echo "$input_line" | curl -s -S \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Content-Type: application/json" \
-          -H "Accept: application/json" \
-          -X POST \
-          -d @- \
-          "$REMOTE_MCP_URL" 2>/dev/null)
-        if [ $? -eq 0 ] && [ -n "$response" ]; then
-          echo "$response"
-        fi
-      fi
-    done
-  else
-    echo "Error: Failed to connect to remote GitHub MCP server." >&2
-    echo "Please check your GITHUB_TOKEN and network connection." >&2
-    exit 1
-  fi
+  # Use mcp-remote to connect with proper headers for GitHub authentication
+  # The Authorization header will use the GitHub token
+  exec npx -y mcp-remote@latest "$REMOTE_MCP_URL" \
+    --header "Authorization:Bearer ${GITHUB_TOKEN}" \
+    "$@"
 }
 
 

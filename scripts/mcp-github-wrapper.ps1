@@ -30,32 +30,30 @@ function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Argume
 function Use-RemoteServer {
   [Console]::Error.WriteLine("Falling back to remote GitHub MCP server: $REMOTE_URL")
   
+  # Check if npx is available for mcp-remote
   try {
-    $headers = @{
-      'Authorization' = "Bearer $($env:GITHUB_PERSONAL_ACCESS_TOKEN)"
-      'Content-Type' = 'application/json'
-      'Accept' = 'application/json'
-    }
-    
-    # Read and process MCP messages line by line
-    do {
-      $inputLine = [System.Console]::In.ReadLine()
-      if ($inputLine -and $inputLine.Trim() -ne '') {
-        try {
-          $response = Invoke-WebRequest -Uri $REMOTE_URL -Method POST -Headers $headers -Body $inputLine -UseBasicParsing -ErrorAction Stop
-          [System.Console]::WriteLine($response.Content)
-        } catch {
-          [Console]::Error.WriteLine("Error communicating with remote server: $_")
-          break
-        }
-      }
-    } while ($inputLine -ne $null)
-    
+    $null = Get-Command npx -ErrorAction Stop
   } catch {
-    [Console]::Error.WriteLine("Error: Failed to connect to remote GitHub MCP server.")
-    [Console]::Error.WriteLine("Please check your `$env:GITHUB_PERSONAL_ACCESS_TOKEN` and network connection.")
+    [Console]::Error.WriteLine("Error: npx not found. Cannot use mcp-remote for remote server connection.")
+    [Console]::Error.WriteLine("Please install Node.js/npm or start Docker/Podman to use GitHub MCP server.")
     exit 1
   }
+  
+  # Use mcp-remote to bridge stdio to remote HTTP+SSE server with OAuth
+  [Console]::Error.WriteLine("Using mcp-remote to connect to remote GitHub MCP server...")
+  
+  # Use mcp-remote to connect with proper headers for GitHub authentication
+  # The Authorization header will use the GitHub token
+  $mcpRemoteArgs = @(
+    '-y',
+    'mcp-remote@latest',
+    $REMOTE_URL,
+    '--header', "Authorization:Bearer $($env:GITHUB_PERSONAL_ACCESS_TOKEN)"
+  ) + $Args
+  
+  # Execute mcp-remote with all arguments
+  & npx @mcpRemoteArgs
+  exit $LASTEXITCODE
 }
 
 # Find container runtime (prefer Podman on Windows)

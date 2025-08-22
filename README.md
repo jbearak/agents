@@ -10,18 +10,19 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Why custom modes?](#why-custom-modes)
   - [Add Modes to VS Code](#add-modes-to-vs-code)
 - [Models](#models)
-  - [Models Available in Each Agent](#models-available-in-each-agent)
+  - [Models by Agent](#models-by-agent)
   - [Simulated Reasoning](#simulated-reasoning)
-  - [Context Window](#context-window)
-- [Installing MCP Servers](#installing-mcp-servers)
-  - [GitHub MCP Server](#github-mcp-server)
-  - [Bitbucket MCP Server](#bitbucket-mcp-server)
-  - [Atlassian MCP Server](#atlassian-mcp-server)
+  - [Context Windows](#context-windows)
+- [MCP Servers](#mcp-servers)
+  - [GitHub](#github-mcp-server)
+  - [Atlassian (Jira & Confluence)](#atlassian-mcp-server)
+  - [Bitbucket](#bitbucket-mcp-server)
+  - [Context7](#context7-mcp-server)
+  - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+    - [VS Code](#add-mcp-servers-to-vs-code)
+    - [Claude Desktop](#add-mcp-servers-to-claude-desktop)
   - [Technical Notes](#technical-notes-on-mcp-wrappers)
-- [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
-  - [VS Code](#vs-code)
-  - [Claude Desktop](#claude-desktop)
-- [Coding Style Guidelines](#coding-style-guidelines)
+- [LLM Coding Style Guidelines](#llm-coding-style-guidelines)
   - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
   - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
   - [Warp (Repository-Level)](#warp-repository-level)
@@ -36,31 +37,31 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 
 ```
 ./
-├── code_style_guidelines.txt   # General coding style guidelines
-├── README.md                   # This document
-├── TOOLS_GLOSSARY.md           # Glossary of all available tools
+├── llm_coding_style_guidelines.txt   # General coding style guidelines
+├── README.md                         # This document
+├── TOOLS_GLOSSARY.md                 # Glossary of all available tools
 ├── copilot/
 │   └── modes/
-│       ├── QnA.chatmode.md          # Strict read-only Q&A / analysis (no mutations)
-│       ├── Plan.chatmode.md         # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
-│       ├── Code-Sonnet4.chatmode.md # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
-│       ├── Code-GPT5.chatmode.md    # Full coding, execution, PR + branch ops (GPT-5 model)
-│       ├── Review.chatmode.md       # PR & issue review feedback (comments only)
+│       ├── QnA.chatmode.md                # Strict read-only Q&A / analysis (no mutations)
+│       ├── Plan.chatmode.md               # Remote planning & artifact curation + PR create/edit/review (no merge/branch)
+│       ├── Code-Sonnet4.chatmode.md       # Full coding, execution, PR + branch ops (Claude Sonnet 4 model)
+│       ├── Code-GPT5.chatmode.md          # Full coding, execution, PR + branch ops (GPT-5 model)
+│       ├── Review.chatmode.md             # PR & issue review feedback (comments only)
 ├── scripts/
-│   ├── mcp-github-wrapper.sh    # macOS/Linux GitHub MCP wrapper script
-│   ├── mcp-github-wrapper.ps1   # Windows GitHub MCP wrapper script
-│   ├── mcp-atlassian-wrapper.sh # macOS/Linux Atlassian MCP wrapper script
-│   ├── mcp-atlassian-wrapper.ps1# Windows Atlassian MCP wrapper script
-│   ├── mcp-bitbucket-wrapper.sh # macOS/Linux Bitbucket MCP wrapper script
-│   └── mcp-bitbucket-wrapper.ps1# Windows Bitbucket MCP wrapper script
+│   ├── mcp-github-wrapper.sh        # macOS/Linux GitHub MCP wrapper script
+│   ├── mcp-github-wrapper.ps1       # Windows GitHub MCP wrapper script
+│   ├── mcp-atlassian-wrapper.sh     # macOS/Linux Atlassian MCP wrapper script
+│   ├── mcp-atlassian-wrapper.ps1    # Windows Atlassian MCP wrapper script
+│   ├── mcp-bitbucket-wrapper.sh     # macOS/Linux Bitbucket MCP wrapper script
+│   └── mcp-bitbucket-wrapper.ps1    # Windows Bitbucket MCP wrapper script
 ├── templates/
-│   ├── mcp_mac.json                # MCP configuration for macOS (VS Code and Claude Desktop)
-│   ├── mcp_win.json                # MCP configuration for Windows (VS Code and Claude Desktop)
-│   └── vscode-settings.jsonc       # VS Code user settings template (optional)
+│   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
+│   └── vscode-settings.jsonc              # VS Code user settings template (optional)
 └── tests/
-    ├── smoke_mcp_wrappers.py   # Smoke test runner for wrapper stdout (filters/validates stdout)
-    ├── smoke_auth.sh           # Tests for authentication setup
-    └── smoke_rules.R           # R script for validating tool lists/matrix consistency
+    ├── smoke_mcp_wrappers.py        # Smoke test runner for wrapper stdout (filters/validates stdout)
+    ├── smoke_auth.sh                # Tests for authentication setup
+    └── smoke_rules.R                # R script for validating tool lists/matrix consistency
 ```
 
 ## Modes
@@ -116,14 +117,16 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ### Why custom modes?
 
-- In VS Code, **switching among built-in modes does not set the model**.
-  - I found this cumbersome, annoying, and a cognitive burden.
-  - I wanted to switch between Ask/GPT-4.1 and Agent/Sonnet in one click.
 - The built-in **Agent mode does not remember which tools you turned on and off.**
-  - When you reopen VS Code, it resets all tools to their default state.
-  - This drove me to create custom modes, and then I got carried away...
+  - When you reopen VS Code, it turns every tool back on.
+- The built-in **Ask** mode cannot call _any_ tools.
+  - This means you cannot use it to fetch information, such as documentation from Context7 or issue details from Jira.
+- Custom modes **enforce their behavioral boundaries** by defining which tools agents can call.
+- In VS Code, selecting a built-in modes does not set a model.
+  - This means it takes eight clicks from Ask/GPT-4.1 to Agent/Sonnet and back.
 - You can **type less** because each mode contains prompts tailored to its specific use case.
-- The modes contain prompts tailored to their default models.
+  - This reduces the need for repetitive instructions.
+  - We created two variants of Code Mode, with instructions tailored to GPT-5 (terse) and Sonnet 4 (verbose).
 - **You can still use the built-in modes.**
   - Switch to **Agent** mode when you do not want to use tailored instructions.
 
@@ -150,7 +153,7 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 ## Models
 
-### Models Available in Each Agent
+### Models by Agent
 
 | Agent             | Sonnet 4 | Opus 4.1 | GPT-5 | GPT-5 mini | GPT 4.1 | Gemini 2.5 Pro | Gemini 2.5 Flash |
 |-------------------|----------|----------|-------|------------|---------|----------------|------------------|
@@ -176,7 +179,7 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 
 **Note:** [GPT-5 adds _reasoning_effort_ and _verbosity_ parameters ranging from minimal/low to high](https://openai.com/index/introducing-gpt-5-for-developers/), but providers do not transparently communicate how they configure it. One can access high/high settings for planning tasks via the OpenAI API.
 
-### Context Window
+### Context Windows
 
 | Agent             | Claude Sonnet | GPT-5     | GPT 4.1   | Gemini    |
 |-------------------|---------------|-----------|-----------|-----------|
@@ -195,23 +198,58 @@ From these four categories, we create **six modes**. **Code**, **Code-GPT5** and
 **Note:** Agents will generally compress and prune prompts to fit within their context windows in multi-turn chats. However, Claude.ai/Desktop will not; if after several turns you exceed the context window, you cannot continue the chat.
 
 
-## Installing MCP Servers
+## MCP Servers
 
-Microsoft maintains a list, [MCP Servers for agent mode](https://code.visualstudio.com/mcp), that you can set up with a click; for example: [GitHub](vscode:mcp/install?%7B%22name%22%3A%22github%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F%22%7D) and [Context7](vscode:mcp/install?%7B%22name%22%3A%22context7%22%2C%22gallery%22%3Atrue%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D). However, we must configure other servers manually before we can add them to GitHub Copilot in VS Code, or other agents.
+Model Context Provider (MCP) Servers provide a bridge between agents and APIs. Agents communicate with MCP server, which, in turns, communicates with APIs: Agent <- -> MCP Server <- -> API. MCP Servers work by providing agents a list of tools, with definitions and examples. They agent makes natural-language queries to the MCP server, which then translates those queries into API calls.
 
-**Note:** While remote MCP servers exist for GitHub and Atlassian, those are "in preview". At least for the time being, therefore, these instructions explain how to set up local servers.
+Local MCP servers run on your computer whereas remote MCP servers run in the cloud. 
+ - Microsoft provides both kinds for GitHub. However, they describe their remote server as "[in preview](https://github.blog/changelog/2025-06-12-remote-github-mcp-server-is-now-available-in-public-preview/)".
+ - Atlassian provides a remote server for Jira and Bitbucket. However, they describe it as "[in public beta](https://github.com/atlassian/atlassian-mcp-server)".
+ - Atlassian subjects their beta to [usage limits](https://github.com/atlassian/atlassian-mcp-server?tab=readme-ov-file#beta-access-and-limits): 1,000 requests per hour per organization, plus an unspecified per-user limits.
+ - Occasionally, I have found Atlassian's server not to respond to requests.
 
- [remote Atlassian server](vscode:mcp/install?%7B%22name%22%3A%22atlassian%22%2C%22gallery%22%3Atrue%2C%22url%22%3A%22https%3A%2F%2Fmcp.atlassian.com%2Fv1%2Fsse%22%7D), we recommend using a local Atlassian server (documented below) for better reliability and performance.
+This repository contains wrapper scripts for each MCP server that try to launch the appropriate local server, and, should that fail, try to launch the remote server. Since the local servers run in docker containers, this provides a graceful fallback mechanism in case the daemon is not running. 
 
-After you configure these MCP servers, follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
+A separate MCP server handles Bitbucket. A remote version does not exist.
+
+Atlassian does not make a local MCP server, and does not provide one of either kind for Bitbucket. For this reason, we use open-source alternatives.
+
+You must download each of the wrapper scripts and store login information in your credential manager (on Windows) or login keychain (on macOS). Follow the steps provided below for each MCP server, and then follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents).
+
+Before you begin, ensure you have the necessary tools installed.
+
+You need a docker daemon. 
+
+Windows:
+```powershell
+winget install RedHat.Podman
+podman machine init --cpus 2 --memory 4096 --disk-size 20
+podman machine start
+```
+
+macOS: 
+```bash
+brew install colima
+brew services start colima
+```
+
+You need node.js.
+
+Windows:
+```powershell
+winget install nodejs
+```
+
+macOS:
+```bash
+brew install nodejs
+```
 
 ### GitHub MCP Server
 
-GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop, and other MCP-compatible applications. The Docker version is the official and recommended way to run the GitHub MCP server locally.
+#### Obtain GitHub Personal Access Token**
 
-**Automatic Fallback:** The wrapper scripts automatically fall back to GitHub's remote MCP server (`https://api.githubcopilot.com/mcp/`) when Docker is unavailable, the daemon is not running, or the image cannot be pulled. This ensures the GitHub MCP server works even without Docker installed.
-
-**You will need a GitHub Personal Access Token. To create one, follow these steps:**
+You need a GitHub Personal Access Token. To create one, follow these steps:**
 
 1. Go to [GitHub Settings](https://github.com/settings/tokens).
 2. Click on "Generate new token" > "Generate new token (classic)".
@@ -223,8 +261,6 @@ GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop
 - project
 4. Click "Generate token".
 5. Copy your new personal access token. You won’t be able to see it again!
-
-**Note:** We use a wrapper script to store secrets safely in OS-provided secure storage.
 
 #### Configure GitHub MCP Server on Windows
 
@@ -244,12 +280,6 @@ GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop
 5. Set execution policy (user scope):
    ```powershell
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-   ```
-6. Install & init Podman:
-   ```powershell
-   winget install RedHat.Podman
-   podman machine init --cpus 2 --memory 4096 --disk-size 20
-   podman machine start
    ```
 7. Verify wrapper:
    ```powershell
@@ -283,11 +313,111 @@ export PATH="$HOME/bin:$PATH"
 ```
 
 
+### Atlassian MCP Server
+
+#### Obtain Atlassian API Token
+
+**You need an Atlassian API Token. To create one, follow these steps:**
+
+1. Go to [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
+2. Click "Create API token"
+3. Enter a label (e.g., "MCP Server Access")
+4. Copy the generated token immediately (you won't be able to see it again!)
+
+#### Configure Atlassian MCP Server on macOS
+
+1. Create a keychain item for the API token:
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `atlassian-mcp`
+     - Account: `api-token`
+     - Password: (your Atlassian API token)
+   - Or CLI:
+     > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+     ```bash
+     ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
+       security add-generic-password -s atlassian-mcp -a api-token -w "$PW"; \
+       unset PW )
+     ```
+
+2. Copy `scripts/mcp-atlassian-wrapper.sh` to `~/bin/`:
+   ```bash
+   cp scripts/mcp-atlassian-wrapper.sh ~/bin/
+   ```
+
+3. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-atlassian-wrapper.sh
+   ```
+  **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` and then `source ~/.zshrc`:
+  ```
+  export PATH="$HOME/bin:$PATH"
+  ```
+
+4. Test
+   ```bash
+   ~/bin/mcp-atlassian-wrapper.sh --help | head -5
+   ```
+
+**Note:** If Docker/Podman is unavailable, the wrapper may fall back to the Atlassian remote MCP server and authenticate via OAuth. This will open your default browser to complete sign-in.
+
+#### Configure Atlassian MCP Server on Windows
+
+1. If you have not already done so, install the CredentialManager module:
+   ```powershell
+   Install-Module CredentialManager -Scope CurrentUser -Force
+   ```
+
+  **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
+
+2. Create a _generic credential_ in Windows Credential Manager for the API token:
+   - GUI: Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+     - Internet or network address: `atlassian-mcp`
+     - User name: `api-token`
+     - Password: (your Atlassian API token)
+   - Or CLI:
+   > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:atlassian-mcp /user:api-token /pass:<your-api-token>"` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+   ```powershell
+   $secure = Read-Host -AsSecureString "Enter Atlassian API token"
+   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+   try {
+     $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
+     # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Write-Host "Credential 'atlassian-mcp' created." -ForegroundColor Green
+   } finally {
+     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+   }
+   ```
+
+3. Copy `scripts/mcp-atlassian-wrapper.ps1` to `%USERPROFILE%\bin\`:
+   ```powershell
+   # Create a user bin folder and copy the script there
+   New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
+   Copy-Item -Path scripts\mcp-atlassian-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-wrapper.ps1" -Force
+
+   # Optionally add the folder to your user PATH
+   [Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
+   ```
+
+4. Ensure PowerShell can run local scripts:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+   ```
+
+5. Test
+   ```powershell
+   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
+   ```
+
+**Note:** If Docker/Podman is unavailable, the wrapper may fall back to the Atlassian remote MCP server and authenticate via OAuth. This will open your default browser to complete sign-in.
+
+
+
 ### Bitbucket MCP Server
 
-Although Atlassian does not provide one yet, Bitbucket MCP servers made by others exist: [`@aashari/mcp-server-atlassian-bitbucket`](https://github.com/aashari/mcp-server-atlassian-bitbucket).
+#### Obtain Bitbucket App Password
 
-**You will need a Bitbucket App Password with the required scopes. To create one, follow these steps:**
+**You need a Bitbucket App Password with the required scopes. To create one, follow these steps:**
 
 1. Go to Personal Bitbucket Settings → App Passwords → Create app password (https://bitbucket.org/account/settings/app-passwords/)
 2. Permissions needed (tick these):
@@ -311,7 +441,7 @@ Although Atlassian does not provide one yet, Bitbucket MCP servers made by other
 
 #### Configure Bitbucket MCP Server on macOS
 
-1. Create a Keychain item for the app password only:
+1. Create a Keychain item for the app password:
    - GUI: Keychain Access → File → New Password Item…
      - Name (Service): `bitbucket-mcp`
      - Account: `app-password`
@@ -324,38 +454,74 @@ Although Atlassian does not provide one yet, Bitbucket MCP servers made by other
        unset PW )
      ```
 
-2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH`:
+2. Create a keychain item for your Bitbucket username:
+   - GUI: Keychain Access → File → New Password Item…
+     - Name (Service): `bitbucket-mcp`
+     - Account: `bitbucket-username`
+     - Password: (your Bitbucket username)
+   - Or CLI:
+  ```bash
+  security add-generic-password -s bitbucket-mcp -a bitbucket-username -w "<your-bitbucket-username>"
+  ```
+
+You can skip step 2 if your Bitbucket username is the same as the first part of your email address--the one set in your global git config.
+- *If* my Bitbucket username was _jbearak_, I could skip step 2, _but_ my Bitbucket username is _jonathan-b_, so I need to set it in the keychain.
+- As an alternative to storing your Bitbucket username in your system keychain, could specify your Bitbucket username in an environment variable (in the json file, place `"ATLASSIAN_BITBUCKET_USERNAME": "`<your-bitbucket-username>`" in the `env` section). I like using the keychain for convenience, so I do not have to set it--this lets me use the configuration file templates without editing them.
+
+3. Copy `scripts/mcp-bitbucket-wrapper.sh` to `~/bin/`:
    ```bash
   cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
    ```
-3. Make it executable:
+
+4. Make it executable:
    ```bash
    chmod +x ~/bin/mcp-bitbucket-wrapper.sh
    ```
-4. Test:
+
+5. Test:
    ```bash
-   ATLASSIAN_BITBUCKET_USERNAME="your-username" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
+   ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
    ```
 
 #### Configure Bitbucket MCP Server on Windows
 
-Create a **Generic Credential** in Windows Credential Manager for app password only:
-1. Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - Internet or network address: `bitbucket-mcp`
-   - User name: `app-password`
-   - Password: (your Bitbucket app password)
-
-Or via command line:
-```powershell
-cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>"
-```
-
-2. Then install (if needed) the CredentialManager module to read the credentials:
+1. If you have not already done so, install the CredentialManager module:
 ```powershell
 Install-Module CredentialManager -Scope CurrentUser -Force
 ```
+  **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
 
-3. Copy `scripts/mcp-bitbucket-wrapper.ps1` to a folder on your PATH (or run in place). Example using a user bin folder:
+2. Create a _generic credential_ in Windows Credential Manager for the app password:
+   - GUI: Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+     - Internet or network address: `bitbucket-mcp`
+     - User name: `app-password`
+     - Password: (your Bitbucket app password)
+  - Or CLI:
+    > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:bitbucket-mcp /user:app-password /pass:<app_password>` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+    ```powershell
+    $secure = Read-Host -AsSecureString "Enter Bitbucket app password"
+    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+    try {
+      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
+      # Use Start-Process so the literal password isn't echoed back; it's still passed in memory only.
+      Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:bitbucket-mcp","/user:app-password","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+      Write-Host "Credential 'bitbucket-mcp' created." -ForegroundColor Green
+    } finally {
+      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+    }
+    ```
+
+3. Create a _general credential_ in Windows Credential Manager for your Bitbucket username:
+   - GUI: Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
+     - Internet or network address: `bitbucket-mcp`
+     - User name: `username`
+     - Password: (your Bitbucket username)
+   - Or CLI:
+   ```powershell
+   cmdkey /add:bitbucket-mcp /user:username /pass:<your-bitbucket-username>
+   ```
+
+4. Copy `scripts/mcp-bitbucket-wrapper.ps1` to `%USERPROFILE%\bin\`:
 ```powershell
 # create a user bin folder and copy the script there
 New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
@@ -367,175 +533,70 @@ Copy-Item -Path scripts\mcp-bitbucket-wrapper.ps1 -Destination "$Env:UserProfile
 # run the script (example)
 & "$Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1" --help | Select-Object -First 5
 ```
-4. Ensure PowerShell can run local scripts (set execution policy for the current user):
+
+6. Ensure PowerShell can run local scripts (set execution policy for the current user):
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
 ```
-5. Test:
+
+7. Test:
 ```powershell
 $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
 $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
 ```
 
-### Atlassian MCP Server
 
-We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp-atlassian) instead of the remote Atlassian server for improved reliability and performance. This server runs locally in a container and provides access to both Jira and Confluence.
+### Context7 MCP Server
 
-**You will need an Atlassian API Token. To create one, follow these steps:**
+Context7 provides up-to-date, version-specific documentation and code examples for libraries and frameworks. It requires no authentication.
 
-1. Go to [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
-2. Click "Create API token"
-3. Enter a label (e.g., "MCP Server Access")
-4. Copy the generated token immediately (you won't be able to see it again!)
+**Configuration:**
 
-**Prerequisites:**
-- Container runtime installed and running:
-  - macOS: Colima (preferred) -> install via Homebrew: `brew install colima; colima start`
-  - Windows: Podman (preferred) -> install via winget: `winget install RedHat.Podman`
-  - Linux: docker Engine (or Podman)
-- Alternatively set `DOCKER_COMMAND=podman` (or another compatible CLI) if not using the default docker CLI
+1. Copy the wrapper script to your bin directory:
+   - macOS: `cp scripts/mcp-context7-wrapper.sh ~/bin/ && chmod +x ~/bin/mcp-context7-wrapper.sh`
+   - Windows: Copy `scripts/mcp-context7-wrapper.ps1` to `%USERPROFILE%\bin\`
 
-#### Configure Atlassian MCP Server on macOS
+2. Test the wrapper:
+   - macOS: `~/bin/mcp-context7-wrapper.sh --help`
+   - Windows: `& "$Env:UserProfile\bin\mcp-context7-wrapper.ps1" --help`
 
-1. Create a keychain item for the API token:
-   - GUI: Keychain Access → File → New Password Item…
-     - Name (Service): `atlassian-mcp`
-     - Account: `api-token`
-     - Password: (your Atlassian API token)
-   - Or CLI:
-     > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
-     ```bash
-     ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s atlassian-mcp -a api-token -w "$PW"; \
-       unset PW )
-     ```
+The wrapper automatically uses the globally installed package if available, falling back to npx if not.
 
-2. Copy `scripts/mcp-atlassian-wrapper.sh` to somewhere on your `$PATH`:
-   ```bash
-   cp scripts/mcp-atlassian-wrapper.sh ~/bin/
-   ```
-3. Make it executable:
-   ```bash
-   chmod +x ~/bin/mcp-atlassian-wrapper.sh
-   ```
-  **Note:** If `~/bin` is not already on your PATH, add the following line to your `~/.zshrc` and then `source ~/.zshrc`:
-  ```
-  export PATH="$HOME/bin:$PATH"
-  ```
-4. Test
-   ```bash
-   ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
-   ```
+**Usage:** Ask for documentation like "show me dplyr mutate examples" or "get ggplot2 plotting docs", or instruct the agent to use it in the course of planning, coding, or reviewing.
 
-#### Configure Atlassian MCP Server on Windows
+### Add MCP Servers to Agents
 
-1. Create a **Generic Credential** in Windows Credential Manager for the API token:
-   - Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
-   - Internet or network address: `atlassian-mcp`
-   - User name: `api-token`
-   - Password: (your Atlassian API token)
-
-   Secure PowerShell method (avoids storing the token in shell history):
-   ```powershell
-   $secure = Read-Host -AsSecureString "Enter Atlassian API token"
-   $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-   try {
-     $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
-     # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
-     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
-     Write-Host "Credential 'atlassian-mcp' created." -ForegroundColor Green
-   } finally {
-     if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
-   }
-   ```
-
-2. Install the CredentialManager module (if not already installed):
-   ```powershell
-   Install-Module CredentialManager -Scope CurrentUser -Force
-   ```
-
-  **Note:** If this fails with a permissions or execution policy error and you are not in an elevated session, start PowerShell by right‑clicking and choosing "Run as administrator", then retry (you can still use `-Scope CurrentUser`).
-
-3. Copy `scripts/mcp-atlassian-wrapper.ps1` to your user bin folder:
-   ```powershell
-   # Create a user bin folder and copy the script there
-   New-Item -ItemType Directory -Force "$Env:UserProfile\bin"
-   Copy-Item -Path scripts\mcp-atlassian-wrapper.ps1 -Destination "$Env:UserProfile\bin\mcp-atlassian-wrapper.ps1" -Force
-
-   # Optionally add the folder to your user PATH
-   [Environment]::SetEnvironmentVariable('PATH', $Env:PATH + ';' + "$Env:UserProfile\bin", 'User')
-   ```
-
-4. Ensure PowerShell can run local scripts:
-   ```powershell
-   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-   ```
-
-5. Test
-   ```powershell
-   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
-   ```
-
-### Technical notes on MCP wrappers
-
-- Runtime selection is per server, to maximize reliability and keep stdout JSON‑only:
-  - GitHub: Docker container (preferred) → remote server fallback (https://api.githubcopilot.com/mcp/)
-  - Atlassian (Sooperset): Docker container only (upstream only supports containers)
-  - Bitbucket (@aashari): local CLI (if present) → npx @latest (Node.js only, no Docker)
-- The wrappers auto-pull container images if missing (to avoid first-run failures). They do not perform npm -g installs, avoiding interactive prompts when editors launch them.
-- GitHub wrapper environment variables: `MCP_GITHUB_DOCKER_IMAGE`, `DOCKER_COMMAND`, `GITHUB_MCP_REMOTE_URL`
-
-Optional: pre-pull container images (auto-pulls on first run)
-  - docker pull ghcr.io/github/github-mcp-server:latest
-  - docker pull ghcr.io/sooperset/mcp-atlassian:latest
-
-Optional: local CLI installs (more efficient than containers/remote)
-- Bitbucket MCP Server:
-  - npm i -g @aashari/mcp-server-atlassian-bitbucket
-- Note: Atlassian MCP Server does not provide CLI/npm packages - only Docker containers
-- Note: Bitbucket MCP Server does not provide Docker containers - only CLI/npm packages
-
-Quick verification commands
-Once you’ve copied the wrapper scripts to a folder on your PATH and set up credentials, you can verify they start without prompting:
-- macOS (zsh/bash):
-  - GitHub: ~/bin/mcp-github-wrapper.sh --help | head -5
-  - Bitbucket: ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>" ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
-  - Atlassian: ATLASSIAN_DOMAIN="guttmacher.atlassian.net" ~/bin/mcp-atlassian-wrapper.sh --help | head -5
-- Windows (PowerShell):
-  - GitHub: & $Env:UserProfile\bin\mcp-github-wrapper.ps1 --help | Select-Object -First 5
-  - Bitbucket: $env:ATLASSIAN_BITBUCKET_USERNAME="<your-bitbucket-username>"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
-  - Atlassian: $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
-
-
-
-## Add MCP Servers to Agents
-
-### VS Code
-
-1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Use the provided configuration: copy [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) or [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) and customize paths if/as needed
-3. Update placeholders
-
-**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
-
-### Claude Desktop
+#### Add MCP Servers to Claude Desktop
 
 1. Open Settings -> Developer > Edit Config
 - Note: This will open a File Explorer (Windows) or Finder (macOS) window
 2. Double-click the config file
-3. Use the provided configuration: copy [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) or [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) and customize paths if/as needed
-4. Update placeholders
+3. Use the provided configuration: copy [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) or [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS)
+4. On the first line of the template file, replace "servers" with "mcpServers"
+5. Restart Claude Desktop
 
-**Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
+#### Add MCP Servers to VS Code
 
+1. Restart VS Code
+2. Command Palette -> List Servers
+3. If VS Code lists the MCP servers from Claude Desktop, you're all set!
+- If not:
 
-## Coding Style Guidelines
+1. From the Command Palette, choose **MCP: Open User Configuration**
+2. Use the provided configuration: copy [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) or [`templates/mcp_win.json`](templates/mcp_win.json) (Windows)
+3. Restart VS Code
 
-We maintain concise coding style guidelines for LLMs in `code_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
+**Note:** On my Mac, VS Code detects and reads in the configuration from Claude Desktop. I could not figure out how to override this. On the one hand, not having to save and edit to configuration files saves time. On the other hand, I would like to know how to override this behavior because so I could configure them differently.
+
+⚠️ If VS Code picks up the config from Claude Desktop, _and_ you _also_ add the same MCP servers to the VS Code's MCP config file, you will end up with duplicate MCP servers in the list. This could confuse the agents.
+
+## LLM Coding Style Guidelines
+
+We maintain concise coding style guidelines for LLMs in `llm_coding_style_guidelines.txt`. We can copy/paste this file into other tools that support custom instructions, such as GitHub Copilot, Warp, Q, and Claude Code.
 
 ### GitHub Copilot (Repository-Level)
 1. Create or edit `.github/copilot-instructions.md`
-2. Paste `code_style_guidelines.txt`.
+2. Paste `coding_style_guidelines.txt`.
 3. Edit as/if needed/desired.
 
 Reference: [Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
@@ -546,7 +607,7 @@ Reference: [Adding repository custom instructions for GitHub Copilot](https://do
 **Note:** Organization custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors. For editor support, see [GitHub Copilot (Repository-Level)](#github-copilot-repository-level) above.
 
 1. Org admin navigates to GitHub: Settings > (Organization) > Copilot > Policies / Custom Instructions.
-2. Open Custom Instructions editor and paste the full contents of `code_style_guidelines.txt`.
+2. Open Custom Instructions editor and paste the full contents of `llm_coding__style_guidelines.txt`.
 3. Save; changes propagate to organization members (may require editor reload).
 4. Version control: treat this repository file as the single source of truth; update here first, then re-paste.
 
@@ -555,7 +616,7 @@ Reference: [Adding organization custom instructions for GitHub Copilot](https://
 #### Personal Instructions
 **Note:** Personal custom instructions are currently only supported for GitHub Copilot Chat in GitHub.com and do not affect VS Code or other editors.
 
-Since the organization-level instructions equal `code_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
+Since the organization-level instructions equal `llm_coding_style_guidelines.txt`, do not re-paste it here. However, you may wish to customize Copilot Chat behavior further.
 
 1. Navigate to GitHub: Settings > (Personal) > Copilot > Custom Instructions.
 2. Open Custom Instructions editor and paste your personal instructions.
@@ -565,7 +626,7 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 ### Warp (Repository-Level)
 1. Create `WARP.md`
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 ### Warp (User-Level)
@@ -575,13 +636,13 @@ Reference: [Adding personal custom instructions for GitHub Copilot](https://docs
 
 
 ### Q (Repository-Level)
-1. Create `.amazonq/rules/code_style_guidelines.txt` in the repository root
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+1. Create `.amazonq/rules/llm_coding_style_guidelines.txt` in the repository root
+2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 ## Claude Code (Repository-Level)
 1. Create or edit `CLAUDE.md` in the repository root
-2. Paste [code_style_guidelines.txt](code_style_guidelines.txt) content.
+2. Paste [llm_coding_style_guidelines.txt](llm_coding_style_guidelines.txt) content.
 3. Edit as/if needed/desired.
 
 
@@ -604,6 +665,7 @@ We provide a template for reasonable default settings for GitHub Copilot in VS C
 3. Merge the settings with your existing configuration or use as-is.
 
 
+
 ## Tool Availability Matrix
 
 This table summarizes the tools available in each mode. For a more concise overview, see [Modes](#modes).
@@ -620,170 +682,1332 @@ Note: "Code" shows toolsets for "Code - GPT-5" and "Code - Sonnet-4" modes.
 
 Legend: ✅ available, ❌ unavailable in that mode.
 
-| Tool | QnA | Review | Plan | Code |
-|------|-----|--------|------|------|
-| **Built-In (VS Code / Core)** | | | | |
-| *Code & Project Navigation* | | | | |
-| [codebase](TOOLS_GLOSSARY.md#codebase) | ✅ | ✅ | ✅ | ✅ |
-| [findTestFiles](TOOLS_GLOSSARY.md#findtestfiles) | ✅ | ✅ | ✅ | ✅ |
-| [search](TOOLS_GLOSSARY.md#search) | ✅ | ✅ | ✅ | ✅ |
-| [searchResults](TOOLS_GLOSSARY.md#searchresults) | ✅ | ✅ | ✅ | ✅ |
-| [usages](TOOLS_GLOSSARY.md#usages) | ✅ | ✅ | ✅ | ✅ |
-| *Quality & Diagnostics* | | | | |
-| [problems](TOOLS_GLOSSARY.md#problems) | ✅ | ✅ | ✅ | ✅ |
-| [testFailure](TOOLS_GLOSSARY.md#testfailure) | ✅ | ✅ | ✅ | ✅ |
-| *Version Control & Changes* | | | | |
-| [changes](TOOLS_GLOSSARY.md#changes) | ✅ | ✅ | ✅ | ✅ |
-| *Environment & Execution* | | | | |
-| [terminalLastCommand](TOOLS_GLOSSARY.md#terminallastcommand) | ✅ | ✅ | ✅ | ✅ |
-| [terminalSelection](TOOLS_GLOSSARY.md#terminalselection) | ❌ | ❌ | ❌ | ✅ |
-| [think](TOOLS_GLOSSARY.md#think) | ✅ | ✅ | ✅ | ✅ |
-| [todos](TOOLS_GLOSSARY.md#todos) | ✅ | ✅ | ✅ | ✅ |
-| *Web & External Content* | | | | |
-| [fetch](TOOLS_GLOSSARY.md#fetch) | ✅ | ✅ | ✅ | ✅ |
-| [githubRepo](TOOLS_GLOSSARY.md#githubrepo) | ✅ | ✅ | ✅ | ✅ |
-| *Editor & Extensions* | | | | |
-| [extensions](TOOLS_GLOSSARY.md#extensions) | ❌ | ❌ | ❌ | ❌ |
-| [vscodeAPI](TOOLS_GLOSSARY.md#vscodeapi) | ❌ | ❌ | ❌ | ❌ |
-| *Editing & Automation* | | | | |
-| [editFiles](TOOLS_GLOSSARY.md#editfiles) | ❌ | ❌ | ❌ | ✅ |
-| [runCommands](TOOLS_GLOSSARY.md#runcommands) | ❌ | ❌ | ❌ | ✅ |
-| [runTasks](TOOLS_GLOSSARY.md#runtasks) | ❌ | ❌ | ❌ | ✅ |
-| **GitHub Pull Requests Extension (VS Code)** | | | | |
-| [activePullRequest](TOOLS_GLOSSARY.md#activepullrequest) | ✅ | ✅ | ✅ | ✅ |
-| [copilotCodingAgent](TOOLS_GLOSSARY.md#copilotcodingagent) | ❌ | ❌ | ❌ | ✅ |
-| **Context7** | | | | |
-| [resolve-library-id](TOOLS_GLOSSARY.md#resolve-library-id) | ✅ | ✅ | ✅ | ✅ |
-| [get-library-docs](TOOLS_GLOSSARY.md#get-library-docs) | ✅ | ✅ | ✅ | ✅ |
-| **Atlassian** | | | | |
-| *Jira Issues & Operations* | | | | |
-| [jira_add_comment](TOOLS_GLOSSARY.md#jira_add_comment) | ❌ | ✅ | ✅ | ✅ |
-| [jira_create_issue](TOOLS_GLOSSARY.md#jira_create_issue) | ❌ | ❌ | ✅ | ✅ |
-| [jira_update_issue](TOOLS_GLOSSARY.md#jira_update_issue) | ❌ | ❌ | ✅ | ✅ |
-| [jira_get_issue](TOOLS_GLOSSARY.md#jira_get_issue) | ✅ | ✅ | ✅ | ✅ |
-| [jira_search](TOOLS_GLOSSARY.md#jira_search) | ✅ | ✅ | ✅ | ✅ |
-| [jira_transition_issue](TOOLS_GLOSSARY.md#jira_transition_issue) | ❌ | ❌ | ✅ | ✅ |
-| [jira_get_transitions](TOOLS_GLOSSARY.md#jira_get_transitions) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_link_types](TOOLS_GLOSSARY.md#jira_get_link_types) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_project_versions](TOOLS_GLOSSARY.md#jira_get_project_versions) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_worklog](TOOLS_GLOSSARY.md#jira_get_worklog) | ✅ | ✅ | ✅ | ✅ |
-| [jira_download_attachments](TOOLS_GLOSSARY.md#jira_download_attachments) | ✅ | ✅ | ✅ | ✅ |
-| [jira_add_worklog](TOOLS_GLOSSARY.md#jira_add_worklog) | ❌ | ✅ | ✅ | ✅ |
-| [jira_link_to_epic](TOOLS_GLOSSARY.md#jira_link_to_epic) | ❌ | ❌ | ✅ | ✅ |
-| [jira_create_issue_link](TOOLS_GLOSSARY.md#jira_create_issue_link) | ❌ | ❌ | ✅ | ✅ |
-| [jira_create_remote_issue_link](TOOLS_GLOSSARY.md#jira_create_remote_issue_link) | ❌ | ❌ | ✅ | ✅ |
-| [jira_delete_issue](TOOLS_GLOSSARY.md#jira_delete_issue) | ❌ | ❌ | ❌ | ❌ |
-| *Jira Project & Board Operations* | | | | |
-| [jira_get_all_projects](TOOLS_GLOSSARY.md#jira_get_all_projects) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_project_issues](TOOLS_GLOSSARY.md#jira_get_project_issues) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_agile_boards](TOOLS_GLOSSARY.md#jira_get_agile_boards) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_board_issues](TOOLS_GLOSSARY.md#jira_get_board_issues) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_sprints_from_board](TOOLS_GLOSSARY.md#jira_get_sprints_from_board) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_sprint_issues](TOOLS_GLOSSARY.md#jira_get_sprint_issues) | ✅ | ✅ | ✅ | ✅ |
-| [jira_search_fields](TOOLS_GLOSSARY.md#jira_search_fields) | ✅ | ✅ | ✅ | ✅ |
-| [jira_get_user_profile](TOOLS_GLOSSARY.md#jira_get_user_profile) | ✅ | ✅ | ✅ | ✅ |
-| *Confluence Pages & Content* | | | | |
-| [confluence_create_page](TOOLS_GLOSSARY.md#confluence_create_page) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_get_page](TOOLS_GLOSSARY.md#confluence_get_page) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_update_page](TOOLS_GLOSSARY.md#confluence_update_page) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_delete_page](TOOLS_GLOSSARY.md#confluence_delete_page) | ❌ | ❌ | ❌ | ❌ |
-| [confluence_get_page_children](TOOLS_GLOSSARY.md#confluence_get_page_children) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_search](TOOLS_GLOSSARY.md#confluence_search) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_get_comments](TOOLS_GLOSSARY.md#confluence_get_comments) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_add_comment](TOOLS_GLOSSARY.md#confluence_add_comment) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_get_labels](TOOLS_GLOSSARY.md#confluence_get_labels) | ✅ | ✅ | ✅ | ✅ |
-| [confluence_add_label](TOOLS_GLOSSARY.md#confluence_add_label) | ❌ | ❌ | ✅ | ✅ |
-| [confluence_search_user](TOOLS_GLOSSARY.md#confluence_search_user) | ✅ | ✅ | ✅ | ✅ |
-| **GitHub** | | | | |
-| *Commits & Repository* | | | | |
-| [create_branch](TOOLS_GLOSSARY.md#create_branch) | ❌ | ❌ | ❌ | ✅ |
-| [create_repository](TOOLS_GLOSSARY.md#create_repository) | ❌ | ❌ | ❌ | ✅ |
-| [get_commit](TOOLS_GLOSSARY.md#get_commit) | ✅ | ✅ | ✅ | ✅ |
-| [get_file_contents](TOOLS_GLOSSARY.md#get_file_contents) | ✅ | ✅ | ✅ | ✅ |
-| [get_tag](TOOLS_GLOSSARY.md#get_tag) | ❌ | ❌ | ❌ | ❌ |
-| [list_branches](TOOLS_GLOSSARY.md#list_branches) | ✅ | ✅ | ✅ | ✅ |
-| [list_commits](TOOLS_GLOSSARY.md#list_commits) | ✅ | ✅ | ✅ | ✅ |
-| [list_tags](TOOLS_GLOSSARY.md#list_tags) | ✅ | ✅ | ✅ | ✅ |
-| [push_files](TOOLS_GLOSSARY.md#push_files) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Requests  Retrieval* | | | | |
-| [get_pull_request](TOOLS_GLOSSARY.md#get_pull_request) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_comments](TOOLS_GLOSSARY.md#get_pull_request_comments) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_diff](TOOLS_GLOSSARY.md#get_pull_request_diff) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_files](TOOLS_GLOSSARY.md#get_pull_request_files) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_reviews](TOOLS_GLOSSARY.md#get_pull_request_reviews) | ✅ | ✅ | ✅ | ✅ |
-| [get_pull_request_status](TOOLS_GLOSSARY.md#get_pull_request_status) | ✅ | ✅ | ✅ | ✅ |
-| [list_pull_requests](TOOLS_GLOSSARY.md#list_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| *Pull Requests  Actions* | | | | |
-| [add_comment_to_pending_review](TOOLS_GLOSSARY.md#add_comment_to_pending_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pending_pull_request_review](TOOLS_GLOSSARY.md#create_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [create_pull_request](TOOLS_GLOSSARY.md#create_pull_request) | ❌ | ❌ | ✅ | ✅ |
-| [create_pull_request_with_copilot](TOOLS_GLOSSARY.md#create_pull_request_with_copilot) | ❌ | ❌ | ❌ | ✅ |
-| [merge_pull_request](TOOLS_GLOSSARY.md#merge_pull_request) | ❌ | ❌ | ❌ | ✅ |
-| [request_copilot_review](TOOLS_GLOSSARY.md#request_copilot_review) | ❌ | ❌ | ❌ | ❌ |
-| [submit_pending_pull_request_review](TOOLS_GLOSSARY.md#submit_pending_pull_request_review) | ❌ | ✅ | ✅ | ✅ |
-| [update_pull_request](TOOLS_GLOSSARY.md#update_pull_request) | ❌ | ❌ | ✅ | ✅ |
-| [update_pull_request_branch](TOOLS_GLOSSARY.md#update_pull_request_branch) | ❌ | ❌ | ❌ | ✅ |
-| *Issues* | | | | |
-| [add_issue_comment](TOOLS_GLOSSARY.md#add_issue_comment) | ❌ | ✅ | ✅ | ✅ |
-| [create_issue](TOOLS_GLOSSARY.md#create_issue) | ❌ | ❌ | ✅ | ✅ |
-| [get_issue](TOOLS_GLOSSARY.md#get_issue) | ✅ | ✅ | ✅ | ✅ |
-| [get_issue_comments](TOOLS_GLOSSARY.md#get_issue_comments) | ✅ | ✅ | ✅ | ✅ |
-| [list_issues](TOOLS_GLOSSARY.md#list_issues) | ✅ | ✅ | ✅ | ✅ |
-| [search_issues](TOOLS_GLOSSARY.md#search_issues) | ✅ | ✅ | ✅ | ✅ |
-| [update_issue](TOOLS_GLOSSARY.md#update_issue) | ❌ | ❌ | ✅ | ✅ |
-| *Sub-Issues* | | | | |
-| [list_sub_issues](TOOLS_GLOSSARY.md#list_sub_issues) | ✅ | ✅ | ✅ | ✅ |
-| [reprioritize_sub_issue](TOOLS_GLOSSARY.md#reprioritize_sub_issue) | ❌ | ❌ | ✅ | ❌ |
-| *Gists* | | | | |
-| [list_gists](TOOLS_GLOSSARY.md#list_gists) | ❌ | ❌ | ❌ | ❌ |
-| [update_gist](TOOLS_GLOSSARY.md#update_gist) | ❌ | ❌ | ❌ | ❌ |
-| *Notifications* | | | | |
-| [list_notifications](TOOLS_GLOSSARY.md#list_notifications) | ✅ | ✅ | ✅ | ✅ |
-| *Code Scanning & Security* | | | | |
-| [list_code_scanning_alerts](TOOLS_GLOSSARY.md#list_code_scanning_alerts) | ❌ | ❌ | ❌ | ❌ |
-| *Workflows (GitHub Actions)* | | | | |
-| [get_workflow_run](TOOLS_GLOSSARY.md#get_workflow_run) | ❌ | ❌ | ❌ | ❌ |
-| [get_workflow_run_logs](TOOLS_GLOSSARY.md#get_workflow_run_logs) | ❌ | ❌ | ❌ | ❌ |
-| [get_workflow_run_usage](TOOLS_GLOSSARY.md#get_workflow_run_usage) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_jobs](TOOLS_GLOSSARY.md#list_workflow_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_run_artifacts](TOOLS_GLOSSARY.md#list_workflow_run_artifacts) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflow_runs](TOOLS_GLOSSARY.md#list_workflow_runs) | ❌ | ❌ | ❌ | ❌ |
-| [list_workflows](TOOLS_GLOSSARY.md#list_workflows) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_failed_jobs](TOOLS_GLOSSARY.md#rerun_failed_jobs) | ❌ | ❌ | ❌ | ❌ |
-| [rerun_workflow_run](TOOLS_GLOSSARY.md#rerun_workflow_run) | ❌ | ❌ | ❌ | ❌ |
-| *Search & Discovery* | | | | |
-| [search_code](TOOLS_GLOSSARY.md#search_code) | ✅ | ✅ | ✅ | ✅ |
-| [search_orgs](TOOLS_GLOSSARY.md#search_orgs) | ❌ | ❌ | ❌ | ❌ |
-| [search_pull_requests](TOOLS_GLOSSARY.md#search_pull_requests) | ✅ | ✅ | ✅ | ✅ |
-| [search_repositories](TOOLS_GLOSSARY.md#search_repositories) | ✅ | ✅ | ✅ | ✅ |
-| [search_users](TOOLS_GLOSSARY.md#search_users) | ❌ | ❌ | ❌ | ❌ |
-| *User & Account* | | | | |
-| [get_me](TOOLS_GLOSSARY.md#get_me) | ✅ | ✅ | ✅ | ✅ |
-| *File Operations* | | | | |
-| [create_or_update_file](TOOLS_GLOSSARY.md#create_or_update_file) | ❌ | ❌ | ❌ | ✅ |
-| **Bitbucket** | | | | |
-| *Workspaces* | | | | |
-| [bb_ls_workspaces](TOOLS_GLOSSARY.md#bb_ls_workspaces) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_workspace](TOOLS_GLOSSARY.md#bb_get_workspace) | ✅ | ✅ | ✅ | ✅ |
-| *Repositories* | | | | |
-| [bb_ls_repos](TOOLS_GLOSSARY.md#bb_ls_repos) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_repo](TOOLS_GLOSSARY.md#bb_get_repo) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_commit_history](TOOLS_GLOSSARY.md#bb_get_commit_history) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_file](TOOLS_GLOSSARY.md#bb_get_file) | ✅ | ✅ | ✅ | ✅ |
-| [bb_list_branches](TOOLS_GLOSSARY.md#bb_list_branches) | ✅ | ✅ | ✅ | ✅ |
-| [bb_add_branch](TOOLS_GLOSSARY.md#bb_add_branch) | ❌ | ❌ | ❌ | ✅ |
-| [bb_clone_repo](TOOLS_GLOSSARY.md#bb_clone_repo) | ❌ | ❌ | ❌ | ✅ |
-| *Pull Requests* | | | | |
-| [bb_ls_prs](TOOLS_GLOSSARY.md#bb_ls_prs) | ✅ | ✅ | ✅ | ✅ |
-| [bb_get_pr](TOOLS_GLOSSARY.md#bb_get_pr) | ✅ | ✅ | ✅ | ✅ |
-| [bb_ls_pr_comments](TOOLS_GLOSSARY.md#bb_ls_pr_comments) | ✅ | ✅ | ✅ | ✅ |
-| [bb_add_pr_comment](TOOLS_GLOSSARY.md#bb_add_pr_comment) | ❌ | ✅ | ✅ | ✅ |
-| [bb_add_pr](TOOLS_GLOSSARY.md#bb_add_pr) | ❌ | ❌ | ✅ | ✅ |
-| [bb_update_pr](TOOLS_GLOSSARY.md#bb_update_pr) | ❌ | ❌ | ✅ | ✅ |
-| [bb_approve_pr](TOOLS_GLOSSARY.md#bb_approve_pr) | ❌ | ❌ | ❌ | ❌ |
-| [bb_reject_pr](TOOLS_GLOSSARY.md#bb_reject_pr) | ❌ | ❌ | ❌ | ❌ |
-| *Search* | | | | |
-| [bb_search](TOOLS_GLOSSARY.md#bb_search) | ✅ | ✅ | ✅ | ✅ |
-| *Diff* | | | | |
-| [bb_diff_branches](TOOLS_GLOSSARY.md#bb_diff_branches) | ✅ | ✅ | ✅ | ✅ |
-| [bb_diff_commits](TOOLS_GLOSSARY.md#bb_diff_commits) | ✅ | ✅ | ✅ | ✅ |
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>QnA</th>
+<th>Review</th>
+<th>Plan</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color: #f8f9fa;">
+<td><strong>Built-In (VS Code / Core)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Code &amp; Project Navigation</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#codebase">codebase</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#findtestfiles">findTestFiles</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#search">search</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#searchresults">searchResults</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#usages">usages</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Quality &amp; Diagnostics</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#problems">problems</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#testfailure">testFailure</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Version Control &amp; Changes</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#changes">changes</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Environment &amp; Execution</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#terminallastcommand">terminalLastCommand</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#terminalselection">terminalSelection</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#think">think</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#todos">todos</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Web &amp; External Content</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#fetch">fetch</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#githubrepo">githubRepo</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Editor &amp; Extensions</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#extensions">extensions</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#vscodeapi">vscodeAPI</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Editing &amp; Automation</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#editfiles">editFiles</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#runcommands">runCommands</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#runtasks">runTasks</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><strong>GitHub Pull Requests Extension (VS Code)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#activepullrequest">activePullRequest</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#copilotcodingagent">copilotCodingAgent</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><strong>Context7</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#resolve-library-id">resolve-library-id</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get-library-docs">get-library-docs</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><strong>Atlassian</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Atlassian Common</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getaccessibleatlassianresources">getAccessibleAtlassianResources</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Jira Issues &amp; Operations</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_add_comment">jira_add_comment</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#addcommenttojiraissue">addCommentToJiraIssue</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_create_issue">jira_create_issue</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#createjiraissue">createJiraIssue</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_update_issue">jira_update_issue</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#editjiraissue">editJiraIssue</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_issue">jira_get_issue</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getjiraissue">getJiraIssue</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_search">jira_search</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#searchjiraissuesusingjql">searchJiraIssuesUsingJql</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_transition_issue">jira_transition_issue</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#transitionjiraissue">transitionJiraIssue</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_transitions">jira_get_transitions</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#gettransitionsforjiraissue">getTransitionsForJiraIssue</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_link_types">jira_get_link_types</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_project_versions">jira_get_project_versions</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_worklog">jira_get_worklog</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_download_attachments">jira_download_attachments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_add_worklog">jira_add_worklog</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_link_to_epic">jira_link_to_epic</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_create_issue_link">jira_create_issue_link</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_create_remote_issue_link">jira_create_remote_issue_link</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getJiraIssueRemoteIssueLinks">getJiraIssueRemoteIssueLinks</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getJiraProjectIssueTypesMetadata">getJiraProjectIssueTypesMetadata</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_delete_issue">jira_delete_issue</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Jira Project &amp; Board Operations</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_all_projects">jira_get_all_projects</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr><tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getVisibleJiraProjects">getVisibleJiraProjects</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_project_issues">jira_get_project_issues</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_agile_boards">jira_get_agile_boards</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_board_issues">jira_get_board_issues</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_sprints_from_board">jira_get_sprints_from_board</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_sprint_issues">jira_get_sprint_issues</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#jira_search_fields">jira_search_fields</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#jira_get_user_profile">jira_get_user_profile</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#lookupJiraAccountId">lookupJiraAccountId</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#atlassianuserinfo">atlassianUserInfo</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Confluence Pages &amp; Content</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_create_page">confluence_create_page</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#createconfluencepage">createConfluencePage</a></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_page">confluence_get_page</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepage">getConfluencePage</a></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepageancestors">getConfluencePageAncestors</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_update_page">confluence_update_page</a></td>
+<td rowspan="2">❌</td>
+<td rowspan="2">❌</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#updateconfluencepage">updateConfluencePage</a></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_delete_page">confluence_delete_page</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_page_children">confluence_get_page_children</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepagedescendants">getConfluencePageDescendants</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepagefootercomments">getConfluencePageFooterComments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepageinlinecomments">getConfluencePageInlineComments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_search">confluence_search</a></td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+<td rowspan="2">✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#searchconfluenceusingcql">searchConfluenceUsingCql</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_comments">confluence_get_comments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_add_comment">confluence_add_comment</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#createconfluencefootercomment">createConfluenceFooterComment</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#createconfluenceinlinecomment">createConfluenceInlineComment</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_get_labels">confluence_get_labels</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_add_label">confluence_add_label</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencespaces">getConfluenceSpaces</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getpagesinconfluencespace">getPagesInConfluenceSpace</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#confluence_search_user">confluence_search_user</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><strong>GitHub</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Commits &amp; Repository</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#create_branch">create_branch</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#create_repository">create_repository</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_commit">get_commit</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_file_contents">get_file_contents</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_tag">get_tag</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#list_branches">list_branches</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_commits">list_commits</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#list_tags">list_tags</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#push_files">push_files</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Pull Requests  Retrieval</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request">get_pull_request</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_comments">get_pull_request_comments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_diff">get_pull_request_diff</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_files">get_pull_request_files</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_reviews">get_pull_request_reviews</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_pull_request_status">get_pull_request_status</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_pull_requests">list_pull_requests</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Pull Requests  Actions</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#add_comment_to_pending_review">add_comment_to_pending_review</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#create_pending_pull_request_review">create_pending_pull_request_review</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#create_pull_request">create_pull_request</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#create_pull_request_with_copilot">create_pull_request_with_copilot</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#merge_pull_request">merge_pull_request</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#request_copilot_review">request_copilot_review</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#submit_pending_pull_request_review">submit_pending_pull_request_review</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#update_pull_request">update_pull_request</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#update_pull_request_branch">update_pull_request_branch</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Issues</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#add_issue_comment">add_issue_comment</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#create_issue">create_issue</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_issue">get_issue</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_issue_comments">get_issue_comments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_issues">list_issues</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#search_issues">search_issues</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#update_issue">update_issue</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Sub-Issues</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_sub_issues">list_sub_issues</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#reprioritize_sub_issue">reprioritize_sub_issue</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Gists</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#list_gists">list_gists</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#update_gist">update_gist</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Notifications</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_notifications">list_notifications</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Code Scanning &amp; Security</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_code_scanning_alerts">list_code_scanning_alerts</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Workflows (GitHub Actions)</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_workflow_run">get_workflow_run</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_workflow_run_logs">get_workflow_run_logs</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_workflow_run_usage">get_workflow_run_usage</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#list_workflow_jobs">list_workflow_jobs</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_workflow_run_artifacts">list_workflow_run_artifacts</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#list_workflow_runs">list_workflow_runs</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_workflows">list_workflows</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#rerun_failed_jobs">rerun_failed_jobs</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#rerun_workflow_run">rerun_workflow_run</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Search &amp; Discovery</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#search_code">search_code</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#search_orgs">search_orgs</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#search_pull_requests">search_pull_requests</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#search_repositories">search_repositories</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#search_users">search_users</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>User &amp; Account</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_me">get_me</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Organization &amp; Teams</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#get_teams">get_teams</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#get_team_members">get_team_members</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#list_issue_types">list_issue_types</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>File Operations</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#create_or_update_file">create_or_update_file</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><strong>Bitbucket</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Workspaces</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_workspaces">bb_ls_workspaces</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_get_workspace">bb_get_workspace</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Repositories</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_repos">bb_ls_repos</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_get_repo">bb_get_repo</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_get_commit_history">bb_get_commit_history</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_get_file">bb_get_file</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_list_branches">bb_list_branches</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_add_branch">bb_add_branch</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_clone_repo">bb_clone_repo</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><em>Pull Requests</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_prs">bb_ls_prs</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_get_pr">bb_get_pr</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_ls_pr_comments">bb_ls_pr_comments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_add_pr_comment">bb_add_pr_comment</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_add_pr">bb_add_pr</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_update_pr">bb_update_pr</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_approve_pr">bb_approve_pr</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_reject_pr">bb_reject_pr</a></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Search</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_search">bb_search</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><em>Diff</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#bb_diff_branches">bb_diff_branches</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#bb_diff_commits">bb_diff_commits</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>

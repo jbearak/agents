@@ -48,22 +48,54 @@ $ErrorActionPreference = 'Stop'
 if (-not $env:DOCKER_COMMAND) { $env:DOCKER_COMMAND = 'docker' }
 if (-not $env:MCP_ATLASSIAN_IMAGE) { $env:MCP_ATLASSIAN_IMAGE = 'ghcr.io/sooperset/mcp-atlassian:latest' }
 if (-not $env:AUTH_METHOD) { $env:AUTH_METHOD = 'api_token' }
+if (-not $env:REMOTE_MCP_URL) { $env:REMOTE_MCP_URL = 'https://mcp.atlassian.com/v1/sse' }
 
-function Test-DockerAvailable {
+function Test-DockerDaemon {
   try {
-    $null = Get-Command $env:DOCKER_COMMAND -ErrorAction Stop
+    & $env:DOCKER_COMMAND info *>$null
+    return $true
   } catch {
-    Write-Error "$($env:DOCKER_COMMAND) is not installed or not in PATH. Install Podman (preferred) or docker for Windows."
+    [Console]::Error.WriteLine("Error: $($env:DOCKER_COMMAND) daemon is not running.")
+    [Console]::Error.WriteLine("Start Podman (podman machine start) or docker before using this wrapper.")
+    return $false
+  }
+}
+
+function Use-RemoteServer {
+  [Console]::Error.WriteLine("Falling back to remote Atlassian MCP server: $($env:REMOTE_MCP_URL)")
+  
+  # Check if npx is available for mcp-remote
+  try {
+    $null = Get-Command npx -ErrorAction Stop
+  } catch {
+    [Console]::Error.WriteLine("Error: npx not found. Cannot use mcp-remote for remote server connection.")
+    [Console]::Error.WriteLine("Please install Node.js/npm or start Docker/Podman to use Atlassian MCP server.")
     exit 1
   }
   
-  # Check if container runtime daemon is running
-  try {
-    & $env:DOCKER_COMMAND info *>$null
-  } catch {
-    Write-Error "$($env:DOCKER_COMMAND) daemon is not running. Start Podman (podman machine start) or docker before using this wrapper."
-    exit 1
-  }
+  # Use mcp-remote to bridge stdio to remote HTTP+SSE server with OAuth
+  [Console]::Error.WriteLine("Using mcp-remote to connect to remote Atlassian MCP server...")
+  
+  # Set up environment for mcp-remote with authentication
+  $env:ATLASSIAN_API_TOKEN = $apiToken
+  
+  # Use mcp-remote to connect to remote server with OAuth authentication
+  # Let mcp-remote handle OAuth instead of passing API token headers
+  # The remote server uses OAuth, not API tokens directly
+  [Console]::Error.WriteLine("Note: Remote server uses OAuth authentication, not API tokens.")
+  [Console]::Error.WriteLine("You may need to authorize in the browser that opens.")
+  
+  $mcpRemoteArgs = @(
+    '-y',
+    'mcp-remote@latest',
+    $env:REMOTE_MCP_URL,
+    '--header', "X-Atlassian-Domain:$($env:ATLASSIAN_DOMAIN)",
+    '--header', "X-Atlassian-Email:$($env:ATLASSIAN_EMAIL)"
+  ) + $Args
+  
+  # Execute mcp-remote with all arguments
+  & npx @mcpRemoteArgs
+  exit $LASTEXITCODE
 }
 
 function Get-StoredPassword {
@@ -100,14 +132,81 @@ function Get-StoredPassword {
   }
 }
 
+function Get-StoredDomain {
+  try {
+    # Check if credential exists
+    $listing = cmd /c "cmdkey /list" 2>$null
+    if (-not $listing -or $listing -notmatch 'mcp-atlassian') {
+      return $null
+    }
 
-# Check container runtime availability
-Test-DockerAvailable
+    # Need CredentialManager module to read the credential
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
+    }
 
-# Domain default if unset (can be overridden by env/config)
+    $cred = Get-StoredCredential -Target 'mcp-atlassian'
+    if ($cred -and $cred.UserName -eq 'atlassian-domain' -and $cred.Password) {
+      return $cred.Password
+    }
+    return $null
+  } catch {
+    return $null
+  }
+}
+
+
+# Check if Docker is available
+try {
+  $null = Get-Command $env:DOCKER_COMMAND -ErrorAction Stop
+} catch {
+  [Console]::Error.WriteLine("Error: Docker not found. Please install Docker or set DOCKER_COMMAND to point to your container runtime.")
+  [Console]::Error.WriteLine("Attempting to use remote server fallback...")
+  Use-RemoteServer
+  exit 0
+}
+
+# Check if Docker daemon is running
+if (-not (Test-DockerDaemon)) {
+  [Console]::Error.WriteLine("Attempting to use remote server fallback...")
+  Use-RemoteServer
+  exit 0
+}
+
+# Derive email first if not provided (needed for domain derivation)
+if (-not $env:ATLASSIAN_EMAIL) {
+  $gitEmail = $null
+  if (Get-Command git -ErrorAction SilentlyContinue) {
+    try {
+      $gitEmail = (git config --get user.email 2>$null).Trim()
+    } catch {}
+  }
+  if ($gitEmail) {
+    $env:ATLASSIAN_EMAIL = $gitEmail
+  }
+}
+
+# Domain derivation with fallback hierarchy: env var -> credential manager -> email -> default
 if (-not $env:ATLASSIAN_DOMAIN) {
-  [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set; defaulting to 'guttmacher.atlassian.net'.")
-  $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+  # Try credential manager first
+  $credentialDomain = Get-StoredDomain
+  if ($credentialDomain) {
+    $env:ATLASSIAN_DOMAIN = $credentialDomain
+    [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN retrieved from credential manager as '$($env:ATLASSIAN_DOMAIN)'.")
+  } else {
+    # If still not set, try email derivation
+    if ($env:ATLASSIAN_EMAIL -and $env:ATLASSIAN_EMAIL.Contains('@')) {
+      # Extract organization from email (user@organization.org -> organization.atlassian.net)
+      $orgDomain = $env:ATLASSIAN_EMAIL.Split('@')[1]
+      $orgName = $orgDomain.Split('.')[0]
+      $env:ATLASSIAN_DOMAIN = "$orgName.atlassian.net"
+      [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN derived from email as '$($env:ATLASSIAN_DOMAIN)'.")
+    } else {
+      # Final fallback to guttmacher
+      [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set, not in credential manager, and no email available; defaulting to 'guttmacher.atlassian.net'.")
+      $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+    }
+  }
 }
 
 # Get API token from environment or credential manager (for api_token auth method)
@@ -127,20 +226,10 @@ Could not retrieve Atlassian API token:
     }
   }
   
-  # Set email if not provided (env -> git -> username@derived .org)
+  # Complete email derivation if still not set after domain derivation
   if (-not $env:ATLASSIAN_EMAIL) {
-    $gitEmail = $null
-    if (Get-Command git -ErrorAction SilentlyContinue) {
-      try {
-        $gitEmail = (git config --get user.email 2>$null).Trim()
-      } catch {}
-    }
-    if ($gitEmail) {
-      $env:ATLASSIAN_EMAIL = $gitEmail
-    } else {
-      $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.org'
-      $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
-    }
+    $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.org'
+    $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
     [Console]::Error.WriteLine("Note: Using derived email '$($env:ATLASSIAN_EMAIL)'. Set ATLASSIAN_EMAIL to override.")
   }
 }
@@ -165,14 +254,24 @@ try {
   & $env:DOCKER_COMMAND image inspect $env:MCP_ATLASSIAN_IMAGE 2>$null
   if ($LASTEXITCODE -ne 0) {
     [Console]::Error.WriteLine("Pulling Atlassian MCP Docker image: $($env:MCP_ATLASSIAN_IMAGE)")
-& $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
-    if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)"; exit 1 }
+    & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
+    if ($LASTEXITCODE -ne 0) { 
+      [Console]::Error.WriteLine("Error: failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)")
+      [Console]::Error.WriteLine("Attempting to use remote server fallback...")
+      Use-RemoteServer
+      exit 0
+    }
     [Console]::Error.WriteLine("Pulled Atlassian MCP Docker image successfully: $($env:MCP_ATLASSIAN_IMAGE)")
   }
 } catch {
   [Console]::Error.WriteLine("Pulling Atlassian MCP Docker image: $($env:MCP_ATLASSIAN_IMAGE)")
   & $env:DOCKER_COMMAND pull $env:MCP_ATLASSIAN_IMAGE
-  if ($LASTEXITCODE -ne 0) { Write-Error "Failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)"; exit 1 }
+  if ($LASTEXITCODE -ne 0) { 
+    [Console]::Error.WriteLine("Error: failed to pull image: $($env:MCP_ATLASSIAN_IMAGE)")
+    [Console]::Error.WriteLine("Attempting to use remote server fallback...")
+    Use-RemoteServer
+    exit 0
+  }
   [Console]::Error.WriteLine("Pulled Atlassian MCP Docker image successfully: $($env:MCP_ATLASSIAN_IMAGE)")
 }
 [Console]::Error.WriteLine("Using Atlassian MCP via container image: $($env:MCP_ATLASSIAN_IMAGE)")

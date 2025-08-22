@@ -107,31 +107,60 @@ Retrieve up-to-date documentation snippets for a resolved library ID.
 
 The [Sooperset local Atlassian MCP Server](https://github.com/sooperset/mcp-atlassian) provides access to both Jira and Confluence through a local containerized server for improved reliability and performance.
 
+### Atlassian Common
+
+#### getAccessibleAtlassianResources
+Get cloudId to construct Atlassian REST API calls and determine accessible Jira/Confluence resources for the authenticated account.
+
 ### Jira Issues & Operations
 
 #### jira_add_comment
 Add a comment to a Jira issue.
 
+#### addCommentToJiraIssue
+Adds a comment to an existing Jira issue id or key.
+
 #### jira_create_issue
 Create a new Jira issue in a project.
+
+#### createJiraIssue
+Create a new Jira issue in a given project with a given issue type.
 
 #### jira_update_issue
 Update fields of an existing Jira issue.
 
+#### editJiraIssue
+Update the details of an existing Jira issue id or key.
+
 #### jira_get_issue
 Fetch details for a Jira issue by key or ID.
+
+#### getJiraIssue
+Get the details of a Jira issue by issue id or key.
 
 #### jira_search
 Search Jira issues with JQL (Jira Query Language).
 
+#### searchJiraIssuesUsingJql
+Search Jira issues using Jira Query Language (JQL).
+
 #### jira_transition_issue
 Move an issue through a workflow transition.
+
+#### transitionJiraIssue
+Transition an existing Jira issue (that has issue id or key) to a new status.
 
 #### jira_get_transitions
 List available transitions for a Jira issue.
 
+#### getTransitionsForJiraIssue
+Get available transitions for an existing Jira issue id or key.
+
 #### jira_delete_issue
 Delete a Jira issue.
+
+#### getJiraProjectIssueTypesMetadata
+Get a page of issue type metadata for a specified project. The issue type metadata will be used to create issue
 
 #### jira_get_link_types
 Retrieve available issue link types (e.g., blocks, relates to) in Jira.
@@ -157,10 +186,16 @@ Create a link between two Jira issues using a given link type.
 #### jira_create_remote_issue_link
 Create a remote issue link (e.g., external resource reference) for a Jira issue.
 
+#### getJiraIssueRemoteIssueLinks
+Get remote issue links (eg: Confluence links etc...) of an existing Jira issue id or key.
+
 ### Jira Project & Board Operations
 
 #### jira_get_all_projects
 List all Jira projects visible to the user (permission-filtered).
+
+#### getVisibleJiraProjects
+Get visible Jira projects for which the user has either view, browse, edit or create permission on that project
 
 #### jira_get_project_issues
 Get issues for a specific Jira project.
@@ -183,16 +218,34 @@ Search available Jira fields with keyword matching.
 #### jira_get_user_profile
 Get user profile information from Jira.
 
+#### lookupJiraAccountId
+Lookup account ids of existing users in Jira based on the user's display name or email address.
+
+#### atlassianUserInfo
+Get current user info from Atlassian.
+
 ### Confluence Pages & Content
 
 #### confluence_create_page
 Create a Confluence page (regular or live doc).
 
+#### createConfluencePage
+Create a new page in Confluence. Can create regular pages or live docs.
+
 #### confluence_get_page
 Fetch a Confluence page (body converted to Markdown).
 
+#### getConfluencePage
+Get a specific page or live doc data (including body content) from Confluence.
+
+#### getConfluencePageAncestors
+Get all parent pages (ancestors) of a specific page in the hierarchy.
+
 #### confluence_update_page
 Update an existing Confluence page or live doc.
+
+#### updateConfluencePage
+Update an existing page or Live Doc in Confluence.
 
 #### confluence_delete_page
 Delete a Confluence page.
@@ -200,14 +253,32 @@ Delete a Confluence page.
 #### confluence_get_page_children
 List child pages of a Confluence page.
 
+#### getConfluencePageDescendants
+Get all child pages (descendants) of a specific page in Confluence.
+
+#### getConfluencePageFooterComments
+Get footer comments for a Confluence page.
+
+#### getConfluencePageInlineComments
+Get inline comments for a Confluence page.
+
 #### confluence_search
 Query Confluence content using CQL (Confluence Query Language).
+
+#### searchConfluenceUsingCql
+Search content in Confluence using CQL (Confluence Query Language).
 
 #### confluence_get_comments
 Get comments on a Confluence page.
 
 #### confluence_add_comment
 Add a comment to a Confluence page.
+
+#### createConfluenceFooterComment
+Create a footer comment on a Confluence page or live doc.
+
+#### createConfluenceInlineComment
+Create an inline comment on a page or blog post. Inline comments are attached to specific text selections within the page content.
 
 #### confluence_get_labels
 Get labels for a Confluence page.
@@ -217,6 +288,12 @@ Add a label to a Confluence page.
 
 #### confluence_search_user
 Search for Confluence users.
+
+#### getConfluenceSpaces
+Get spaces from Confluence. Spaces are containers for pages and content.
+
+#### getPagesInConfluenceSpace
+Get all pages within a specific Confluence space. Useful for space-wide content audits.
 
 ## GitHub
 
@@ -402,6 +479,17 @@ Search for GitHub users.
 
 #### get_me
 Get details for the authenticated GitHub user.
+
+### Organization & Teams
+
+#### get_teams
+Get details of the teams the user is a member of. Limited to organizations accessible with current credentials.
+
+#### get_team_members
+Get member usernames of a specific team in an organization. Limited to organizations accessible with current credentials.
+
+#### list_issue_types
+List available issue types for GitHub projects.
 
 ### File Operations
 

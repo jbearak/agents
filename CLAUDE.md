@@ -3,9 +3,10 @@
 These notes help Claude (and you) run and debug local MCP servers consistently.
 
 Key wrappers
-- GitHub: ~/bin/mcp-github-wrapper.sh (Docker only)
-- Atlassian: ~/bin/mcp-atlassian-wrapper.sh (CLI → npx @latest → Docker)
-- Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (CLI → npx @latest → Docker if configured)
+- GitHub: ~/bin/mcp-github-wrapper.sh (Docker with remote fallback via mcp-remote)
+- Atlassian: ~/bin/mcp-atlassian-wrapper.sh (Docker with remote fallback via mcp-remote)
+- Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (CLI on PATH → npx @latest; no Docker fallback)
+- Context7: ~/bin/mcp-context7-wrapper.sh (npm package or npx; no auth required)
 
 Important: stdout must be JSON-only
 - MCP clients parse JSON-RPC on stdout. Any banners or human text on stdout can break initialization.
@@ -28,10 +29,16 @@ Credentials
   - Prefer macOS Keychain item: Service “github-mcp”, Account “token”; or set GITHUB_PERSONAL_ACCESS_TOKEN in the environment used by the editor.
 - Atlassian
   - Keychain item: service “atlassian-mcp”, account “api-token”, value is your API token.
-  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs.
+  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (defaults: domain “guttmacher.atlassian.net”; email derived from git user.email if unset).
+  - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
-  - Keychain item: service “bitbucket-mcp”, account “app-password”, value is your app password.
-  - Set ATLASSIAN_BITBUCKET_USERNAME in the agent configs.
+  - Keychain items (macOS):
+    - service “bitbucket-mcp”, account “app-password” = your app password
+    - service “bitbucket-mcp”, account “bitbucket-username” = your Bitbucket username
+  - Or set environment variables:
+    - ATLASSIAN_BITBUCKET_APP_PASSWORD
+    - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
+  - Optional: BITBUCKET_DEFAULT_WORKSPACE (defaults to “Guttmacher”)
 
 Troubleshooting symptom → action
 - “Failed to parse message: '\n'” or similar in clients:
