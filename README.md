@@ -1057,23 +1057,42 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getJiraIssueRemoteIssueLinks">getJiraIssueRemoteIssueLinks</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getJiraProjectIssueTypesMetadata">getJiraProjectIssueTypesMetadata</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#jira_delete_issue">jira_delete_issue</a></td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
-<tr style="background-color: #f8f9fa;">
+<tr style="background-color: #ffffff;">
 <td><em>Jira Project &amp; Board Operations</em></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
-<tr style="background-color: #ffffff;">
+<tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#jira_get_all_projects">jira_get_all_projects</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr><tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getVisibleJiraProjects">getVisibleJiraProjects</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
@@ -1123,6 +1142,13 @@ Legend: ✅ available, ❌ unavailable in that mode.
 </tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#jira_get_user_profile">jira_get_user_profile</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#lookupJiraAccountId">lookupJiraAccountId</a></td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
@@ -1271,10 +1297,10 @@ Legend: ✅ available, ❌ unavailable in that mode.
 </tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#get_tag">get_tag</a></td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#list_branches">list_branches</a></td>
@@ -1419,7 +1445,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#update_pull_request">update_pull_request</a></td>
 <td>❌</td>
-<td>❌</td>
+<td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>

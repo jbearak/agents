@@ -154,6 +154,9 @@ Get available transitions for an existing Jira issue id or key.
 #### jira_delete_issue
 Delete a Jira issue.
 
+#### getJiraProjectIssueTypesMetadata
+Get a page of issue type metadata for a specified project. The issue type metadata will be used to create issue
+
 #### jira_get_link_types
 Retrieve available issue link types (e.g., blocks, relates to) in Jira.
 
@@ -178,10 +181,16 @@ Create a link between two Jira issues using a given link type.
 #### jira_create_remote_issue_link
 Create a remote issue link (e.g., external resource reference) for a Jira issue.
 
+#### getJiraIssueRemoteIssueLinks
+Get remote issue links (eg: Confluence links etc...) of an existing Jira issue id or key.
+
 ### Jira Project & Board Operations
 
 #### jira_get_all_projects
 List all Jira projects visible to the user (permission-filtered).
+
+#### getVisibleJiraProjects
+Get visible Jira projects for which the user has either view, browse, edit or create permission on that project
 
 #### jira_get_project_issues
 Get issues for a specific Jira project.
@@ -203,6 +212,9 @@ Search available Jira fields with keyword matching.
 
 #### jira_get_user_profile
 Get user profile information from Jira.
+
+#### lookupJiraAccountId
+Lookup account ids of existing users in Jira based on the user's display name or email address.
 
 ### Confluence Pages & Content
 
