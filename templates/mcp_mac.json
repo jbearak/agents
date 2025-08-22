@@ -5,6 +5,11 @@
       "args": [],
       "working_directory": null
     },
+    "Bitbucket": {
+      "command": "~/bin/mcp-bitbucket-wrapper.sh",
+      "args": [],
+      "working_directory": null
+    },
     "Context7": {
       "command": "~/bin/mcp-context7-wrapper.sh",
       "args": [],
@@ -12,11 +17,6 @@
     },
     "GitHub": {
       "command": "~/bin/mcp-github-wrapper.sh",
-      "args": [],
-      "working_directory": null
-    },
-    "Bitbucket": {
-      "command": "~/bin/mcp-bitbucket-wrapper.sh",
       "args": [],
       "working_directory": null
     }

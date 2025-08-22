@@ -10,12 +10,22 @@
       },
       "working_directory": null
     },
+    "Bitbucket": {
+      "command": "powershell",
+      "args": [
+        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+      "%USERPROFILE%/bin/mcp-bitbucket-wrapper.ps1"
+      ],
+      "env": {
+      },
+      "working_directory": null
+    },
     "Context7": {
       "command": "powershell",
       "args": [
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
         "%USERPROFILE%/bin/mcp-context7-wrapper.ps1"
-      ],
+        ],
       "env": {},
       "working_directory": null
     },
@@ -26,16 +36,6 @@
       "%USERPROFILE%/bin/mcp-github-wrapper.ps1"
       ],
       "env": {},
-      "working_directory": null
-    },
-    "Bitbucket": {
-      "command": "powershell",
-      "args": [
-        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-      "%USERPROFILE%/bin/mcp-bitbucket-wrapper.ps1"
-      ],
-      "env": {
-      },
       "working_directory": null
     }
   }
