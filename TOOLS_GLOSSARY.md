@@ -107,6 +107,11 @@ Retrieve up-to-date documentation snippets for a resolved library ID.
 
 The [Sooperset local Atlassian MCP Server](https://github.com/sooperset/mcp-atlassian) provides access to both Jira and Confluence through a local containerized server for improved reliability and performance.
 
+### Atlassian Common
+
+#### getAccessibleAtlassianResources
+Get cloudId to construct Atlassian REST API calls and determine accessible Jira/Confluence resources for the authenticated account.
+
 ### Jira Issues & Operations
 
 #### jira_add_comment
@@ -230,6 +235,9 @@ Fetch a Confluence page (body converted to Markdown).
 #### getConfluencePage
 Get a specific page or live doc data (including body content) from Confluence.
 
+#### getConfluencePageAncestors
+Get all parent pages (ancestors) of a specific page in the hierarchy.
+
 #### confluence_update_page
 Update an existing Confluence page or live doc.
 
@@ -244,6 +252,12 @@ List child pages of a Confluence page.
 
 #### getConfluencePageDescendants
 Get all child pages (descendants) of a specific page in Confluence.
+
+#### getConfluencePageFooterComments
+Get footer comments for a Confluence page.
+
+#### getConfluencePageInlineComments
+Get inline comments for a Confluence page.
 
 #### confluence_search
 Query Confluence content using CQL (Confluence Query Language).
@@ -265,6 +279,12 @@ Add a label to a Confluence page.
 
 #### confluence_search_user
 Search for Confluence users.
+
+#### getConfluenceSpaces
+Get spaces from Confluence. Spaces are containers for pages and content.
+
+#### getPagesInConfluenceSpace
+Get all pages within a specific Confluence space. Useful for space-wide content audits.
 
 ## GitHub
 

@@ -928,6 +928,20 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td></td>
 </tr>
 <tr style="background-color: #f8f9fa;">
+<td><em>Atlassian Common</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getaccessibleatlassianresources">getAccessibleAtlassianResources</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
 <td><em>Jira Issues &amp; Operations</em></td>
 <td></td>
 <td></td>
@@ -1059,6 +1073,7 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td>❌</td>
 <td>✅</td>
 <td>✅</td>
+</tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#getJiraIssueRemoteIssueLinks">getJiraIssueRemoteIssueLinks</a></td>
 <td>✅</td>
@@ -1184,6 +1199,13 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td><a href="TOOLS_GLOSSARY.md#getconfluencepage">getConfluencePage</a></td>
 </tr>
 <tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepageancestors">getConfluencePageAncestors</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_update_page">confluence_update_page</a></td>
 <td rowspan="2">❌</td>
 <td rowspan="2">❌</td>
@@ -1209,6 +1231,20 @@ Legend: ✅ available, ❌ unavailable in that mode.
 </tr>
 <tr style="background-color: #f8f9fa;">
 <td><a href="TOOLS_GLOSSARY.md#getconfluencepagedescendants">getConfluencePageDescendants</a></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepagefootercomments">getConfluencePageFooterComments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencepageinlinecomments">getConfluencePageInlineComments</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr style="background-color: #ffffff;">
 <td><a href="TOOLS_GLOSSARY.md#confluence_search">confluence_search</a></td>
@@ -1245,6 +1281,20 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td><a href="TOOLS_GLOSSARY.md#confluence_add_label">confluence_add_label</a></td>
 <td>❌</td>
 <td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#getconfluencespaces">getConfluenceSpaces</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#getpagesinconfluencespace">getPagesInConfluenceSpace</a></td>
+<td>✅</td>
+<td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
