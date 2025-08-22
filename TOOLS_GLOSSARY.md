@@ -221,6 +221,9 @@ Get user profile information from Jira.
 #### lookupJiraAccountId
 Lookup account ids of existing users in Jira based on the user's display name or email address.
 
+#### atlassianUserInfo
+Get current user info from Atlassian.
+
 ### Confluence Pages & Content
 
 #### confluence_create_page
@@ -270,6 +273,12 @@ Get comments on a Confluence page.
 
 #### confluence_add_comment
 Add a comment to a Confluence page.
+
+#### createConfluenceFooterComment
+Create a footer comment on a Confluence page or live doc.
+
+#### createConfluenceInlineComment
+Create an inline comment on a page or blog post. Inline comments are attached to specific text selections within the page content.
 
 #### confluence_get_labels
 Get labels for a Confluence page.

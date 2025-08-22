@@ -1171,6 +1171,13 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td>✅</td>
 <td>✅</td>
 </tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#atlassianuserinfo">atlassianUserInfo</a></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
 <tr style="background-color: #ffffff;">
 <td><em>Confluence Pages &amp; Content</em></td>
 <td></td>
@@ -1267,6 +1274,20 @@ Legend: ✅ available, ❌ unavailable in that mode.
 <td><a href="TOOLS_GLOSSARY.md#confluence_add_comment">confluence_add_comment</a></td>
 <td>❌</td>
 <td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td><a href="TOOLS_GLOSSARY.md#createconfluencefootercomment">createConfluenceFooterComment</a></td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr style="background-color: #f8f9fa;">
+<td><a href="TOOLS_GLOSSARY.md#createconfluenceinlinecomment">createConfluenceInlineComment</a></td>
+<td>❌</td>
+<td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>

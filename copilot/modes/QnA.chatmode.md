@@ -13,7 +13,7 @@ tools: [
   'search_pull_requests', 'search_repositories',
   'get_issue', 'get_issue_comments', 'list_issues', 'search_issues',
   'get_tag',
-  'getAccessibleAtlassianResources',
+  'getAccessibleAtlassianResources', "atlassianUserInfo",
   'getConfluencePage', 'getConfluencePageDescendants', 'getConfluencePageAncestors',
   'getConfluencePageFooterComments', 'getConfluencePageInlineComments', 'getConfluenceSpaces', 'getPagesInConfluenceSpace',
   'getJiraIssue', 'getJiraProjectIssueTypesMetadata', 'getTransitionsForJiraIssue', 'getVisibleJiraProjects',
