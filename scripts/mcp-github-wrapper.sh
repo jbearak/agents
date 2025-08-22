@@ -39,9 +39,14 @@ if [ -z "${GITHUB_TOKEN}" ]; then
 fi
 if [ -z "${GITHUB_TOKEN}" ]; then
   echo "Error: GitHub token not found." >&2
-  echo "Set GITHUB_PERSONAL_ACCESS_TOKEN, or add a macOS Keychain item: service 'github-mcp' (or 'GitHub'), account 'token'." >&2
-  echo "macOS (secure prompt):" >&2
-  echo "  ( unset HISTFILE; stty -echo; printf 'Enter GitHub PAT: '; read PW; stty echo; printf '\n'; security add-generic-password -s github-mcp -a token -w \"$PW\"; unset PW )" >&2
+  if [[ "$(uname)" == "Darwin" ]]; then
+    echo "Set GITHUB_PERSONAL_ACCESS_TOKEN, or add a macOS Keychain item: service 'github-mcp' (or 'GitHub'), account 'token'." >&2
+    echo "macOS (secure prompt):" >&2
+    echo "  ( unset HISTFILE; stty -echo; printf 'Enter GitHub PAT: '; read PW; stty echo; printf '\n'; security add-generic-password -s github-mcp -a token -w \"\$PW\"; unset PW )" >&2
+  else
+    echo "Set environment variable: export GITHUB_PERSONAL_ACCESS_TOKEN='<your_github_token>'" >&2
+    echo "Create token at: https://github.com/settings/tokens" >&2
+  fi
   exit 1
 fi
 

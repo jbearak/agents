@@ -57,6 +57,8 @@ else
     fi
   else
     echo "Error: ATLASSIAN_BITBUCKET_APP_PASSWORD is not set and macOS Keychain is unavailable on this platform." >&2
+    echo "Set environment variable: export ATLASSIAN_BITBUCKET_APP_PASSWORD='<your_app_password>'" >&2
+    echo "Create app password at: https://bitbucket.org/account/settings/app-passwords/" >&2
     exit 1
   fi
 fi

@@ -53,7 +53,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
 │   ├── mcp-bitbucket-wrapper.sh # macOS/Linux Bitbucket MCP wrapper script
 │   └── mcp-bitbucket-wrapper.ps1# Windows Bitbucket MCP wrapper script
 ├── templates/
-│   ├── mcp_mac.json                # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_mac.json                # MCP configuration for macOS and Linux (VS Code and Claude Desktop)
 │   ├── mcp_win.json                # MCP configuration for Windows (VS Code and Claude Desktop)
 │   └── vscode-settings.jsonc       # VS Code user settings template (optional)
 └── tests/
@@ -308,6 +308,43 @@ GitHub provides an MCP server via Docker that works with VS Code, Claude Desktop
 export PATH="$HOME/bin:$PATH"
 ```
 
+#### Configure GitHub MCP Server on Linux
+
+1. Set environment variable for authentication:
+   ```bash
+   export GITHUB_PERSONAL_ACCESS_TOKEN="your-github-token"
+   ```
+
+2. Ensure Docker is installed and running:
+   ```bash
+   # Install Docker Engine (varies by distribution)
+   # For Ubuntu/Debian:
+   sudo apt update && sudo apt install docker.io
+   sudo systemctl start docker
+   sudo usermod -aG docker $USER  # requires re-login
+   
+   # Or use Podman instead:
+   # sudo apt install podman
+   # export DOCKER_COMMAND=podman
+   ```
+
+3. Copy `scripts/mcp-github-wrapper.sh` to somewhere on your `$PATH`:
+   ```bash
+   cp scripts/mcp-github-wrapper.sh ~/bin/
+   ```
+
+4. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-github-wrapper.sh
+   ```
+
+5. Test:
+   ```bash
+   ~/bin/mcp-github-wrapper.sh --help | head -5
+   ```
+
+**Note:** On Linux, authentication uses environment variables only. The script requires a Docker-compatible container runtime to function.
+
 
 ### Bitbucket MCP Server
 
@@ -403,11 +440,38 @@ $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
 $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
 ```
 
+#### Configure Bitbucket MCP Server on Linux
+
+1. Set environment variables for authentication:
+   ```bash
+   export ATLASSIAN_BITBUCKET_USERNAME="your-bitbucket-username"
+   export ATLASSIAN_BITBUCKET_APP_PASSWORD="your-app-password"
+   export BITBUCKET_DEFAULT_WORKSPACE="Guttmacher"  # optional, defaults to Guttmacher
+   ```
+
+2. Copy `scripts/mcp-bitbucket-wrapper.sh` to somewhere on your `$PATH`:
+   ```bash
+   cp scripts/mcp-bitbucket-wrapper.sh ~/bin/
+   ```
+
+3. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-bitbucket-wrapper.sh
+   ```
+
+4. Test:
+   ```bash
+   ~/bin/mcp-bitbucket-wrapper.sh --help | head -5
+   ```
+
+**Note:** On Linux, authentication uses environment variables only. The script will derive your username from `git config user.email` if `ATLASSIAN_BITBUCKET_USERNAME` is not set.
+
 #### Troubleshooting
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | macOS: "Could not retrieve Bitbucket credentials" | Keychain item missing | Create keychain entry with service `bitbucket-mcp` |
 | Windows: Credential not found | Generic credential not created | Add credential `bitbucket-mcp` in Credential Manager | 
+| Linux: "ATLASSIAN_BITBUCKET_APP_PASSWORD is not set" | Environment variable missing | Set `export ATLASSIAN_BITBUCKET_APP_PASSWORD="your-app-password"` |
 | Username rejected | Using email instead of username | Use profile username from settings page | 
 | 401 Unauthorized | Wrong app password scope / value | Regenerate app password with correct scopes | 
 
@@ -512,13 +576,53 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
    $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
    ```
 
+#### Configure Atlassian MCP Server on Linux
+
+1. Set environment variables for authentication:
+   ```bash
+   export ATLASSIAN_API_TOKEN="your-api-token"
+   export ATLASSIAN_DOMAIN="guttmacher.atlassian.net"  # optional, defaults to guttmacher.atlassian.net
+   export ATLASSIAN_EMAIL="your-email@example.org"     # optional, derived from git config user.email if not set
+   ```
+
+2. Ensure Docker is installed and running:
+   ```bash
+   # Install Docker Engine (varies by distribution)
+   # For Ubuntu/Debian:
+   sudo apt update && sudo apt install docker.io
+   sudo systemctl start docker
+   sudo usermod -aG docker $USER  # requires re-login
+   
+   # Or use Podman instead:
+   # sudo apt install podman
+   # export DOCKER_COMMAND=podman
+   ```
+
+3. Copy `scripts/mcp-atlassian-wrapper.sh` to somewhere on your `$PATH`:
+   ```bash
+   cp scripts/mcp-atlassian-wrapper.sh ~/bin/
+   ```
+
+4. Make it executable:
+   ```bash
+   chmod +x ~/bin/mcp-atlassian-wrapper.sh
+   ```
+
+5. Test:
+   ```bash
+   ~/bin/mcp-atlassian-wrapper.sh --help | head -5
+   ```
+
+**Note:** On Linux, authentication uses environment variables only. The script will derive your email from `git config user.email` if `ATLASSIAN_EMAIL` is not set.
+
 #### Troubleshooting Atlassian MCP Server
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | "docker is not installed" | Container runtime CLI not available | Install Colima (macOS) or Podman/docker and ensure CLI is in PATH |
-| "docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or `podman machine start` (Windows) |
+| "docker daemon is not running" | Runtime not started | Start with `colima start` (macOS) or `podman machine start` (Windows) or `sudo systemctl start docker` (Linux) |
 | "Could not retrieve API token" | Keychain/credential missing | Create credential with correct service name |
+| Linux: "ATLASSIAN_API_TOKEN is not set" | Environment variable missing | Set `export ATLASSIAN_API_TOKEN="your-api-token"` |
 | Container fails to start | Invalid domain/credentials | Verify ATLASSIAN_DOMAIN and API token |
 | 401 Unauthorized | Invalid API token | Regenerate API token in Atlassian settings |
 | Connection timeouts | Network/firewall issues | Check container network settings and firewall |
@@ -529,7 +633,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 ### VS Code
 
 1. From the Command Palette, choose **MCP: Open User Configuration**
-2. Use the provided configuration: copy [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) or [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) and customize paths if/as needed
+2. Use the provided configuration: copy [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS/Linux) or [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) and customize paths if/as needed
 3. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
@@ -539,7 +643,7 @@ We use [Sooperset's local Atlassian MCP server](https://github.com/sooperset/mcp
 1. Open Settings -> Developer > Edit Config
 - Note: This will open a File Explorer (Windows) or Finder (macOS) window
 2. Double-click the config file
-3. Use the provided configuration: copy [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) or [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS) and customize paths if/as needed
+3. Use the provided configuration: copy [`templates/mcp_win.json`](templates/mcp_win.json) (Windows) or [`templates/mcp_mac.json`](templates/mcp_mac.json) (macOS/Linux) and customize paths if/as needed
 4. Update placeholders
 
 **Note: You must edit the sample configuration files to replace the `<your-os-username>`, `<your-email>`, and `<your-bitbucket-username>` placeholders.**
