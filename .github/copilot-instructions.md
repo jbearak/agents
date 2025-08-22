@@ -51,7 +51,9 @@ This is a documentation repository for GitHub Copilot modes and tools. All "buil
 │   ├── mcp-context7-wrapper.sh      # macOS/Linux Context7 MCP wrapper script
 │   └── mcp-context7-wrapper.ps1     # Windows Context7 MCP wrapper script
 ├── templates/
+│   ├── llm_code_style_guidelines.txt      # General coding style guidelines (for copy/paste to other tools)
 │   ├── mcp_mac.json                       # MCP configuration for macOS (VS Code and Claude Desktop)
+│   ├── mcp_mac_usr_local.json             # Alternate macOS config (usr/local node, etc.)
 │   ├── mcp_win.json                       # MCP configuration for Windows (VS Code and Claude Desktop)
 │   └── vscode-settings.jsonc              # VS Code user settings template (optional)
 └── tests/
@@ -75,7 +77,7 @@ Standard YAML frontmatter:
 **Tool Availability Matrix:** The README.md contains a comprehensive table showing which tools are available in which modes. Reference this instead of guessing tool availability.
 
 **Key Relationships:**
-- `llm_coding_style_guidelines.txt` (referenced in README) is the canonical source for coding guidelines. Copy/paste into other tools as needed.
+- `templates/llm_code_style_guidelines.txt` (referenced in README) is the canonical source for coding guidelines. Copy/paste into other tools as needed.
 - Mode files define different privilege levels: QnA < Review < Plan < Code
 
 ### Frequently Needed Information
