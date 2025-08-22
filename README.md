@@ -17,6 +17,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [GitHub](#github-mcp-server)
   - [Atlassian (Jira & Confluence)](#atlassian-mcp-server)
   - [Bitbucket](#bitbucket-mcp-server)
+  - [Context7](#context7-mcp-server)
   - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
     - [VS Code](#add-mcp-servers-to-vs-code)
     - [Claude Desktop](#add-mcp-servers-to-claude-desktop)
@@ -539,7 +540,33 @@ $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bi
 ```
 
 
+### Context7 MCP Server
 
+Context7 provides up-to-date, version-specific documentation and code examples for libraries and frameworks. The MCP server requires no authentication and works immediately after installation.
+
+**Installation:**
+
+```bash
+# Option 1: Install globally (recommended)
+npm install -g @upstash/context7-mcp@latest
+
+# Option 2: Use via npx (automatic fallback)
+npx -y @upstash/context7-mcp@latest --help
+```
+
+**Configuration:**
+
+1. Copy the wrapper script to your bin directory:
+   - macOS: `cp scripts/mcp-context7-wrapper.sh ~/bin/ && chmod +x ~/bin/mcp-context7-wrapper.sh`
+   - Windows: Copy `scripts/mcp-context7-wrapper.ps1` to `%USERPROFILE%\bin\`
+
+2. Test the wrapper:
+   - macOS: `~/bin/mcp-context7-wrapper.sh --help`
+   - Windows: `& "$Env:UserProfile\bin\mcp-context7-wrapper.ps1" --help`
+
+The wrapper automatically uses the globally installed package if available, falling back to npx if not.
+
+**Usage:** Query for documentation like "show me React hooks examples" or "get Next.js routing docs". The server will resolve library names and provide relevant, current documentation.
 
 ### Add MCP Servers to Agents
 
