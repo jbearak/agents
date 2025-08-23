@@ -35,6 +35,13 @@ get_keychain_username() {
   security find-generic-password -s "$SERVICE_NAME" -a "bitbucket-username" -w 2>/dev/null || return 1
 }
 
+get_keychain_workspace() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    return 1
+  fi
+  security find-generic-password -s "$SERVICE_NAME" -a "bitbucket-workspace" -w 2>/dev/null || return 1
+}
+
 # Username derivation with fallback hierarchy: env var -> keychain -> git email username -> OS username
 if [[ -z "${ATLASSIAN_BITBUCKET_USERNAME:-}" ]]; then
   # Try keychain first (macOS only)
@@ -82,29 +89,39 @@ fi
 
 export ATLASSIAN_BITBUCKET_USERNAME
 export ATLASSIAN_BITBUCKET_APP_PASSWORD="${APP_PASS}"
-# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, try to derive from git user.email
+# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> keychain -> git email -> default
 if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
-  # Try to derive workspace from git user.email domain
-  if command -v git >/dev/null 2>&1; then
-    git_email="$(git config --get user.email 2>/dev/null || true)"
-  else
-    git_email=""
+  # Try keychain first (macOS only)
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if KEYCHAIN_WORKSPACE=$(get_keychain_workspace) && [[ -n "$KEYCHAIN_WORKSPACE" ]]; then
+      BITBUCKET_DEFAULT_WORKSPACE="$KEYCHAIN_WORKSPACE"
+      echo "Note: BITBUCKET_DEFAULT_WORKSPACE retrieved from keychain as '${BITBUCKET_DEFAULT_WORKSPACE}'." >&2
+    fi
   fi
   
-  if [[ -n "$git_email" && "$git_email" == *"@"*"."* ]]; then
-    # Extract domain from email (part between @ and first .)
-    domain_part="${git_email#*@}"
-    domain="${domain_part%%.*}"
-    if [[ -n "$domain" ]]; then
-      # Capitalize first letter
-      workspace="${domain^}"
-      BITBUCKET_DEFAULT_WORKSPACE="$workspace"
-      echo "Note: Derived BITBUCKET_DEFAULT_WORKSPACE='${workspace}' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override." >&2
+  # If still not set, try to derive workspace from git user.email domain
+  if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
+    if command -v git >/dev/null 2>&1; then
+      git_email="$(git config --get user.email 2>/dev/null || true)"
+    else
+      git_email=""
+    fi
+    
+    if [[ -n "$git_email" && "$git_email" == *"@"*"."* ]]; then
+      # Extract domain from email (part between @ and first .)
+      domain_part="${git_email#*@}"
+      domain="${domain_part%%.*}"
+      if [[ -n "$domain" ]]; then
+        # Capitalize first letter
+        workspace="${domain^}"
+        BITBUCKET_DEFAULT_WORKSPACE="$workspace"
+        echo "Note: Derived BITBUCKET_DEFAULT_WORKSPACE='${workspace}' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override." >&2
+      else
+        echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+      fi
     else
       echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
     fi
-  else
-    echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
   fi
 fi
 export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-}"

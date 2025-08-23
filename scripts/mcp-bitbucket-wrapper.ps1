@@ -25,32 +25,6 @@ Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# Optional workspace override
-# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, try to derive from git user.email
-if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
-  # Try to derive workspace from git user.email domain
-  $gitEmail = $null
-  if (Get-Command git -ErrorAction SilentlyContinue) {
-    try {
-      $gitEmail = (git config --get user.email 2>$null).Trim()
-    } catch {}
-  }
-  
-  if ($gitEmail -and $gitEmail -match '^.+@([^.]+)\.') {
-    $domain = $matches[1]
-    if ($domain) {
-      # Capitalize first letter
-      $workspace = $domain.Substring(0,1).ToUpper() + $domain.Substring(1).ToLower()
-      $env:BITBUCKET_DEFAULT_WORKSPACE = $workspace
-      [Console]::Error.WriteLine("Note: Derived BITBUCKET_DEFAULT_WORKSPACE='$workspace' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override.")
-    } else {
-      [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
-    }
-  } else {
-    [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
-  }
-}
-
 function Get-StoredPassword {
   param([string]$Target)
   
@@ -95,6 +69,61 @@ function Get-StoredUsername {
     return $null
   } catch {
     return $null
+  }
+}
+
+function Get-StoredWorkspace {
+  try {
+    # Check if credential exists
+    $listing = cmd /c "cmdkey /list" 2>$null
+    if (-not $listing -or $listing -notmatch 'bitbucket-mcp') {
+      return $null
+    }
+
+    # Need CredentialManager module to read the credential
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
+    }
+
+    $cred = Get-StoredCredential -Target 'bitbucket-mcp'
+    if ($cred -and $cred.UserName -eq 'bitbucket-workspace' -and $cred.Password) {
+      return $cred.Password
+    }
+    return $null
+  } catch {
+    return $null
+  }
+}
+
+# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> credential manager -> git email -> default
+if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
+  # Try credential manager first
+  $credentialWorkspace = Get-StoredWorkspace
+  if ($credentialWorkspace) {
+    $env:BITBUCKET_DEFAULT_WORKSPACE = $credentialWorkspace
+    [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE retrieved from credential manager as '$($env:BITBUCKET_DEFAULT_WORKSPACE)'.")
+  } else {
+    # If still not set, try to derive workspace from git user.email domain
+    $gitEmail = $null
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+      try {
+        $gitEmail = (git config --get user.email 2>$null).Trim()
+      } catch {}
+    }
+    
+    if ($gitEmail -and $gitEmail -match '^.+@([^.]+)\.') {
+      $domain = $matches[1]
+      if ($domain) {
+        # Capitalize first letter
+        $workspace = $domain.Substring(0,1).ToUpper() + $domain.Substring(1).ToLower()
+        $env:BITBUCKET_DEFAULT_WORKSPACE = $workspace
+        [Console]::Error.WriteLine("Note: Derived BITBUCKET_DEFAULT_WORKSPACE='$workspace' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override.")
+      } else {
+        [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+      }
+    } else {
+      [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+    }
   }
 }
 

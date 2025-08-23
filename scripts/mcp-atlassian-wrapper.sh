@@ -33,6 +33,13 @@ get_keychain_password() {
   security find-generic-password -s "$SERVICE_NAME" -a "$ACCOUNT_NAME" -w 2>/dev/null || return 1
 }
 
+get_keychain_domain() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    return 1
+  fi
+  security find-generic-password -s "$SERVICE_NAME" -a "atlassian-domain" -w 2>/dev/null || return 1
+}
+
 check_docker_daemon() {
   if ! "$DOCKER_COMMAND" info &> /dev/null; then
     echo "Error: $DOCKER_COMMAND daemon is not running." >&2
@@ -73,23 +80,35 @@ use_remote_server() {
 }
 
 
-# Domain derivation if not set
+# Domain derivation with fallback hierarchy: env var -> keychain -> git email -> error
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-  GIT_EMAIL=""
-  if command -v git >/dev/null 2>&1; then
-    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+  # Try keychain first (macOS only)
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if KEYCHAIN_DOMAIN=$(get_keychain_domain) && [[ -n "$KEYCHAIN_DOMAIN" ]]; then
+      ATLASSIAN_DOMAIN="$KEYCHAIN_DOMAIN"
+      echo "Note: ATLASSIAN_DOMAIN retrieved from keychain as '${ATLASSIAN_DOMAIN}'." >&2
+    fi
   fi
-  if [[ -n "$GIT_EMAIL" && "$GIT_EMAIL" =~ @([^.]+)\.([^.]+) ]]; then
-    # Extract organization from email (user@organization.domain -> organization.atlassian.net)
-    ORG_DOMAIN="${GIT_EMAIL#*@}"
-    ORG_NAME="${ORG_DOMAIN%%.*}"
-    ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
-    echo "Note: ATLASSIAN_DOMAIN derived from git user.email as '${ATLASSIAN_DOMAIN}'." >&2
-  else
-    echo "Error: ATLASSIAN_DOMAIN must be set or derivable from git user.email." >&2
-    echo "Example: export ATLASSIAN_DOMAIN='yourorg.atlassian.net'" >&2
-    echo "Or configure git user.email with your organization email address." >&2
-    exit 1
+  
+  # If still not set, try git email derivation
+  if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
+    GIT_EMAIL=""
+    if command -v git >/dev/null 2>&1; then
+      GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+    fi
+    if [[ -n "$GIT_EMAIL" && "$GIT_EMAIL" =~ @([^.]+)\.([^.]+) ]]; then
+      # Extract organization from email (user@organization.domain -> organization.atlassian.net)
+      ORG_DOMAIN="${GIT_EMAIL#*@}"
+      ORG_NAME="${ORG_DOMAIN%%.*}"
+      ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
+      echo "Note: ATLASSIAN_DOMAIN derived from git user.email as '${ATLASSIAN_DOMAIN}'." >&2
+    else
+      echo "Error: ATLASSIAN_DOMAIN must be set or derivable from git user.email." >&2
+      echo "Example: export ATLASSIAN_DOMAIN='yourorg.atlassian.net'" >&2
+      echo "Or configure git user.email with your organization email address." >&2
+      echo "Or add to keychain: security add-generic-password -s '$SERVICE_NAME' -a 'atlassian-domain' -w '<domain>'" >&2
+      exit 1
+    fi
   fi
 fi
 
