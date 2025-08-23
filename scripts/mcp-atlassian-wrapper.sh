@@ -73,10 +73,24 @@ use_remote_server() {
 }
 
 
-# Domain default if unset
+# Domain derivation if not set
 if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-  ATLASSIAN_DOMAIN="guttmacher.atlassian.net"
-  echo "Note: ATLASSIAN_DOMAIN was not set; defaulting to '${ATLASSIAN_DOMAIN}'." >&2
+  GIT_EMAIL=""
+  if command -v git >/dev/null 2>&1; then
+    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+  fi
+  if [[ -n "$GIT_EMAIL" && "$GIT_EMAIL" =~ @([^.]+)\.([^.]+) ]]; then
+    # Extract organization from email (user@organization.domain -> organization.atlassian.net)
+    ORG_DOMAIN="${GIT_EMAIL#*@}"
+    ORG_NAME="${ORG_DOMAIN%%.*}"
+    ATLASSIAN_DOMAIN="${ORG_NAME}.atlassian.net"
+    echo "Note: ATLASSIAN_DOMAIN derived from git user.email as '${ATLASSIAN_DOMAIN}'." >&2
+  else
+    echo "Error: ATLASSIAN_DOMAIN must be set or derivable from git user.email." >&2
+    echo "Example: export ATLASSIAN_DOMAIN='yourorg.atlassian.net'" >&2
+    echo "Or configure git user.email with your organization email address." >&2
+    exit 1
+  fi
 fi
 
 # Get API token from environment or keychain (for api_token auth method)

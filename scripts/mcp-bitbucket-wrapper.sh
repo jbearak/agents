@@ -82,7 +82,11 @@ fi
 
 export ATLASSIAN_BITBUCKET_USERNAME
 export ATLASSIAN_BITBUCKET_APP_PASSWORD="${APP_PASS}"
-export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-Guttmacher}"
+# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, the Bitbucket CLI will use user's default workspace
+if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
+  echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+fi
+export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-}"
 
 # Defaults can be overridden via environment variables
 NPM_PKG_NAME=${MCP_BITBUCKET_NPM_PKG:-@aashari/mcp-server-atlassian-bitbucket}

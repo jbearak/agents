@@ -29,7 +29,7 @@ Credentials
   - Prefer macOS Keychain item: Service “github-mcp”, Account “token”; or set GITHUB_PERSONAL_ACCESS_TOKEN in the environment used by the editor.
 - Atlassian
   - Keychain item: service “atlassian-mcp”, account “api-token”, value is your API token.
-  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (defaults: domain “guttmacher.atlassian.net”; email derived from git user.email if unset).
+  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (domain derived from git user.email if unset; email derived from git user.email if unset).
   - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
   - Keychain items (macOS):
@@ -38,7 +38,7 @@ Credentials
   - Or set environment variables:
     - ATLASSIAN_BITBUCKET_APP_PASSWORD
     - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
-  - Optional: BITBUCKET_DEFAULT_WORKSPACE (defaults to “Guttmacher”)
+  - Optional: BITBUCKET_DEFAULT_WORKSPACE (uses your default workspace if unset)
 
 Troubleshooting symptom → action
 - “Failed to parse message: '\n'” or similar in clients:

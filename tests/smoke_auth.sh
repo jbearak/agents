@@ -84,9 +84,23 @@ check_atlassian() {
     fail_line "Keychain item present but empty value (service '$service', account '$account')"
     return 1
   fi
-  local domain="${ATLASSIAN_DOMAIN:-guttmacher.atlassian.net}" email="${ATLASSIAN_EMAIL:-}"
-  if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
-    warn_line "ATLASSIAN_DOMAIN was not set; defaulting to '$domain'"
+  local domain="${ATLASSIAN_DOMAIN:-}" email="${ATLASSIAN_EMAIL:-}"
+  # Derive domain if not set
+  if [[ -z "$domain" ]]; then
+    local git_email=""
+    if command -v git >/dev/null 2>&1; then
+      git_email="$(git config --get user.email 2>/dev/null || true)"
+    fi
+    if [[ -n "$git_email" && "$git_email" =~ @([^.]+)\.([^.]+) ]]; then
+      # Extract organization from email (user@organization.domain -> organization.atlassian.net)
+      local org_domain="${git_email#*@}"
+      local org_name="${org_domain%%.*}"
+      domain="${org_name}.atlassian.net"
+      warn_line "ATLASSIAN_DOMAIN derived from git user.email as '$domain'"
+    else
+      warn_line "ATLASSIAN_DOMAIN not set and cannot derive from git user.email; skipping API test"
+      return 0
+    fi
   fi
   if [[ -z "$email" ]]; then
     # Derive email: prefer git config user.email, else user@org based on domain

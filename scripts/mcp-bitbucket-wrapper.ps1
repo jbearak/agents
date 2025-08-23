@@ -26,7 +26,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Optional workspace override
-if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) { $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher' }
+# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, the Bitbucket CLI will use user's default workspace
+if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
+  [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+}
 
 function Get-StoredPassword {
   param([string]$Target)
