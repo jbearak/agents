@@ -14,6 +14,7 @@ Reference for Copilot modes, models, MCP servers, and cross-tool custom instruct
   - [Simulated Reasoning](#simulated-reasoning)
   - [Context Windows](#context-windows)
 - [MCP Servers](#mcp-servers)
+  - [Prerequisites](#prerequisites)
   - [GitHub](#github-mcp-server)
   - [Atlassian (Jira & Confluence)](#atlassian-mcp-server)
   - [Bitbucket](#bitbucket-mcp-server)
@@ -216,32 +217,40 @@ Atlassian does not make a local MCP server, and does not provide one of either k
 
 You must download each of the wrapper scripts and store login information in your credential manager (on Windows) or login keychain (on macOS). Follow the steps provided below for each MCP server, and then follow the instructions in [Add MCP Servers to Agents](#add-mcp-servers-to-agents).
 
+### Prerequisites
+
 Before you begin, ensure you have the necessary tools installed.
 
-You need a docker daemon. 
+#### Container Runtime
 
-Windows:
+**You need a docker-compatible container runtime:**
+
+##### Windows:
 ```powershell
 winget install RedHat.Podman
 podman machine init --cpus 2 --memory 4096 --disk-size 20
 podman machine start
 ```
 
-macOS: 
-```bash
-brew install colima
+##### macOS: 
+
+```zsh
+brew install colima docker
+echo "export DOCKER_HOST=\"unix://$HOME/.colima/default/docker.sock\"" >> ~/.zprofile
 brew services start colima
 ```
 
-You need node.js.
+#### Node.js
 
-Windows:
+**You need node.js:**
+
+##### Windows:
 ```powershell
 winget install nodejs
 ```
 
-macOS:
-```bash
+##### macOS:
+```zsh
 brew install nodejs
 ```
 
