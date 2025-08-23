@@ -117,10 +117,10 @@ if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
         BITBUCKET_DEFAULT_WORKSPACE="$workspace"
         echo "Note: Derived BITBUCKET_DEFAULT_WORKSPACE='${workspace}' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override." >&2
       else
-        echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+        echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace." >&2
       fi
     else
-      echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+      echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace." >&2
     fi
   fi
 fi

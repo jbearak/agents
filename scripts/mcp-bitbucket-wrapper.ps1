@@ -119,10 +119,10 @@ if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
         $env:BITBUCKET_DEFAULT_WORKSPACE = $workspace
         [Console]::Error.WriteLine("Note: Derived BITBUCKET_DEFAULT_WORKSPACE='$workspace' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override.")
       } else {
-        [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+        [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace.")
       }
     } else {
-      [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+      [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace.")
     }
   }
 }
