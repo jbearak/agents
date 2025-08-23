@@ -2,38 +2,6 @@
 
 Reference for Copilot modes, models, MCP servers, and cross-tool custom instruction usage.
 
-## Table of Contents
-
-- [Repository Structure](#repository-structure)
-- [Modes](#modes)
-  - [Modes Overview](#modes-overview)
-  - [Why custom modes?](#why-custom-modes)
-  - [Add Modes to VS Code](#add-modes-to-vs-code)
-- [Models](#models)
-  - [Models by Agent](#models-by-agent)
-  - [Simulated Reasoning](#simulated-reasoning)
-  - [Context Windows](#context-windows)
-- [MCP Servers](#mcp-servers)
-  - [Prerequisites](#prerequisites)
-  - [GitHub](#github-mcp-server)
-  - [Atlassian (Jira & Confluence)](#atlassian-mcp-server)
-  - [Bitbucket](#bitbucket-mcp-server)
-  - [Context7](#context7-mcp-server)
-  - [Add MCP Servers to Agents](#add-mcp-servers-to-agents)
-    - [VS Code](#add-mcp-servers-to-vs-code)
-    - [Claude Desktop](#add-mcp-servers-to-claude-desktop)
-  - [Technical Notes](#technical-notes-on-mcp-wrappers)
-- [LLM Coding Style Guidelines](#llm-coding-style-guidelines)
-  - [GitHub Copilot (Repository-Level)](#github-copilot-repository-level)
-  - [GitHub Copilot (GitHub.com Chats)](#github-copilot-githubcom-chats)
-  - [Warp (Repository-Level)](#warp-repository-level)
-  - [Warp (User-Level)](#warp-user-level)
-  - [Q (Repository-Level)](#q-repository-level)
-  - [Claude Code (Repository-Level)](#claude-code-repository-level)
-- [VS Code Copilot Settings](#vs-code-copilot-settings)
-  - [Installation](#installation)
-- [Tool Availability Matrix](#tool-availability-matrix)
-
 ## Repository Structure
 
 ```
