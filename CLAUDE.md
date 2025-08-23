@@ -29,6 +29,7 @@ Credentials
   - Prefer macOS Keychain item: Service “github-mcp”, Account “token”; or set GITHUB_PERSONAL_ACCESS_TOKEN in the environment used by the editor.
 - Atlassian
   - Keychain item: service “atlassian-mcp”, account “api-token”, value is your API token.
+  - Optional Keychain item: service "atlassian-mcp", account "atlassian-domain" = your Atlassian domain (e.g., yourorg.atlassian.net)
   - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (domain derived from git user.email if unset; email derived from git user.email if unset).
   - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
@@ -36,6 +37,8 @@ Credentials
     - service "bitbucket-mcp", account "app-password" = your app password
     - service "bitbucket-mcp", account "bitbucket-username" = your Bitbucket username
     - service "bitbucket-mcp", account "bitbucket-workspace" = your default workspace (optional)
+  - Windows Credential Manager (optional):
+    - Add Generic Credential for "bitbucket-mcp" with user name "bitbucket-workspace" and password set to your default workspace
   - Or set environment variables:
     - ATLASSIAN_BITBUCKET_APP_PASSWORD
     - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
