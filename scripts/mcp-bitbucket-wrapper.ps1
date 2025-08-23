@@ -26,9 +26,29 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Optional workspace override
-# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, the Bitbucket CLI will use user's default workspace
+# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, try to derive from git user.email
 if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
-  [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+  # Try to derive workspace from git user.email domain
+  $gitEmail = $null
+  if (Get-Command git -ErrorAction SilentlyContinue) {
+    try {
+      $gitEmail = (git config --get user.email 2>$null).Trim()
+    } catch {}
+  }
+  
+  if ($gitEmail -and $gitEmail -match '^.+@([^.]+)\.') {
+    $domain = $matches[1]
+    if ($domain) {
+      # Capitalize first letter
+      $workspace = $domain.Substring(0,1).ToUpper() + $domain.Substring(1).ToLower()
+      $env:BITBUCKET_DEFAULT_WORKSPACE = $workspace
+      [Console]::Error.WriteLine("Note: Derived BITBUCKET_DEFAULT_WORKSPACE='$workspace' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override.")
+    } else {
+      [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+    }
+  } else {
+    [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace.")
+  }
 }
 
 function Get-StoredPassword {

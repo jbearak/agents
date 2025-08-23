@@ -82,9 +82,30 @@ fi
 
 export ATLASSIAN_BITBUCKET_USERNAME
 export ATLASSIAN_BITBUCKET_APP_PASSWORD="${APP_PASS}"
-# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, the Bitbucket CLI will use user's default workspace
+# BITBUCKET_DEFAULT_WORKSPACE is optional - if unset, try to derive from git user.email
 if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
-  echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+  # Try to derive workspace from git user.email domain
+  if command -v git >/dev/null 2>&1; then
+    git_email="$(git config --get user.email 2>/dev/null || true)"
+  else
+    git_email=""
+  fi
+  
+  if [[ -n "$git_email" && "$git_email" == *"@"*"."* ]]; then
+    # Extract domain from email (part between @ and first .)
+    domain_part="${git_email#*@}"
+    domain="${domain_part%%.*}"
+    if [[ -n "$domain" ]]; then
+      # Capitalize first letter
+      workspace="${domain^}"
+      BITBUCKET_DEFAULT_WORKSPACE="$workspace"
+      echo "Note: Derived BITBUCKET_DEFAULT_WORKSPACE='${workspace}' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override." >&2
+    else
+      echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+    fi
+  else
+    echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. Bitbucket CLI will use your default workspace." >&2
+  fi
 fi
 export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-}"
 
