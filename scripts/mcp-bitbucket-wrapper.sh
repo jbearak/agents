@@ -99,7 +99,11 @@ if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
     fi
   fi
 fi
-export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-}"
+if [[ -n "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
+  export BITBUCKET_DEFAULT_WORKSPACE
+else
+  unset BITBUCKET_DEFAULT_WORKSPACE
+fi
 
 # Defaults can be overridden via environment variables
 NPM_PKG_NAME=${MCP_BITBUCKET_NPM_PKG:-@aashari/mcp-server-atlassian-bitbucket}
