@@ -18,15 +18,12 @@
   Additional arguments passed through to the MCP server process.
 #>
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-# Startup order: local CLI on PATH -> npx (no global install)
+# Startup order: globally installed npm binary on PATH -> npx (no global install)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG
 # Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-
-# Optional workspace override
-if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) { $env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher' }
 
 function Get-StoredPassword {
   param([string]$Target)
@@ -75,6 +72,39 @@ function Get-StoredUsername {
   }
 }
 
+function Get-StoredWorkspace {
+  try {
+    # Check if credential exists
+    $listing = cmd /c "cmdkey /list" 2>$null
+    if (-not $listing -or $listing -notmatch 'bitbucket-mcp') {
+      return $null
+    }
+
+    # Need CredentialManager module to read the credential
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
+    }
+
+    $cred = Get-StoredCredential -Target 'bitbucket-mcp'
+    if ($cred -and $cred.UserName -eq 'bitbucket-workspace' -and $cred.Password) {
+      return $cred.Password
+    }
+    return $null
+  } catch {
+    return $null
+  }
+}
+
+# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> credential manager -> Bitbucket default
+if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
+  # Try credential manager first
+  $credentialWorkspace = Get-StoredWorkspace
+  if ($credentialWorkspace) {
+    $env:BITBUCKET_DEFAULT_WORKSPACE = $credentialWorkspace
+    [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE retrieved from credential manager as '$($env:BITBUCKET_DEFAULT_WORKSPACE)'.")
+  }
+}
+
 # Username derivation with fallback hierarchy: env var -> credential manager -> git email username -> OS username
 if (-not $env:ATLASSIAN_BITBUCKET_USERNAME) {
   # Try credential manager first
@@ -118,12 +148,12 @@ $env:ATLASSIAN_BITBUCKET_APP_PASSWORD = $appPassword
 # Prefer npm-installed CLI; fallback to npx
 $CLI_BIN = $env:MCP_BITBUCKET_CLI_BIN; if (-not $CLI_BIN) { $CLI_BIN = 'mcp-atlassian-bitbucket' }
 $NPM_PKG = $env:MCP_BITBUCKET_NPM_PKG; if (-not $NPM_PKG) { $NPM_PKG = '@aashari/mcp-server-atlassian-bitbucket' }
-# Note: @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm, no Docker
+# Note: @aashari/mcp-server-atlassian-bitbucket only supports Node via npm/npx, no Docker
 
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-  [Console]::Error.WriteLine("Using Bitbucket MCP via local CLI on PATH: $CLI_BIN")
+  [Console]::Error.WriteLine("Using Bitbucket MCP via globally installed npm binary on PATH: $CLI_BIN")
   $env:NO_COLOR = '1'
   & $CLI_BIN @Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -142,7 +172,7 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
-# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm
+# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports Node via npm/npx
 
-Write-Error 'Bitbucket MCP CLI not found and no viable fallback (npm/npx) available.'
+Write-Error 'Bitbucket MCP npm-installed binary not found and no viable fallback (npx) available.'
 exit 1

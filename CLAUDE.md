@@ -5,7 +5,7 @@ These notes help Claude (and you) run and debug local MCP servers consistently.
 Key wrappers
 - GitHub: ~/bin/mcp-github-wrapper.sh (Docker with remote fallback via mcp-remote)
 - Atlassian: ~/bin/mcp-atlassian-wrapper.sh (Docker with remote fallback via mcp-remote)
-- Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (CLI on PATH → npx @latest; no Docker fallback)
+- Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (npm-installed binary on PATH → npx @latest; no Docker fallback)
 - Context7: ~/bin/mcp-context7-wrapper.sh (npm package or npx; no auth required)
 
 Important: stdout must be JSON-only
@@ -28,17 +28,27 @@ Credentials
 - GitHub
   - Prefer macOS Keychain item: Service “github-mcp”, Account “token”; or set GITHUB_PERSONAL_ACCESS_TOKEN in the environment used by the editor.
 - Atlassian
-  - Keychain item: service “atlassian-mcp”, account “api-token”, value is your API token.
-  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (defaults: domain “guttmacher.atlassian.net”; email derived from git user.email if unset).
+  - macOS Keychain:
+    - service “atlassian-mcp”, account “api-token” = your API token
+    - optional: service "atlassian-mcp", account "atlassian-domain" = your Atlassian domain (e.g., yourorg.atlassian.net)
+  - Windows Credential Manager equivalents:
+    - Generic Credential target "atlassian-mcp", user name "api-token" = your API token
+    - optional: Generic Credential target "mcp-atlassian", user name "atlassian-domain" = your Atlassian domain (e.g., yourorg.atlassian.net)
+  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (domain derived from git user.email if unset; email derived from git user.email if unset).
   - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
   - Keychain items (macOS):
-    - service “bitbucket-mcp”, account “app-password” = your app password
-    - service “bitbucket-mcp”, account “bitbucket-username” = your Bitbucket username
+    - service "bitbucket-mcp", account "app-password" = your app password
+    - service "bitbucket-mcp", account "bitbucket-username" = your Bitbucket username
+    - service "bitbucket-mcp", account "bitbucket-workspace" = your default workspace (optional)
+  - Windows Credential Manager (optional):
+    - Generic Credential target "bitbucket-mcp", user name "app-password" = your app password
+    - Generic Credential target "bitbucket-mcp", user name "bitbucket-username" = your Bitbucket username
+    - Generic Credential target "bitbucket-mcp", user name "bitbucket-workspace" = your default workspace (optional)
   - Or set environment variables:
     - ATLASSIAN_BITBUCKET_APP_PASSWORD
     - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
-  - Optional: BITBUCKET_DEFAULT_WORKSPACE (defaults to “Guttmacher”)
+    - BITBUCKET_DEFAULT_WORKSPACE (optional; uses your Bitbucket account's default workspace if unset)
 
 Troubleshooting symptom → action
 - “Failed to parse message: '\n'” or similar in clients:

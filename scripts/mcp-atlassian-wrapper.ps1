@@ -202,9 +202,9 @@ if (-not $env:ATLASSIAN_DOMAIN) {
       $env:ATLASSIAN_DOMAIN = "$orgName.atlassian.net"
       [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN derived from email as '$($env:ATLASSIAN_DOMAIN)'.")
     } else {
-      # Final fallback to guttmacher
-      [Console]::Error.WriteLine("Note: ATLASSIAN_DOMAIN was not set, not in credential manager, and no email available; defaulting to 'guttmacher.atlassian.net'.")
-      $env:ATLASSIAN_DOMAIN = 'guttmacher.atlassian.net'
+      # No fallback - require explicit configuration
+      Write-Error "ATLASSIAN_DOMAIN must be set or derivable from git user.email. Example: `$env:ATLASSIAN_DOMAIN='yourorg.atlassian.net'"
+      exit 1
     }
   }
 }

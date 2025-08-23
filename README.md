@@ -406,7 +406,8 @@ export PATH="$HOME/bin:$PATH"
 
 5. Test
    ```powershell
-   $env:ATLASSIAN_DOMAIN="guttmacher.atlassian.net"; & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
+   # Set your organization domain: $env:ATLASSIAN_DOMAIN="yourorg.atlassian.net"
+   & $Env:UserProfile\bin\mcp-atlassian-wrapper.ps1 --help | Select-Object -First 5
    ```
 
 **Note:** If Docker/Podman is unavailable, the wrapper may fall back to the Atlassian remote MCP server and authenticate via OAuth. This will open your default browser to complete sign-in.
@@ -541,7 +542,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
 
 7. Test:
 ```powershell
-$env:BITBUCKET_DEFAULT_WORKSPACE = 'Guttmacher'
+# Set your workspace if needed: $env:BITBUCKET_DEFAULT_WORKSPACE = 'YourWorkspace'
 $env:ATLASSIAN_BITBUCKET_USERNAME="your-username"; & $Env:UserProfile\bin\mcp-bitbucket-wrapper.ps1 --help | Select-Object -First 5
 ```
 
