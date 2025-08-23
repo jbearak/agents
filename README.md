@@ -169,13 +169,13 @@ From these four categories, we create **five modes**. **Code-GPT5** and **Code-S
 
 ### Simulated Reasoning
 
-| Agent             | SR Available | Notes |
-|-------------------|--------------|-----------------------------------------------------------|
-| Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu |
+| Agent             | SR Options   | Notes |
+|-------------------|--------------|------------------------------------------------------------|
+| Claude.ai/Desktop | ✅           | Toggle "Extended thinking" in the "Search and tools" menu  |
 | Claude Code       | ✅           | Use [keywords](https://www.anthropic.com/engineering/claude-code-best-practices): _think_ < _think hard_ < _think harder_ < _ultrathink_                                         |
-| GitHub Copilot    | —            | Has Sonnet 3.7 Thinking and o4 mini                       |
-| Q                 | —            |                                                           |
-| Warp              | —            | Has o3 and o4 mini                                        |
+| GitHub Copilot    | —            | Has Sonnet 3.7 Thinking and o4 mini                        |
+| Q                 | ❌           |                                                            |
+| Warp              | —            | Has o3 and o4 mini, and can specify GPT-5 reasoning level  |
 
 
 **Note:** [GPT-5 adds _reasoning_effort_ and _verbosity_ parameters ranging from minimal/low to high](https://openai.com/index/introducing-gpt-5-for-developers/), but providers do not transparently communicate how they configure it. One can access high/high settings for planning tasks via the OpenAI API.
