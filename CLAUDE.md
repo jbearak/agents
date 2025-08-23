@@ -30,6 +30,7 @@ Credentials
 - Atlassian
   - Keychain item: service “atlassian-mcp”, account “api-token”, value is your API token.
   - Optional Keychain item: service "atlassian-mcp", account "atlassian-domain" = your Atlassian domain (e.g., yourorg.atlassian.net)
+  - Windows Credential Manager (optional): Generic Credential target "mcp-atlassian" with user name "atlassian-domain" and password set to your Atlassian domain (e.g., yourorg.atlassian.net)
   - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (domain derived from git user.email if unset; email derived from git user.email if unset).
   - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
@@ -38,7 +39,9 @@ Credentials
     - service "bitbucket-mcp", account "bitbucket-username" = your Bitbucket username
     - service "bitbucket-mcp", account "bitbucket-workspace" = your default workspace (optional)
   - Windows Credential Manager (optional):
-    - Add Generic Credential for "bitbucket-mcp" with user name "bitbucket-workspace" and password set to your default workspace
+    - Generic Credential target "bitbucket-mcp", user name "app-password" = your app password
+    - Generic Credential target "bitbucket-mcp", user name "bitbucket-username" = your Bitbucket username
+    - Generic Credential target "bitbucket-mcp", user name "bitbucket-workspace" = your default workspace (optional)
   - Or set environment variables:
     - ATLASSIAN_BITBUCKET_APP_PASSWORD
     - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
