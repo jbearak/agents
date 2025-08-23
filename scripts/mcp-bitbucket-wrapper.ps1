@@ -18,7 +18,7 @@
   Additional arguments passed through to the MCP server process.
 #>
 Param([Parameter(ValueFromRemainingArguments=$true)] [string[]]$Args)
-# Startup order: local CLI on PATH -> npx (no global install)
+# Startup order: globally installed npm binary on PATH -> npx (no global install)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG
 # Logging note: Diagnostics go to stderr intentionally to keep stdout JSON-only for MCP.
@@ -95,35 +95,13 @@ function Get-StoredWorkspace {
   }
 }
 
-# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> credential manager -> git email -> default
+# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> credential manager -> Bitbucket default
 if (-not $env:BITBUCKET_DEFAULT_WORKSPACE) {
   # Try credential manager first
   $credentialWorkspace = Get-StoredWorkspace
   if ($credentialWorkspace) {
     $env:BITBUCKET_DEFAULT_WORKSPACE = $credentialWorkspace
     [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE retrieved from credential manager as '$($env:BITBUCKET_DEFAULT_WORKSPACE)'.")
-  } else {
-    # If still not set, try to derive workspace from git user.email domain
-    $gitEmail = $null
-    if (Get-Command git -ErrorAction SilentlyContinue) {
-      try {
-        $gitEmail = (git config --get user.email 2>$null).Trim()
-      } catch {}
-    }
-    
-    if ($gitEmail -and $gitEmail -match '^.+@([^.]+)\.') {
-      $domain = $matches[1]
-      if ($domain) {
-        # Capitalize first letter
-        $workspace = $domain.Substring(0,1).ToUpper() + $domain.Substring(1).ToLower()
-        $env:BITBUCKET_DEFAULT_WORKSPACE = $workspace
-        [Console]::Error.WriteLine("Note: Derived BITBUCKET_DEFAULT_WORKSPACE='$workspace' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override.")
-      } else {
-        [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace.")
-      }
-    } else {
-      [Console]::Error.WriteLine("Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace.")
-    }
   }
 }
 
@@ -170,12 +148,12 @@ $env:ATLASSIAN_BITBUCKET_APP_PASSWORD = $appPassword
 # Prefer npm-installed CLI; fallback to npx
 $CLI_BIN = $env:MCP_BITBUCKET_CLI_BIN; if (-not $CLI_BIN) { $CLI_BIN = 'mcp-atlassian-bitbucket' }
 $NPM_PKG = $env:MCP_BITBUCKET_NPM_PKG; if (-not $NPM_PKG) { $NPM_PKG = '@aashari/mcp-server-atlassian-bitbucket' }
-# Note: @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm, no Docker
+# Note: @aashari/mcp-server-atlassian-bitbucket only supports Node via npm/npx, no Docker
 
 function Invoke-Exec { param([string]$File,[string[]]$Arguments) & $File @Arguments; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 
 if (Get-Command $CLI_BIN -ErrorAction SilentlyContinue) {
-  [Console]::Error.WriteLine("Using Bitbucket MCP via local CLI on PATH: $CLI_BIN")
+  [Console]::Error.WriteLine("Using Bitbucket MCP via globally installed npm binary on PATH: $CLI_BIN")
   $env:NO_COLOR = '1'
   & $CLI_BIN @Args | ForEach-Object { if ($_ -match '^\s*$' -or $_ -match '^(?i)\s*Content-(Length|Type):' -or $_ -match '^\s*\{' -or $_ -match '^\s*\[\s*(\"|\{|\[|[0-9-]|t|f|n|\])') { $_ } else { [Console]::Error.WriteLine($_) } }
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -194,7 +172,7 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
   if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
-# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm
+# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports Node via npm/npx
 
-Write-Error 'Bitbucket MCP CLI not found and no viable fallback (npm/npx) available.'
+Write-Error 'Bitbucket MCP npm-installed binary not found and no viable fallback (npx) available.'
 exit 1

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Bitbucket MCP Server Wrapper (macOS / Linux)
 # Securely launches the Bitbucket MCP server with app password from macOS Keychain (macOS) or environment variables (fallback)
-# Startup order: local CLI on PATH -> npx (no global install)
+# Startup order: globally installed npm binary on PATH -> npx (no global install)
 # No automatic npm -g installs to avoid interactive prompts in editors (VS Code, Claude Desktop).
 # Env overrides: MCP_BITBUCKET_CLI_BIN, MCP_BITBUCKET_NPM_PKG
 # Logging note: All diagnostics/info are sent to stderr intentionally. MCP clients expect
@@ -89,7 +89,7 @@ fi
 
 export ATLASSIAN_BITBUCKET_USERNAME
 export ATLASSIAN_BITBUCKET_APP_PASSWORD="${APP_PASS}"
-# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> keychain -> git email -> default
+# BITBUCKET_DEFAULT_WORKSPACE with fallback hierarchy: env var -> keychain -> Bitbucket default
 if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
   # Try keychain first (macOS only)
   if [[ "$(uname)" == "Darwin" ]]; then
@@ -98,38 +98,13 @@ if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
       echo "Note: BITBUCKET_DEFAULT_WORKSPACE retrieved from keychain as '${BITBUCKET_DEFAULT_WORKSPACE}'." >&2
     fi
   fi
-  
-  # If still not set, try to derive workspace from git user.email domain
-  if [[ -z "${BITBUCKET_DEFAULT_WORKSPACE:-}" ]]; then
-    if command -v git >/dev/null 2>&1; then
-      git_email="$(git config --get user.email 2>/dev/null || true)"
-    else
-      git_email=""
-    fi
-    
-    if [[ -n "$git_email" && "$git_email" == *"@"*"."* ]]; then
-      # Extract domain from email (part between @ and first .)
-      domain_part="${git_email#*@}"
-      domain="${domain_part%%.*}"
-      if [[ -n "$domain" ]]; then
-        # Capitalize first letter
-        workspace="${domain^}"
-        BITBUCKET_DEFAULT_WORKSPACE="$workspace"
-        echo "Note: Derived BITBUCKET_DEFAULT_WORKSPACE='${workspace}' from git user.email. Set BITBUCKET_DEFAULT_WORKSPACE to override." >&2
-      else
-        echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace." >&2
-      fi
-    else
-      echo "Note: BITBUCKET_DEFAULT_WORKSPACE not set. MCP server will use your default workspace." >&2
-    fi
-  fi
 fi
 export BITBUCKET_DEFAULT_WORKSPACE="${BITBUCKET_DEFAULT_WORKSPACE:-}"
 
 # Defaults can be overridden via environment variables
 NPM_PKG_NAME=${MCP_BITBUCKET_NPM_PKG:-@aashari/mcp-server-atlassian-bitbucket}
 CLI_BIN_NAME=${MCP_BITBUCKET_CLI_BIN:-mcp-atlassian-bitbucket}
-# Note: @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm, no Docker
+# Note: @aashari/mcp-server-atlassian-bitbucket only supports Node via npm/npx, no Docker
 
 run_cli() {
   "${CLI_BIN_NAME}" "$@" 2> >(cat >&2) | \
@@ -144,9 +119,9 @@ awk 'BEGIN{IGNORECASE=1}
   exit ${PIPESTATUS[0]}
 }
 
-# 1) If CLI already available, run it.
+# 1) If an npm-installed binary is already available on PATH, run it.
 if command -v "${CLI_BIN_NAME}" >/dev/null 2>&1; then
-  echo "Using Bitbucket MCP via local CLI on PATH: ${CLI_BIN_NAME}" >&2
+  echo "Using Bitbucket MCP via globally installed npm binary on PATH: ${CLI_BIN_NAME}" >&2
   run_cli "$@"
 fi
 
@@ -170,7 +145,7 @@ awk 'BEGIN{IGNORECASE=1; started=0; saw=0}
   exit ${PIPESTATUS[0]}
 fi
 
-# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports CLI/npm
+# Docker fallback removed - @aashari/mcp-server-atlassian-bitbucket only supports Node via npm/npx
 
-echo "Error: Bitbucket MCP CLI not found and no viable fallback (npm/npx) available." >&2
+echo "Error: Bitbucket MCP npm-installed binary not found and no viable fallback (npx) available." >&2
 exit 1

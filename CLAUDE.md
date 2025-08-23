@@ -5,7 +5,7 @@ These notes help Claude (and you) run and debug local MCP servers consistently.
 Key wrappers
 - GitHub: ~/bin/mcp-github-wrapper.sh (Docker with remote fallback via mcp-remote)
 - Atlassian: ~/bin/mcp-atlassian-wrapper.sh (Docker with remote fallback via mcp-remote)
-- Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (CLI on PATH → npx @latest; no Docker fallback)
+- Bitbucket: ~/bin/mcp-bitbucket-wrapper.sh (npm-installed binary on PATH → npx @latest; no Docker fallback)
 - Context7: ~/bin/mcp-context7-wrapper.sh (npm package or npx; no auth required)
 
 Important: stdout must be JSON-only
@@ -33,12 +33,13 @@ Credentials
   - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
   - Keychain items (macOS):
-    - service “bitbucket-mcp”, account “app-password” = your app password
-    - service “bitbucket-mcp”, account “bitbucket-username” = your Bitbucket username
+    - service "bitbucket-mcp", account "app-password" = your app password
+    - service "bitbucket-mcp", account "bitbucket-username" = your Bitbucket username
+    - service "bitbucket-mcp", account "bitbucket-workspace" = your default workspace (optional)
   - Or set environment variables:
     - ATLASSIAN_BITBUCKET_APP_PASSWORD
     - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
-  - Optional: BITBUCKET_DEFAULT_WORKSPACE (uses your default workspace if unset)
+    - BITBUCKET_DEFAULT_WORKSPACE (optional; uses your Bitbucket account's default workspace if unset)
 
 Troubleshooting symptom → action
 - “Failed to parse message: '\n'” or similar in clients:
