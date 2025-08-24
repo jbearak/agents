@@ -197,7 +197,7 @@ if (-not (Test-DockerDaemon)) {
 }
 
 # Derive email first if not provided (needed for domain derivation)
-# Priority: env var -> credential manager -> git -> derived
+# Priority: env var -> credential manager -> git-derived
 if (-not $env:ATLASSIAN_EMAIL) {
   # Try credential manager first
   $credentialEmail = Get-StoredEmail
