@@ -63,7 +63,7 @@ function Get-StoredUsername {
     }
 
     $cred = Get-StoredCredential -Target 'bitbucket-mcp'
-    if ($cred -and $cred.UserName -eq 'bitbucket-username' -and $cred.Password) {
+    if ($cred -and $cred.UserName -eq 'username' -and $cred.Password) {
       return $cred.Password
     }
     return $null
@@ -86,7 +86,7 @@ function Get-StoredWorkspace {
     }
 
     $cred = Get-StoredCredential -Target 'bitbucket-mcp'
-    if ($cred -and $cred.UserName -eq 'bitbucket-workspace' -and $cred.Password) {
+    if ($cred -and $cred.UserName -eq 'workspace' -and $cred.Password) {
       return $cred.Password
     }
     return $null

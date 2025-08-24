@@ -272,11 +272,8 @@ Follow these steps to obtain a necessary GitHub access token:
      - Account: `token`
      - Password: (your GitHub Personal Access Token)
    - Or CLI:
-     > ⚠️ **Security Warning:** Running `security add-generic-password -s "github-mcp" -a "token" -w "<token>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
      ```bash
-     ( unset HISTFILE; stty -echo; printf "Enter GitHub Personal Access Token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s github-mcp -a token -w "$PW"; \
-       unset PW )
+     security add-generic-password -s github-mcp -a token
      ```
 2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
@@ -306,14 +303,11 @@ export PATH="$HOME/bin:$PATH"
 1. Create a keychain item for the API token:
    - GUI: Keychain Access → File → New Password Item…
      - Name (Service): `atlassian-mcp`
-     - Account: `api-token`
+     - Account: `token`
      - Password: (your Atlassian API token)
    - Or CLI:
-     > ⚠️ **Security Warning:** Running `security add-generic-password` directly will write your secret in cleartext to your shell history. Use this secure command instead:
      ```bash
-     ( unset HISTFILE; stty -echo; printf "Enter Atlassian API token: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s atlassian-mcp -a api-token -w "$PW"; \
-       unset PW )
+     security add-generic-password -s atlassian-mcp -a token
      ```
 
 2. Copy `scripts/mcp-atlassian-wrapper.sh` to `~/bin/`:
@@ -349,17 +343,17 @@ export PATH="$HOME/bin:$PATH"
 2. Create a _generic credential_ in Windows Credential Manager for the API token:
    - GUI: Control Panel → User Accounts → Credential Manager → Windows Credentials → Add a generic credential.
      - Internet or network address: `atlassian-mcp`
-     - User name: `api-token`
+     - User name: `token`
      - Password: (your Atlassian API token)
    - Or CLI:
-   > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:atlassian-mcp /user:api-token /pass:<your-api-token>"` directly will write your secret in cleartext to your shell history. Use this secure command instead:
+   > ⚠️ **Security Warning:** Running `cmd /c "cmdkey /add:atlassian-mcp /user:token /pass:<your-api-token>"` directly will write your secret in cleartext to your shell history. Use this secure command instead:
    ```powershell
    $secure = Read-Host -AsSecureString "Enter Atlassian API token"
    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
    try {
      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
      # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
-     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
      Write-Host "Credential 'atlassian-mcp' created." -ForegroundColor Green
    } finally {
      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
@@ -425,11 +419,8 @@ export PATH="$HOME/bin:$PATH"
      - Account: `app-password`
      - Password: (your Bitbucket app password)
    - Or CLI:
-     > ⚠️ **Security Warning:** Running `security add-generic-password -s "bitbucket-mcp" -a "app-password" -w "<app_password>"` directly will write your secret in cleartext to your shell history (`~/.zsh_history`, `~/.bash_history`, etc). Avoid pasting secrets onto the command line. You can paste this command, which will temporarily lock the history file, ask you for the token, and then add it to the keychain:
      ```bash
-     ( unset HISTFILE; stty -echo; printf "Enter Bitbucket app password: "; read PW; stty echo; printf "\n"; \
-       security add-generic-password -s bitbucket-mcp -a app-password -w "$PW"; \
-       unset PW )
+     security add-generic-password -s bitbucket-mcp -a app-password
      ```
 
 2. Create a keychain item for your Bitbucket username:
@@ -439,7 +430,7 @@ export PATH="$HOME/bin:$PATH"
      - Password: (your Bitbucket username)
    - Or CLI:
   ```bash
-  security add-generic-password -s bitbucket-mcp -a bitbucket-username -w "<your-bitbucket-username>"
+  security add-generic-password -s bitbucket-mcp -a username -w "<your-bitbucket-username>"
   ```
 
 You can skip step 2 if your Bitbucket username is the same as the first part of your email address--the one set in your global git config.

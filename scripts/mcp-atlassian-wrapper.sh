@@ -10,7 +10,7 @@
 set -euo pipefail
 
 SERVICE_NAME="atlassian-mcp"
-ACCOUNT_NAME="api-token"
+ACCOUNT_NAME="token"
 DOCKER_COMMAND="${DOCKER_COMMAND:-docker}"
 MCP_ATLASSIAN_IMAGE="${MCP_ATLASSIAN_IMAGE:-ghcr.io/sooperset/mcp-atlassian:latest}"
 AUTH_METHOD="${AUTH_METHOD:-api_token}"
@@ -37,7 +37,14 @@ get_keychain_domain() {
   if [[ "$(uname)" != "Darwin" ]]; then
     return 1
   fi
-  security find-generic-password -s "$SERVICE_NAME" -a "atlassian-domain" -w 2>/dev/null || return 1
+  security find-generic-password -s "$SERVICE_NAME" -a "domain" -w 2>/dev/null || return 1
+}
+
+get_keychain_email() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    return 1
+  fi
+  security find-generic-password -s "$SERVICE_NAME" -a "email" -w 2>/dev/null || return 1
 }
 
 check_docker_daemon() {
@@ -106,7 +113,7 @@ if [[ -z "${ATLASSIAN_DOMAIN:-}" ]]; then
       echo "Error: ATLASSIAN_DOMAIN must be set or derivable from git user.email." >&2
       echo "Example: export ATLASSIAN_DOMAIN='yourorg.atlassian.net'" >&2
       echo "Or configure git user.email with your organization email address." >&2
-      echo "Or add to keychain: security add-generic-password -s '$SERVICE_NAME' -a 'atlassian-domain' -w '<domain>'" >&2
+      echo "Or add to keychain: security add-generic-password -s '$SERVICE_NAME' -a 'domain' -w '<domain>'" >&2
       exit 1
     fi
   fi
@@ -119,7 +126,7 @@ else
   if [[ "$(uname)" == "Darwin" ]]; then
     if ! API_TOKEN=$(get_keychain_password); then
       echo "Error: Could not retrieve Atlassian API token from Keychain (service '$SERVICE_NAME', account '$ACCOUNT_NAME')." >&2
-      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME' -w '<api_token>'" >&2
+      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME'" >&2
       echo "Or set environment variable: export ATLASSIAN_API_TOKEN='<api_token>'" >&2
       echo "Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens" >&2
       exit 1
@@ -132,18 +139,31 @@ else
   fi
 fi
 
-# Derive email if not provided (prefer env var -> git -> username@derived .org)
+# Derive email if not provided (prefer env var -> keychain -> git -> username@derived.org)
 if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-  GIT_EMAIL=""
-  if command -v git >/dev/null 2>&1; then
-    GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+  # Try keychain first (macOS only)
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if KEYCHAIN_EMAIL=$(get_keychain_email) && [[ -n "$KEYCHAIN_EMAIL" ]]; then
+      ATLASSIAN_EMAIL="$KEYCHAIN_EMAIL"
+      echo "Note: ATLASSIAN_EMAIL retrieved from keychain as '${ATLASSIAN_EMAIL}'." >&2
+    fi
   fi
-  if [[ -n "$GIT_EMAIL" ]]; then
-    ATLASSIAN_EMAIL="$GIT_EMAIL"
-  else
-    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
+  
+  # If still not set, try git email
+  if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
+    GIT_EMAIL=""
+    if command -v git >/dev/null 2>&1; then
+      GIT_EMAIL="$(git config --get user.email 2>/dev/null || true)"
+    fi
+    if [[ -n "$GIT_EMAIL" ]]; then
+      ATLASSIAN_EMAIL="$GIT_EMAIL"
+      echo "Note: ATLASSIAN_EMAIL derived from git user.email as '${ATLASSIAN_EMAIL}'." >&2
+    else
+      # Final fallback: derive from username and domain
+      ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
+      echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
+    fi
   fi
-  echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
 fi
 
 # run_cli function removed - sooperset/mcp-atlassian only supports Docker containers

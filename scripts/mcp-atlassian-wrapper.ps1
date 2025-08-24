@@ -11,7 +11,7 @@
   Create Generic Credential for API token:
     Control Panel > User Accounts > Credential Manager > Windows Credentials > Add a generic credential
       Internet or network address: atlassian-mcp
-      User name: api-token
+      User name: token
       Password: <your Atlassian API token>
 
   Or via PowerShell:
@@ -21,7 +21,7 @@
    try {
      $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
      # Use Start-Process so the literal token isn't echoed back; it's still passed in memory only.
-     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:api-token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
+     Start-Process -FilePath cmd.exe -ArgumentList "/c","cmdkey","/add:atlassian-mcp","/user:token","/pass:$plain" -WindowStyle Hidden -NoNewWindow -Wait
      [Console]::Error.WriteLine("Credential 'atlassian-mcp' created.")
    } finally {
      if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
@@ -136,7 +136,7 @@ function Get-StoredDomain {
   try {
     # Check if credential exists
     $listing = cmd /c "cmdkey /list" 2>$null
-    if (-not $listing -or $listing -notmatch 'mcp-atlassian') {
+    if (-not $listing -or $listing -notmatch 'atlassian-mcp') {
       return $null
     }
 
@@ -145,8 +145,31 @@ function Get-StoredDomain {
       Import-Module CredentialManager -ErrorAction Stop
     }
 
-    $cred = Get-StoredCredential -Target 'mcp-atlassian'
-    if ($cred -and $cred.UserName -eq 'atlassian-domain' -and $cred.Password) {
+    $cred = Get-StoredCredential -Target 'atlassian-mcp'
+    if ($cred -and $cred.UserName -eq 'domain' -and $cred.Password) {
+      return $cred.Password
+    }
+    return $null
+  } catch {
+    return $null
+  }
+}
+
+function Get-StoredEmail {
+  try {
+    # Check if credential exists
+    $listing = cmd /c "cmdkey /list" 2>$null
+    if (-not $listing -or $listing -notmatch 'atlassian-mcp') {
+      return $null
+    }
+
+    # Need CredentialManager module to read the credential
+    if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+      Import-Module CredentialManager -ErrorAction Stop
+    }
+
+    $cred = Get-StoredCredential -Target 'atlassian-mcp'
+    if ($cred -and $cred.UserName -eq 'email' -and $cred.Password) {
       return $cred.Password
     }
     return $null
@@ -174,15 +197,26 @@ if (-not (Test-DockerDaemon)) {
 }
 
 # Derive email first if not provided (needed for domain derivation)
+# Priority: env var -> credential manager -> git -> derived
 if (-not $env:ATLASSIAN_EMAIL) {
-  $gitEmail = $null
-  if (Get-Command git -ErrorAction SilentlyContinue) {
-    try {
-      $gitEmail = (git config --get user.email 2>$null).Trim()
-    } catch {}
-  }
-  if ($gitEmail) {
-    $env:ATLASSIAN_EMAIL = $gitEmail
+  # Try credential manager first
+  $credentialEmail = Get-StoredEmail
+  if ($credentialEmail) {
+    $env:ATLASSIAN_EMAIL = $credentialEmail
+    [Console]::Error.WriteLine("Note: ATLASSIAN_EMAIL retrieved from credential manager as '$($env:ATLASSIAN_EMAIL)'.")
+  } else {
+    # Try git email
+    $gitEmail = $null
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+      try {
+        $gitEmail = (git config --get user.email 2>$null).Trim()
+      } catch {}
+    }
+    if ($gitEmail) {
+      $env:ATLASSIAN_EMAIL = $gitEmail
+      [Console]::Error.WriteLine("Note: ATLASSIAN_EMAIL derived from git user.email as '$($env:ATLASSIAN_EMAIL)'.")
+    }
+    # Note: Final email derivation happens after domain is determined
   }
 }
 
@@ -220,7 +254,7 @@ if ($env:AUTH_METHOD -eq 'api_token') {
       Write-Error @"
 Could not retrieve Atlassian API token:
 1. Create API token at: https://id.atlassian.com/manage-profile/security/api-tokens
-2. Create credential 'atlassian-mcp' with user 'api-token' in Windows Credential Manager
+2. Create credential 'atlassian-mcp' with user 'token' in Windows Credential Manager
 "@
       exit 1
     }
