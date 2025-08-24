@@ -29,12 +29,12 @@ Credentials
   - Prefer macOS Keychain item: Service “github-mcp”, Account “token”; or set GITHUB_PERSONAL_ACCESS_TOKEN in the environment used by the editor.
 - Atlassian
   - macOS Keychain:
-    - service “atlassian-mcp”, account “api-token” = your API token
+    - service “atlassian-mcp”, account “token” = your API token
     - optional: service "atlassian-mcp", account "atlassian-domain" = your Atlassian domain (e.g., yourorg.atlassian.net)
   - Windows Credential Manager equivalents:
-    - Generic Credential target "atlassian-mcp", user name "api-token" = your API token
+    - Generic Credential target "atlassian-mcp", user name "token" = your API token
     - optional: Generic Credential target "mcp-atlassian", user name "atlassian-domain" = your Atlassian domain (e.g., yourorg.atlassian.net)
-  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (domain derived from git user.email if unset; email derived from git user.email if unset).
+  - Set ATLASSIAN_DOMAIN and ATLASSIAN_EMAIL in the agent configs (domain derived from git user.email if unset; email from env var → keychain → git user.email if unset).
   - Remote fallback uses mcp-remote (OAuth flow).
 - Bitbucket
   - Keychain items (macOS):
@@ -47,7 +47,7 @@ Credentials
     - Generic Credential target "bitbucket-mcp", user name "bitbucket-workspace" = your default workspace (optional)
   - Or set environment variables:
     - ATLASSIAN_BITBUCKET_APP_PASSWORD
-    - ATLASSIAN_BITBUCKET_USERNAME (auto-derived from Keychain → git user.email → OS username if unset)
+    - ATLASSIAN_BITBUCKET_USERNAME (env var → keychain → git user.email → OS username if unset)
     - BITBUCKET_DEFAULT_WORKSPACE (optional; uses your Bitbucket account's default workspace if unset)
 
 Troubleshooting symptom → action
