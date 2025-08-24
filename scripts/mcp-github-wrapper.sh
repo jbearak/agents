@@ -65,7 +65,7 @@ if [ -z "${GITHUB_TOKEN}" ]; then
   echo "Error: GitHub token not found." >&2
   echo "Set GITHUB_PERSONAL_ACCESS_TOKEN, or add a macOS Keychain item: service 'github-mcp' (or 'GitHub'), account 'token'." >&2
   echo "macOS (secure prompt):" >&2
-  echo "  security add-generic-password -s github-mcp -a token" >&2
+  echo "  security add-generic-password -s github-mcp -a token -w" >&2
   exit 1
 fi
 

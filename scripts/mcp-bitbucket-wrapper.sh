@@ -77,7 +77,7 @@ else
   if [[ "$(uname)" == "Darwin" ]]; then
     if ! APP_PASS=$(get_keychain_password); then
       echo "Error: Could not retrieve Bitbucket app password from Keychain (service '$SERVICE_NAME', account '$ACCOUNT_NAME')." >&2
-      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME'" >&2
+      echo "Add it with: security add-generic-password -s '$SERVICE_NAME' -a '$ACCOUNT_NAME' -w" >&2
       echo "Or set environment variable: export ATLASSIAN_BITBUCKET_APP_PASSWORD='<app_password>'" >&2
       exit 1
     fi

@@ -273,7 +273,7 @@ Follow these steps to obtain a necessary GitHub access token:
      - Password: (your GitHub Personal Access Token)
    - Or CLI:
      ```bash
-     security add-generic-password -s github-mcp -a token
+     security add-generic-password -s github-mcp -a token -w
      ```
 2. Use the provided wrapper script: copy [`scripts/mcp-github-wrapper.sh`](scripts/mcp-github-wrapper.sh) to `~/bin/mcp-github-wrapper.sh`
 3. Make it executable: `chmod +x ~/bin/mcp-github-wrapper.sh`
@@ -307,7 +307,7 @@ export PATH="$HOME/bin:$PATH"
      - Password: (your Atlassian API token)
    - Or CLI:
      ```bash
-     security add-generic-password -s atlassian-mcp -a token
+     security add-generic-password -s atlassian-mcp -a token -w
      ```
 
 2. Copy `scripts/mcp-atlassian-wrapper.sh` to `~/bin/`:
@@ -420,7 +420,7 @@ export PATH="$HOME/bin:$PATH"
      - Password: (your Bitbucket app password)
    - Or CLI:
      ```bash
-     security add-generic-password -s bitbucket-mcp -a app-password
+     security add-generic-password -s bitbucket-mcp -a app-password -w
      ```
 
 2. Create a keychain item for your Bitbucket username:
