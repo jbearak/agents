@@ -149,14 +149,7 @@ if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
     fi
   fi
   
-  # If still not set, try derived email first
-  if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
-    # Try derived email from username and domain
-    ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
-    echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
-  fi
-  
-  # Final fallback: git email (only if derived email failed somehow)
+  # If still not set, try git user.email
   if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
     GIT_EMAIL=""
     if command -v git >/dev/null 2>&1; then
@@ -165,6 +158,10 @@ if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
     if [[ -n "$GIT_EMAIL" ]]; then
       ATLASSIAN_EMAIL="$GIT_EMAIL"
       echo "Note: ATLASSIAN_EMAIL derived from git user.email as '${ATLASSIAN_EMAIL}'." >&2
+    else
+      # Final fallback: derive from username and domain
+      ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
+      echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
     fi
   fi
 fi
