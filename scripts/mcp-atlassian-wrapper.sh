@@ -139,7 +139,7 @@ else
   fi
 fi
 
-# Derive email if not provided (prefer env var -> keychain -> git-derived)
+# Derive email if not provided (prefer env var -> keychain -> git user.email)
 if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
   # Try keychain first (macOS only)
   if [[ "$(uname)" == "Darwin" ]]; then

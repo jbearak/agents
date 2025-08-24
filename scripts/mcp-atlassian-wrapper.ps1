@@ -197,7 +197,7 @@ if (-not (Test-DockerDaemon)) {
 }
 
 # Derive email first if not provided (needed for domain derivation)
-# Priority: env var -> credential manager -> git-derived
+# Priority: env var -> credential manager -> git user.email
 if (-not $env:ATLASSIAN_EMAIL) {
   # Try credential manager first
   $credentialEmail = Get-StoredEmail
@@ -216,7 +216,6 @@ if (-not $env:ATLASSIAN_EMAIL) {
       $env:ATLASSIAN_EMAIL = $gitEmail
       [Console]::Error.WriteLine("Note: ATLASSIAN_EMAIL derived from git user.email as '$($env:ATLASSIAN_EMAIL)'.")
     }
-    # Note: Final email derivation happens after domain is determined
   }
 }
 
@@ -258,13 +257,6 @@ Could not retrieve Atlassian API token:
 "@
       exit 1
     }
-  }
-  
-  # Complete email derivation if still not set after domain derivation
-  if (-not $env:ATLASSIAN_EMAIL) {
-    $derivedDomain = $env:ATLASSIAN_DOMAIN -replace '\.atlassian\.net$', '.org'
-    $env:ATLASSIAN_EMAIL = "$env:USERNAME@$derivedDomain"
-    [Console]::Error.WriteLine("Note: Using derived email '$($env:ATLASSIAN_EMAIL)'. Set ATLASSIAN_EMAIL to override.")
   }
 }
 
