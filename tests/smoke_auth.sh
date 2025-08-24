@@ -45,7 +45,7 @@ check_github() {
   if ! token=$(keychain_pw "$service" "$account"); then
     fail_line "Keychain item missing: service '$service', account '$account'"
     echo "  fix: Add with Keychain Access or run secure prompt:" >&2
-    echo "       ( unset HISTFILE; stty -echo; printf 'Enter GitHub PAT: '; read PW; stty echo; printf '\n'; \"security\" add-generic-password -s github-mcp -a token -w \"$PW\"; unset PW )" >&2
+    echo "       ( unset HISTFILE; stty -echo; printf 'Enter GitHub PAT: '; read PW; stty echo; printf '\n'; \"security\" add-generic-password -s github-mcp -a token -w \"\$PW\"; unset PW )" >&2
     note_locked_keychain
     return 1
   fi
