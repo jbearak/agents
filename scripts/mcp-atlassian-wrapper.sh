@@ -158,10 +158,6 @@ if [[ -z "${ATLASSIAN_EMAIL:-}" ]]; then
     if [[ -n "$GIT_EMAIL" ]]; then
       ATLASSIAN_EMAIL="$GIT_EMAIL"
       echo "Note: ATLASSIAN_EMAIL derived from git user.email as '${ATLASSIAN_EMAIL}'." >&2
-    else
-      # Final fallback: derive from username and domain
-      ATLASSIAN_EMAIL="${USER}@${ATLASSIAN_DOMAIN//.atlassian.net/.org}"
-      echo "Note: Using derived email '$ATLASSIAN_EMAIL'. Set ATLASSIAN_EMAIL to override." >&2
     fi
   fi
 fi
