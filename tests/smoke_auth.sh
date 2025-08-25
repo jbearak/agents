@@ -2,9 +2,11 @@
 # Smoke test for credentials stored in macOS Keychain and basic API reachability
 #
 # Checks:
-#  - GitHub:  service 'github-mcp',    account 'token'    -> GET https://api.github.com/user
-#  - Atlassian: service 'atlassian-mcp', account 'api-token' -> GET https://$ATLASSIAN_DOMAIN/rest/api/3/myself (requires ATLASSIAN_EMAIL, ATLASSIAN_DOMAIN)
-#  - Bitbucket: service 'bitbucket-mcp', account 'app-password'    -> GET https://api.bitbucket.org/2.0/user (requires ATLASSIAN_BITBUCKET_USERNAME)
+#  - GitHub:    service 'github-mcp' or 'GitHub', account 'token'           -> GET https://api.github.com/user
+#  - Atlassian: service 'atlassian-mcp', account 'token'                    -> GET https://$ATLASSIAN_DOMAIN/rest/api/3/myself
+#               Optional: account 'domain' for ATLASSIAN_DOMAIN, account 'email' for ATLASSIAN_EMAIL
+#  - Bitbucket: service 'bitbucket-mcp', account 'app-password'             -> GET https://api.bitbucket.org/2.0/user
+#               Optional: account 'username' for ATLASSIAN_BITBUCKET_USERNAME, account 'workspace' for BITBUCKET_DEFAULT_WORKSPACE
 #
 # Output: PASS/FAIL for each provider with helpful troubleshooting hints. Never prints secret values.
 #
@@ -40,19 +42,25 @@ warn_line() { echo "$(yellow WARN) $1"; }
 
 check_github() {
   print_header "GitHub"
-  local service="github-mcp" account="token"
+  local account="token"
   local token
-  if ! token=$(keychain_pw "$service" "$account"); then
-    fail_line "Keychain item missing: service '$service', account '$account'"
+  
+  # Try both service names that the wrapper script supports
+  for service in "github-mcp" "GitHub"; do
+    if token=$(keychain_pw "$service" "$account") && [[ -n "$token" ]]; then
+      pass_line "GitHub token retrieved from keychain (service '$service', account '$account')"
+      break
+    fi
+  done
+  
+  if [[ -z "$token" ]]; then
+    fail_line "Keychain item missing: service 'github-mcp' or 'GitHub', account '$account'"
     echo "  fix: Add with Keychain Access or run secure prompt:" >&2
     echo "       ( unset HISTFILE; stty -echo; printf 'Enter GitHub PAT: '; read PW; stty echo; printf '\n'; \"security\" add-generic-password -s github-mcp -a token -w \"\$PW\"; unset PW )" >&2
     note_locked_keychain
     return 1
   fi
-  if [[ -z "$token" ]]; then
-    fail_line "Keychain item present but empty value (service '$service', account '$account')"
-    return 1
-  fi
+  
   if ! have_cmd curl; then
     warn_line "curl not found; skipping API reachability test"
     return 0
@@ -72,11 +80,11 @@ check_github() {
 
 check_atlassian() {
   print_header "Atlassian (Jira Cloud)"
-  local service="atlassian-mcp" account="api-token"
+  local service="atlassian-mcp" account="token"
   local token
   if ! token=$(keychain_pw "$service" "$account"); then
     fail_line "Keychain item missing: service '$service', account '$account'"
-    echo "  fix: Add with Keychain Access (service atlassian-mcp, account api-token)." >&2
+    echo "  fix: Add with Keychain Access (service atlassian-mcp, account token)." >&2
     note_locked_keychain
     return 1
   fi
@@ -84,34 +92,53 @@ check_atlassian() {
     fail_line "Keychain item present but empty value (service '$service', account '$account')"
     return 1
   fi
-  local domain="${ATLASSIAN_DOMAIN:-}" email="${ATLASSIAN_EMAIL:-}"
-  # Derive domain if not set
+  
+  # Check for domain in keychain first, then derive from environment or git email
+  local domain="${ATLASSIAN_DOMAIN:-}"
   if [[ -z "$domain" ]]; then
-    local git_email=""
-    if command -v git >/dev/null 2>&1; then
-      git_email="$(git config --get user.email 2>/dev/null || true)"
-    fi
-    if [[ -n "$git_email" && "$git_email" =~ @([^.]+)\.([^.]+) ]]; then
-      # Extract organization from email (user@organization.domain -> organization.atlassian.net)
-      local org_domain="${git_email#*@}"
-      local org_name="${org_domain%%.*}"
-      domain="${org_name}.atlassian.net"
-      warn_line "ATLASSIAN_DOMAIN derived from git user.email as '$domain'"
+    # Try keychain for domain (service 'atlassian-mcp', account 'domain')
+    if domain=$(keychain_pw "$service" "domain") && [[ -n "$domain" ]]; then
+      pass_line "Atlassian domain retrieved from keychain: '$domain'"
     else
-      warn_line "ATLASSIAN_DOMAIN not set and cannot derive from git user.email; skipping API test"
-      return 0
+      # Derive domain from git email if not set
+      local git_email=""
+      if command -v git >/dev/null 2>&1; then
+        git_email="$(git config --get user.email 2>/dev/null || true)"
+      fi
+      if [[ -n "$git_email" && "$git_email" =~ @([^.]+)\.([^.]+) ]]; then
+        # Extract organization from email (user@organization.domain -> organization.atlassian.net)
+        local org_domain="${git_email#*@}"
+        local org_name="${org_domain%%.*}"
+        domain="${org_name}.atlassian.net"
+        warn_line "ATLASSIAN_DOMAIN derived from git user.email as '$domain'"
+        echo "  hint: Store domain in keychain to avoid derivation: security add-generic-password -s atlassian-mcp -a domain -w '$domain'" >&2
+      else
+        warn_line "ATLASSIAN_DOMAIN not set and cannot derive from git user.email; skipping API test"
+        echo "  hint: Set ATLASSIAN_DOMAIN or add to keychain: security add-generic-password -s atlassian-mcp -a domain -w 'yourorg.atlassian.net'" >&2
+        return 0
+      fi
     fi
   fi
+  
+  # Check for email in keychain first, then derive from environment or git email
+  local email="${ATLASSIAN_EMAIL:-}"
   if [[ -z "$email" ]]; then
-    # Derive email: prefer git config user.email, else user@org based on domain
-    if command -v git >/dev/null 2>&1; then
-      email="$(git config --get user.email 2>/dev/null || true)"
+    # Try keychain for email (service 'atlassian-mcp', account 'email')
+    if email=$(keychain_pw "$service" "email") && [[ -n "$email" ]]; then
+      pass_line "Atlassian email retrieved from keychain: '$email'"
+    else
+      # Derive email: prefer git config user.email, else user@org based on domain
+      if command -v git >/dev/null 2>&1; then
+        email="$(git config --get user.email 2>/dev/null || true)"
+      fi
+      if [[ -z "$email" ]]; then
+        email="${USER}@${domain//.atlassian.net/.org}"
+      fi
+      warn_line "ATLASSIAN_EMAIL derived as '$email'"
+      echo "  hint: Store email in keychain: security add-generic-password -s atlassian-mcp -a email -w '$email'" >&2
     fi
-    if [[ -z "$email" ]]; then
-      email="${USER}@${domain//.atlassian.net/.org}"
-    fi
-    warn_line "ATLASSIAN_EMAIL unset; using derived '$email'"
   fi
+  
   if ! have_cmd curl; then
     warn_line "curl not found; skipping API reachability test"
     return 0
@@ -141,27 +168,38 @@ check_bitbucket() {
     fail_line "Keychain item present but empty value (service '$service', account '$account')"
     return 1
   fi
+  
+  # Check for username in keychain first, then fallback to environment variable and derivation
   local user="${ATLASSIAN_BITBUCKET_USERNAME:-}"
   if [[ -z "$user" ]]; then
-    local default_user="" git_email=""
-    if command -v git >/dev/null 2>&1; then
-      git_email="$(git config --get user.email 2>/dev/null || true)"
-    fi
-    if [[ -n "$git_email" ]]; then
-      default_user="${git_email%@*}"
+    # Try keychain for username (service 'bitbucket-mcp', account 'username')
+    if user=$(keychain_pw "$service" "username") && [[ -n "$user" ]]; then
+      pass_line "Bitbucket username retrieved from keychain: '$user'"
     else
-      default_user="$USER"
-    fi
-    if [[ -t 0 && -t 2 ]]; then
-      printf "Bitbucket username [%s]: " "$default_user" >&2
-      read -r input_username
-      user="${input_username:-$default_user}"
-      warn_line "Using Bitbucket username '$user' for this check"
-    else
-      user="$default_user"
-      warn_line "ATLASSIAN_BITBUCKET_USERNAME unset; non-interactive shell. Using derived '$user'"
+      # Fallback to derivation from git email or OS username
+      local default_user="" git_email=""
+      if command -v git >/dev/null 2>&1; then
+        git_email="$(git config --get user.email 2>/dev/null || true)"
+      fi
+      if [[ -n "$git_email" ]]; then
+        default_user="${git_email%@*}"
+      else
+        default_user="$USER"
+      fi
+      if [[ -t 0 && -t 2 ]]; then
+        printf "Bitbucket username [%s]: " "$default_user" >&2
+        read -r input_username
+        user="${input_username:-$default_user}"
+        warn_line "Using Bitbucket username '$user' for this check"
+        echo "  hint: Store username in keychain to avoid prompts: security add-generic-password -s bitbucket-mcp -a username -w '$user'" >&2
+      else
+        user="$default_user"
+        warn_line "ATLASSIAN_BITBUCKET_USERNAME unset and no keychain entry; non-interactive shell. Using derived '$user'"
+        echo "  hint: Set ATLASSIAN_BITBUCKET_USERNAME or add to keychain: security add-generic-password -s bitbucket-mcp -a username -w '$user'" >&2
+      fi
     fi
   fi
+  
   if ! have_cmd curl; then
     warn_line "curl not found; skipping API reachability test"
     return 0
